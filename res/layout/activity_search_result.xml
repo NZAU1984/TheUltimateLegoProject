@@ -32,4 +32,14 @@
         android:layout_below="@+id/button_showset456"
         android:text="@string/garbage_showSet123" />
 
+    <GridView
+        android:id="@+id/gridview_lego_sets"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/button_showset123"
+        android:layout_marginTop="19dp"
+        android:numColumns="3" >
+    </GridView>
+
 </RelativeLayout>
