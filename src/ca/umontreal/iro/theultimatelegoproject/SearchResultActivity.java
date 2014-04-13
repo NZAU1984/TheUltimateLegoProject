@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -148,6 +149,7 @@ public class SearchResultActivity extends Activity
 	}
 
 	public class ImageAdapter extends BaseAdapter {
+		private RelativeLayout.LayoutParams rl;
 		@Override
 		public int getCount() {
 			return imageUrls.length;
@@ -169,7 +171,19 @@ public class SearchResultActivity extends Activity
 			View view = convertView;
 			if (view == null) {
 				view = getLayoutInflater().inflate(R.layout.layout_search_result_lego_set, parent, false);
+
 				view.setLayoutParams(new AbsListView.LayoutParams(listView.getColumnWidth(),listView.getColumnWidth()));
+
+				ImageView imageViewFavorite	= (ImageView) view.findViewById(R.id.imageview_favorite);
+
+				if(null == rl)
+				{
+					rl	= new RelativeLayout.LayoutParams(listView.getColumnWidth()/5,listView.getColumnWidth()/5);
+					rl.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+				}
+
+				imageViewFavorite.setLayoutParams(rl);
+
 				holder = new ViewHolder();
 				assert view != null;
 				holder.imageView = (ImageView) view.findViewById(R.id.imageview_image);
