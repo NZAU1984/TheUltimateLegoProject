@@ -42,7 +42,6 @@ public class TulpApplication extends Application
 		if(null == imageLoader)
 		{
 			initImageLoader();
-			initImageLoaderOptions();
 		}
 
 		return imageLoader;
