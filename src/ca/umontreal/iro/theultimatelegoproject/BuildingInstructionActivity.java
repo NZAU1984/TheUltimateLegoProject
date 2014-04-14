@@ -18,9 +18,7 @@ import android.widget.ProgressBar;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 
 /*
@@ -30,13 +28,16 @@ import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
  */
 public class BuildingInstructionActivity extends Activity
 {
+	private TulpApplication		tulpApplication;
 	private String				setId;
+	private ImageLoader			imageLoader;
 	private DisplayImageOptions	options;
 	private LayoutInflater		inflater;
 	private ViewPager			viewPagerBig;
 	private ViewPager			viewPagerThumbnails;
+	private String[]			imagesURL;
+	private int					imagesURLlength;
 	private int					bigPosition	= 0;
-	private int					thumbnailPosition	= 0;
 	private ImageView[]			thumbnailImageViews;
 
 	@Override
@@ -45,15 +46,13 @@ public class BuildingInstructionActivity extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_building_instruction);
 
-		Intent intent	= getIntent();
-		setId			= intent.getStringExtra("set_id");
-		inflater		= (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		options			= new DisplayImageOptions.Builder()
-			.cacheInMemory(true)
-			.imageScaleType(ImageScaleType.IN_SAMPLE_INT)
-			.showImageOnFail(R.drawable.image_error)
-			.build();
-		viewPagerBig	= (ViewPager) findViewById(R.id.viewpager_big);
+		tulpApplication		= (TulpApplication) getApplication();
+		Intent intent		= getIntent();
+		setId				= intent.getStringExtra("set_id");
+		inflater			= (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		imageLoader			= tulpApplication.getImageLoader();
+		options				= tulpApplication.getImageLoaderOptions();
+		viewPagerBig		= (ViewPager) findViewById(R.id.viewpager_big);
 		viewPagerThumbnails	= (ViewPager) findViewById(R.id.viewpager_thumbnail);
 
 		viewPagerBig.setOnPageChangeListener(new OnPageChangeListener()
@@ -74,7 +73,6 @@ public class BuildingInstructionActivity extends Activity
 			public void onPageScrolled(int arg0, float arg1, int arg2)
 			{
 				// TODO Auto-generated method stub
-
 			}
 
 			@Override
@@ -86,22 +84,11 @@ public class BuildingInstructionActivity extends Activity
 		});
 
 
-		String[] temp = new String[]
-				{
-				"http://www.cubiculus.com/images/54516?",
-				"http://www.cubiculus.com/images/54517?",
-				"http://www.cubiculus.com/images/54518?",
-				"http://www.cubiculus.com/images/54519?",
-				"http://www.cubiculus.com/images/54520?",
-				"http://www.cubiculus.com/images/54521?",
-				"http://www.cubiculus.com/images/54522?",
-				"http://www.cubiculus.com/images/54523?",
-				"http://www.cubiculus.com/imaxxxges/54524?",
-				"http://upload.wikimedia.org/wikipedia/commons/8/8d/Perth_skyline_at_night.jpg"
-			};
+		imagesURL		= tulpApplication.getBuildingInstructionImages(setId);
+		imagesURLlength	= imagesURL.length;
 
-		viewPagerBig.setAdapter(new BigBuildingGalleryAdapter(this, temp));
-		viewPagerThumbnails.setAdapter(new ThumbnailBuildingGalleryAdapter(this, temp));
+		viewPagerBig.setAdapter(new BigBuildingGalleryAdapter(this));
+		viewPagerThumbnails.setAdapter(new ThumbnailBuildingGalleryAdapter(this));
 	}
 
 	@Override
@@ -122,7 +109,7 @@ public class BuildingInstructionActivity extends Activity
 		thumbnailImageViews[position].setBackgroundResource(R.drawable.background_building_instruction_gallery_thumbnail);
 	}
 
-	protected void removeBorderToThumbnail(int position)
+	protected void removeBorderFromThumbnail(int position)
 	{
 		if(null == thumbnailImageViews[position])
 		{
@@ -134,25 +121,21 @@ public class BuildingInstructionActivity extends Activity
 
 	protected void updateThumbnailViewPager(int position)
 	{
-		removeBorderToThumbnail(bigPosition + 1);
+		removeBorderFromThumbnail(bigPosition + 1);
 		addBorderToThumbnail(position + 1);
 	}
 
 	class BigBuildingGalleryAdapter extends PagerAdapter
 	{
-		private ImageLoader	imageLoader;
-		private String[] urlImages;
-
-		BigBuildingGalleryAdapter(Context context, String[] argUrlImages)
+		BigBuildingGalleryAdapter(Context context)
 		{
-			imageLoader = ImageLoader.getInstance();
-			imageLoader.init(ImageLoaderConfiguration.createDefault(context));
-			urlImages	= argUrlImages;
+
+
 		}
 		@Override
 		public int getCount()
 		{
-			return urlImages.length;
+			return imagesURLlength;
 		}
 
 		@Override
@@ -170,7 +153,7 @@ public class BuildingInstructionActivity extends Activity
 
 			final ProgressBar spinner	= (ProgressBar) page.findViewById(R.id.progressbar_spinner);
 
-			imageLoader.displayImage(urlImages[position], imgDisp, options, new SimpleImageLoadingListener()
+			imageLoader.displayImage(imagesURL[position], imgDisp, options, new SimpleImageLoadingListener()
 			{
 				@Override
 				public void onLoadingStarted(String imageUri, View view)
@@ -204,12 +187,12 @@ public class BuildingInstructionActivity extends Activity
 
 		@Override public float getPageWidth(int position)
 		{
-			if(1 == urlImages.length)
+			if(1 == imagesURLlength)
 			{
 				return 1f;
 			}
 
-			if(2 == urlImages.length)
+			if(2 == imagesURLlength)
 			{
 				return 0.5f;
 			}
@@ -220,20 +203,15 @@ public class BuildingInstructionActivity extends Activity
 
 	class ThumbnailBuildingGalleryAdapter extends PagerAdapter
 	{
-		private ImageLoader	imageLoader;
-		private String[] urlImages;
-
-		ThumbnailBuildingGalleryAdapter(Context context, String[] argUrlImages)
+		ThumbnailBuildingGalleryAdapter(Context context)
 		{
-			imageLoader = ImageLoader.getInstance();
-			imageLoader.init(ImageLoaderConfiguration.createDefault(context));
-			urlImages	= argUrlImages;
-			thumbnailImageViews	= new ImageView[argUrlImages.length + 1];
+			thumbnailImageViews	= new ImageView[imagesURLlength + 1];
 		}
+
 		@Override
 		public int getCount()
 		{
-			return urlImages.length + 1;
+			return imagesURLlength + 1;
 		}
 
 		@Override
@@ -245,18 +223,13 @@ public class BuildingInstructionActivity extends Activity
 		@Override
 		public Object instantiateItem(ViewGroup container, int position)
 		{
-			//Tools.shortToast(getApplicationContext(), "instant.. " + position);
-			final View page	= inflater.inflate(R.layout.layout_building_gallery_thumbnail, null);
-
-			final ImageView imgDisp	= (ImageView) page.findViewById(R.id.imageview_image);
-
+			final View page					= inflater.inflate(R.layout.layout_building_gallery_thumbnail, null);
+			final ImageView imgDisp			= (ImageView) page.findViewById(R.id.imageview_image);
 			thumbnailImageViews[position]	= imgDisp;
-
-			final ProgressBar spinner	= (ProgressBar) page.findViewById(R.id.progressbar_spinner);
+			final ProgressBar spinner		= (ProgressBar) page.findViewById(R.id.progressbar_spinner);
+			final int finalPosition			= position;
 
 			updateThumbnailViewPager(bigPosition);
-
-			final int finalPosition	= position;
 
 			imgDisp.setOnClickListener(new View.OnClickListener()
 			{
@@ -277,7 +250,7 @@ public class BuildingInstructionActivity extends Activity
 				return page;
 			}
 
-			imageLoader.displayImage(urlImages[position - 1], imgDisp, options, new SimpleImageLoadingListener()
+			imageLoader.displayImage(imagesURL[position - 1], imgDisp, options, new SimpleImageLoadingListener()
 			{
 				@Override
 				public void onLoadingStarted(String imageUri, View view)
@@ -306,7 +279,6 @@ public class BuildingInstructionActivity extends Activity
 		@Override
 		public void destroyItem(ViewGroup container, int position, Object object)
 		{
-			//Tools.shortToast(getApplicationContext(), "destroy " + position);
 			thumbnailImageViews[position]	= null;
 
 			((ViewPager) container).removeView((View) object);
@@ -314,19 +286,17 @@ public class BuildingInstructionActivity extends Activity
 
 		@Override public float getPageWidth(int position)
 		{
-			if(1 == urlImages.length)
+			if(1 == imagesURLlength)
 			{
 				return 1f;
 			}
 
-			if(2 == urlImages.length)
+			if(2 == imagesURLlength)
 			{
 				return 0.5f;
 			}
 
 			return 0.333333333333f;
 		}
-
 	}
-
 }
