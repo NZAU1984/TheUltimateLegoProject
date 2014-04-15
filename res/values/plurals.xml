@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <plurals name="setinfo_nbpieces">
+        <item quantity="zero">((?))</item> <!-- will be ignored ! -->
+        <item quantity="one">%1$d piece</item>
+        <item quantity="other">%d pieces</item>
+    </plurals>
+
+</resources>

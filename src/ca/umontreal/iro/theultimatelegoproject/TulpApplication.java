@@ -73,4 +73,24 @@ public class TulpApplication extends Application
 				"http://upload.wikimedia.org/wikipedia/commons/8/8d/Perth_skyline_at_night.jpg"
 			};
 	}
+
+	public SetInfo getSetInfo(String setId)
+	{
+		Boolean error	= false;
+
+		if(error)
+		{
+			return null;
+		}
+
+		// SetInfo(Context argContext, String argSetId, String argImageURL, String argDescription, int argYear, float argPrice, int argNbPieces)
+		return new SetInfo(
+				getApplicationContext(),
+				"123",
+				"http://www.cubiculus.com/images/507",
+				getApplicationContext().getString(R.string.garbage_lorem_ipsum),
+				2010,
+				56.45,
+				0);
+	}
 }

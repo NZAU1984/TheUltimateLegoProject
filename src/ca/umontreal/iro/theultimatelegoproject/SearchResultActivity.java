@@ -177,14 +177,11 @@ public class SearchResultActivity extends Activity
 			View view = convertView;
 			if (view == null)
 			{
-				view = getLayoutInflater().inflate(
-						R.layout.layout_search_result_lego_set, parent, false);
+				view = getLayoutInflater().inflate(R.layout.layout_search_result_lego_set, parent, false);
 
-				view.setLayoutParams(new AbsListView.LayoutParams(listView
-						.getColumnWidth(), listView.getColumnWidth()));
+				view.setLayoutParams(new AbsListView.LayoutParams(listView.getColumnWidth(), listView.getColumnWidth()));
 
-				ImageView imageViewFavorite = (ImageView) view
-						.findViewById(R.id.imageview_favorite);
+				ImageView imageViewFavorite = (ImageView) view.findViewById(R.id.imageview_favorite);
 
 				if (null == rl)
 				{
