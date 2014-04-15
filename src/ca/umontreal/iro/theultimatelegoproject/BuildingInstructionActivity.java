@@ -99,6 +99,14 @@ public class BuildingInstructionActivity extends Activity
 		return true;
 	}
 
+	@Override
+	public void onBackPressed()
+	{
+		imageLoader.stop();
+
+		super.onBackPressed();
+	}
+
 	protected void addBorderToThumbnail(int position)
 	{
 		if(null == thumbnailImageViews[position])

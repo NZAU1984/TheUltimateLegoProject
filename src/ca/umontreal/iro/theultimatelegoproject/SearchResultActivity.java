@@ -97,6 +97,14 @@ public class SearchResultActivity extends Activity
 		return true;
 	}
 
+	@Override
+	public void onBackPressed()
+	{
+		imageLoader.stop();
+
+		super.onBackPressed();
+	}
+
 	private void initiateButtons()
 	{
 		showSet123 = (Button) findViewById(R.id.button_showset123);

@@ -57,6 +57,14 @@ public class SetInfoActivity extends Activity
 	}
 
 	@Override
+	public void onBackPressed()
+	{
+		tulpApplication.getImageLoader().stop();
+
+		super.onBackPressed();
+	}
+
+	@Override
 	public void onWindowFocusChanged(boolean hasFocus)
 	{
 		super.onWindowFocusChanged(hasFocus);
