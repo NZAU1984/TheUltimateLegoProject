@@ -60,8 +60,28 @@ public class SetInfoActivity extends Activity
 	public void onBackPressed()
 	{
 		tulpApplication.getImageLoader().stop();
-
 		super.onBackPressed();
+	}
+
+	@Override
+	public void onPause()
+	{
+		tulpApplication.getImageLoader().pause();
+		super.onPause();
+	}
+
+	@Override
+	public void onResume()
+	{
+		tulpApplication.getImageLoader().resume();
+		super.onResume();
+	}
+
+	@Override
+	public void onDestroy()
+	{
+		tulpApplication.getImageLoader().stop();
+		super.onDestroy();
 	}
 
 	@Override

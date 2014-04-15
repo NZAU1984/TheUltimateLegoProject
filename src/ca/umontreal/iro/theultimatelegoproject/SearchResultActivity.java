@@ -101,8 +101,28 @@ public class SearchResultActivity extends Activity
 	public void onBackPressed()
 	{
 		imageLoader.stop();
-
 		super.onBackPressed();
+	}
+
+	@Override
+	public void onPause()
+	{
+		imageLoader.pause();
+		super.onPause();
+	}
+
+	@Override
+	public void onResume()
+	{
+		imageLoader.resume();
+		super.onResume();
+	}
+
+	@Override
+	public void onDestroy()
+	{
+		imageLoader.stop();
+		super.onDestroy();
 	}
 
 	private void initiateButtons()

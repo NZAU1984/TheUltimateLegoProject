@@ -9,15 +9,17 @@ import android.widget.Button;
 
 public class MainActivity extends Activity
 {
-
-	private Button searchButton;
-	private Button favoritesButton;
+	TulpApplication	tulpApplication;
+	private Button	searchButton;
+	private Button	favoritesButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		tulpApplication	= (TulpApplication) getApplication();
 
 		initiateButtons();
 	}

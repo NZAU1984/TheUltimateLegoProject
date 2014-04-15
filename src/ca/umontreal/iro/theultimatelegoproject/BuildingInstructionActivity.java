@@ -103,8 +103,28 @@ public class BuildingInstructionActivity extends Activity
 	public void onBackPressed()
 	{
 		imageLoader.stop();
-
 		super.onBackPressed();
+	}
+
+	@Override
+	public void onPause()
+	{
+		imageLoader.pause();
+		super.onPause();
+	}
+
+	@Override
+	public void onResume()
+	{
+		imageLoader.resume();
+		super.onResume();
+	}
+
+	@Override
+	public void onDestroy()
+	{
+		imageLoader.stop();
+		super.onDestroy();
 	}
 
 	protected void addBorderToThumbnail(int position)

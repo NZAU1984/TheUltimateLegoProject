@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 public class TulpApplication extends Application
 {
@@ -34,6 +35,7 @@ public class TulpApplication extends Application
 			.cacheOnDisc(true)
 			.considerExifParams(true)
 			.bitmapConfig(Bitmap.Config.RGB_565)
+			.imageScaleType(ImageScaleType.IN_SAMPLE_INT)
 			.build();
 	}
 
@@ -93,4 +95,18 @@ public class TulpApplication extends Application
 				56.45,
 				0);
 	}
+
+/*	public boolean isOnline() {
+	    ConnectivityManager conMgr = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo netInfo = conMgr.getActiveNetworkInfo();
+
+	    if((netInfo == null) || !netInfo.isConnected() || !netInfo.isAvailable()){
+
+	        return false;
+	    }
+
+	    Toast.makeText(getApplicationContext(), "YES Internet connection!", Toast.LENGTH_LONG).show();
+	return true;
+	}
+	*/
 }
