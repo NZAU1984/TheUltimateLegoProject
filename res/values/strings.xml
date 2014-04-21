@@ -14,7 +14,7 @@
 
     <!-- ## BUTTON TITLES ## -->
     <string name="button_favorites">Favorites</string>
-    <string name="button_search">Search</string>
+    <string name="button_search_acceuil">Search</string>
     <string name="button_show_building_instructions">Show building instructions</string>
     
     <!--  ## SET INFO ## -->
@@ -36,5 +36,18 @@ Praesent id nibh scelerisque, ornare purus eget, pulvinar nulla. Pellentesque ha
 Etiam ultricies elementum arcu, in volutpat dui condimentum id. Sed at faucibus massa, ac blandit magna. Nunc interdum porta risus a tincidunt. Pellentesque ac aliquet diam. Phasellus nec scelerisque purus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aenean dictum eu nisi nec posuere. Aliquam tempor, felis eu laoreet interdum, nisl odio commodo sapien, placerat rhoncus libero velit venenatis elit. Etiam a metus risus. Quisque scelerisque quam quis tincidunt volutpat. Etiam eleifend libero in velit luctus, in scelerisque risus dapibus. Ut sodales sem rhoncus felis fermentum lacinia. Nunc imperdiet ullamcorper nibh in ullamcorper.\n
 \n
 Integer non felis in libero malesuada hendrerit. Donec sed leo laoreet, iaculis lorem vel, egestas nulla. Phasellus vitae auctor erat, ac venenatis augue. Aenean vestibulum, lorem in consectetur eleifend, diam libero dignissim quam, malesuada lacinia tellus tellus sed est. Vivamus feugiat adipiscing neque, eu ultricies diam adipiscing vitae. Nulla vel mi eu nibh mollis tincidunt. Fusce auctor, dui sed sodales bibendum, dui sapien congue nibh, sed facilisis massa lectus sed erat. Donec facilisis ligula ac mauris sodales tincidunt.</string>
+   
+    
+    <!--  ## SearchActivity strings ## -->
+    <string name="search_field">bbb Type de set recherchés...</string>
+    <string name="search_number_of_pieces">Number of pieces: %d</string>
+    <string name="search_select_year_range">Select year range...</string>
+    <string name="search_select_price_range">Select price range...</string>
+    
+    <!-- ## Color ## -->
+    <string name="button_search">Search</string>
+    <string name="piece_maximum_text">aaa Nombre de pièces maximum : 3000</string>
+    
+    
 
 </resources>
