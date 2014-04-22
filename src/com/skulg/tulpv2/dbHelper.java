@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 public class dbHelper extends SQLiteOpenHelper{
 	SQLiteDatabase db ;
-	static final int VERSION=8;
+	static final int VERSION=11;
 
 	//Tables Names
 	static final String LEGOSETS_TABLE_NAME = "LegoSets";
@@ -228,6 +228,77 @@ public class dbHelper extends SQLiteOpenHelper{
 	public Cursor getAllBuildingInstructions() {
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor cursor =db.query(BUILDING_INSTRUCTIONS_TABLE_NAME, null, null, null, null, null, null);
+		return cursor;
+	}
+	
+	public Cursor search(String keywords , String minPrice , String maxPrice , String minYear , String maxYear , String minPieces , String maxPieces  ){
+		SQLiteDatabase db = this.getReadableDatabase();
+		String keywordsSqlPart ="";
+		String minPriceSqlPart ="";
+		String maxPriceSqlPart ="";
+		String minPiecesSqlPart="";
+		String maxPiecesSqlPart="";
+		String minYearSqlPart="";
+		String maxYearSqlPart="";
+		boolean firstPart = true;
+		
+		if (keywords!=null){	
+			if (!firstPart){
+				keywordsSqlPart = keywordsSqlPart + " AND ";
+			}	
+			keywordsSqlPart = keywordsSqlPart+ LEGOSETS_DESCRIPTION_COLUMN+" like '%" + keywords +"%'";  
+			firstPart=false;
+		}
+
+		if (minPrice!=null){
+			if (!firstPart){
+				minPriceSqlPart = minPriceSqlPart + " AND ";
+			}
+			minPriceSqlPart =minPriceSqlPart+LEGOSETS_PRICE_COLUMN + ">="+minPrice;
+			firstPart = false;
+		}
+		if (maxPrice!=null){
+			if (!firstPart){
+				maxPriceSqlPart = maxPriceSqlPart + " AND ";
+			}
+			maxPriceSqlPart = maxPriceSqlPart + LEGOSETS_PRICE_COLUMN + "<="+maxPrice;
+			firstPart = false;
+		}
+		
+		if (minPieces!=null){
+			if (!firstPart){
+				minPiecesSqlPart = minPiecesSqlPart + " AND ";
+			}
+			minPiecesSqlPart = minPiecesSqlPart + LEGOSETS_PIECES_COLUMN + ">="+minPieces;
+			firstPart = false;
+		}
+		
+		if (maxPieces!=null){
+			if (!firstPart){
+				maxPiecesSqlPart = maxPiecesSqlPart + " AND ";
+			}
+			maxPiecesSqlPart = maxPiecesSqlPart + LEGOSETS_PIECES_COLUMN + "<="+maxPieces;
+			firstPart = false;
+		}
+		
+		
+		
+		if (minYear!=null){
+			if (!firstPart){
+				minYearSqlPart = minYearSqlPart + " AND ";
+			}
+			minYearSqlPart = minYearSqlPart + LEGOSETS_RELEASED_COLUMN + ">="+minYear;
+			firstPart = false;
+		}
+		
+		if (maxYear!=null){
+			if (!firstPart){
+				maxYearSqlPart = maxYearSqlPart + " AND ";
+			}
+			maxYearSqlPart = maxYearSqlPart + LEGOSETS_RELEASED_COLUMN + "<="+maxYear;
+			firstPart = false;
+		}
+		Cursor cursor =db.query(LEGOSETS_TABLE_NAME, null, keywordsSqlPart+ minPriceSqlPart + maxPriceSqlPart +minPiecesSqlPart + maxPiecesSqlPart + minYearSqlPart + maxYearSqlPart, null, null, null, null);
 		return cursor;
 	}
 }

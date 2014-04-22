@@ -12,13 +12,13 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import android.content.Context;
 import android.os.AsyncTask;
 
-public abstract class TulpAPIHandler extends AsyncTask<String, String, String> {
+public abstract class TulpAPICaller extends AsyncTask<String, String, String> {
 	protected static final String GET_LEGO_SET_URL = "http://www.cubiculus.com/api-rest/lego-set/";
 	protected static final String API_KEY = "fchi4855j4iqah1c5v7mr28publlbp05dhe7fk3cjtbgaltglj88l6labhe9u8t6";
 	protected static final String GET_ALL_BUILDINGS_INSTRUCTIONS_URL ="http://www.cubiculus.com/api-rest/building-instruction/"+API_KEY;
 	Context context;
 	dbHelper dbh;
-	public TulpAPIHandler(Context context , dbHelper dbh) {
+	public TulpAPICaller(Context context , dbHelper dbh) {
 		super();
 		this.context=context;
 		this.dbh=dbh;

@@ -21,14 +21,14 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
-public class LegoSetsApiCaller extends TulpAPIHandler {
-	
+public class LegoSetsApiCaller extends TulpAPICaller {
+
 	int buildingInstructionId;
 	public LegoSetsApiCaller(Context context , dbHelper dbh) {
 		super(context , dbh);
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public LegoSetsApiCaller(Context context , int buildingInstructionId, dbHelper dbh) {
 		super(context,dbh);
 		this.buildingInstructionId=buildingInstructionId;
@@ -47,20 +47,27 @@ public class LegoSetsApiCaller extends TulpAPIHandler {
 				JSONArray jsArraySet = new JSONArray(jsonSet);
 				for (int j=0 ; j<jsArraySet.length(); j++){
 					JSONObject currentJsonLegoSet = jsArraySet.getJSONObject(j);
-					
+
 					//Parsing info from json
+
 					String name = currentJsonLegoSet.getString("name");
 					int boxNumber = currentJsonLegoSet.getInt("boxNo");
 					String description = currentJsonLegoSet.getString("description");
 					String imageUrl = currentJsonLegoSet.getString("imageUrl");
 					String modelName = currentJsonLegoSet.getString("legoModelName");
-					int nbPieces = currentJsonLegoSet.getInt("pieces") ;
-					double price = currentJsonLegoSet.getDouble("price"); 
-					int released = currentJsonLegoSet.getInt("released"); 
-					
+					int nbPieces=0;
+					if (!currentJsonLegoSet.isNull("pieces")){
+						nbPieces = currentJsonLegoSet.getInt("pieces");
+					}
+					double price =0;
+					if (!currentJsonLegoSet.isNull("price")){						
+						price = currentJsonLegoSet.getDouble("price"); 
+					}
+					int released =0;
+					if(!currentJsonLegoSet.isNull("released")){	
+						released = currentJsonLegoSet.getInt("released"); 					
+					}
 					Log.d("TULP","SetName: "+name);
-					
-					
 					dbh.insertLegoSets(description, boxNumber, imageUrl, name, modelName, nbPieces, price, released);
 				}
 			} catch (ClientProtocolException e) {

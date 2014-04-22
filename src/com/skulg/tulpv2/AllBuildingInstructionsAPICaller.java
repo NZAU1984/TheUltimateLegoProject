@@ -16,12 +16,12 @@ import android.text.TextUtils;
 import android.util.Log;
 
 
-public class BuildingInstructionsAPIHandler extends TulpAPIHandler  {
+public class AllBuildingInstructionsAPICaller extends TulpAPICaller  {
 
 	// Sera null s'il n'y a pas d'erreur
 	String erreur;
 
-	BuildingInstructionsAPIHandler(Context context , dbHelper dbh){
+	AllBuildingInstructionsAPICaller(Context context , dbHelper dbh){
 		super(context , dbh);
 	}
 
@@ -38,9 +38,27 @@ public class BuildingInstructionsAPIHandler extends TulpAPIHandler  {
 				int idInstruction = currentJsonBuildingInstuction.getInt("idInstruction");
 				String buildingInstuctionsName = currentJsonBuildingInstuction.getString("name");
 				String shortcutPicture = currentJsonBuildingInstuction.getString("shortcutPicture");
-				JSONArray stepgroups = currentJsonBuildingInstuction.getJSONArray("stepGroups");
+				JSONArray stepgroups;
+				try {
+					 stepgroups = currentJsonBuildingInstuction.getJSONArray("stepGroups");
+					 Log.d("TULP", "FOUND A STEPGROUP");
+				}catch (JSONException e) {
+					erreur = "Erreur JSON :"+e.getMessage();
+					e.printStackTrace();
+				}
 				Log.d("TULP","Instructions name :"+ buildingInstuctionsName);
 				Log.d("TULP","Instructions description :"+ buildingInstructionsDescription);
+				/*
+				for (int j=0 ; j<stepgroups.length(); j++){
+					JSONObject currentStepGroup = stepgroups.getJSONObject(j);			
+					String name = currentStepGroup.getString("name");
+					JSONArray filenames = currentStepGroup.getJSONArray("filenames");
+					for (int k=0 ; k<filenames.length(); k++){
+						Log.d("TULP","Filename :"+ filenames.getJSONObject(k));
+					}
+						
+				}
+				*/
 				
 				this.dbh.insertBuildingInstructions(idInstruction,buildingInstructionsDescription, shortcutPicture, buildingInstuctionsName);				
 				if (TextUtils.isDigitsOnly(buildingInstuctionsName)){
@@ -50,12 +68,16 @@ public class BuildingInstructionsAPIHandler extends TulpAPIHandler  {
 
 		} catch (ClientProtocolException e) {
 			erreur = "Erreur HTTP (protocole) :"+e.getMessage();
+			e.printStackTrace();
 		} catch (IOException e) {
 			erreur = "Erreur HTTP (IO) :"+e.getMessage();
+			e.printStackTrace();
 		} catch (ParseException e) {
 			erreur = "Erreur JSON (parse) :"+e.getMessage();
+			e.printStackTrace();
 		} catch (JSONException e) {
 			erreur = "Erreur JSON :"+e.getMessage();
+			e.printStackTrace();
 		}
 		return "Success";
 	}
