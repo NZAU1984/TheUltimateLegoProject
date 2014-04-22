@@ -34,7 +34,7 @@ public class MainActivity extends Activity
 
 	private void initiateButtons()
 	{
-		searchButton = (Button) findViewById(R.id.button_search1);
+		searchButton = (Button) findViewById(R.id.button_search_acceuil);
 		favoritesButton = (Button) findViewById(R.id.button_favorites);
 
 		searchButton.setOnClickListener(new View.OnClickListener()
