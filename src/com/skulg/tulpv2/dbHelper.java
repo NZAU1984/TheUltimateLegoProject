@@ -5,13 +5,14 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.style.BulletSpan;
 import android.util.Log;
 import android.widget.Toast;
 
 
 public class dbHelper extends SQLiteOpenHelper{
 	SQLiteDatabase db ;
-	static final int VERSION=11;
+	static final int VERSION=15;
 
 	//Tables Names
 	static final String LEGOSETS_TABLE_NAME = "LegoSets";
@@ -20,6 +21,7 @@ public class dbHelper extends SQLiteOpenHelper{
 	static final String INSTRUCTION_IMAGES_TABLE_NAME = "InstructionsImages";
 	static final String STEP_GROUP_INSTRUCTIONS_LINK_TABLE_NAME = "StepGroupInstructionsLink";
 	static final String STEP_GROUP_IMAGES_LINK_TABLE_NAME = "StepGroupImagesLink";
+	static final String IMAGES_TABLE_NAME = "Images";
 
 
 	//Shared Columns
@@ -58,6 +60,10 @@ public class dbHelper extends SQLiteOpenHelper{
 	static final String  STEP_GROUP_IMAGES_STEP_GROUP_ID_COLUMN = "stepGroupId";
 	static final String  STEP_GROUP_IMAGES_IMAGE_ID_COLUMN = "imageId";
 
+	// IMAGES COLUMN NAME
+	static final String  IMAGE_URL_COLUMN= "url";
+	
+	
 	Context context;	
 
 
@@ -116,6 +122,12 @@ public class dbHelper extends SQLiteOpenHelper{
 				+ STEP_GROUP_IMAGES_IMAGE_ID_COLUMN  + " integer"
 				+ ")";		
 		db.execSQL(sql);
+		
+		sql = "create table " + IMAGES_TABLE_NAME + " ("
+				+ KEY_ID +" integer primary key AUTOINCREMENT, "
+				+ IMAGE_URL_COLUMN  + " text"
+				+ ")";		
+		db.execSQL(sql);
 
 	}
 
@@ -137,6 +149,8 @@ public class dbHelper extends SQLiteOpenHelper{
 		db.execSQL("drop table if exists "+STEP_GROUP_TABLE_NAME);
 		db.execSQL("drop table if exists "+STEP_GROUP_IMAGES_LINK_TABLE_NAME);
 		db.execSQL("drop table if exists "+STEP_GROUP_INSTRUCTIONS_LINK_TABLE_NAME);
+		db.execSQL("drop table if exists "+IMAGES_TABLE_NAME);
+		
 	}
 
 	protected void insertLegoSets( String description , int boxNumber ,String imageUrl ,String name ,String modelName ,int nbPieces ,double price ,int released){
@@ -179,17 +193,19 @@ public class dbHelper extends SQLiteOpenHelper{
 		db.close();
 	}
 
-	protected void insertStepGroup( String name ){
+	protected long insertStepGroup( String name ){
+		long resultId = -1;
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues val = new ContentValues();
 		val.clear();
 		val.put(STEP_GROUP_NAME_COLUMN,name);
 		try {
-			db.insertOrThrow(STEP_GROUP_TABLE_NAME, null,val);
+			resultId=db.insertOrThrow(STEP_GROUP_TABLE_NAME, null,val);
 		} catch ( SQLException e ) {
 			Log.d("DBHelper", "Erreur BDD: " + e.getMessage());
 		}
 		db.close();
+		return resultId;
 	}
 	protected void insertStepGroupImageLink( int imageId,int stepGroupId ){
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -218,6 +234,22 @@ public class dbHelper extends SQLiteOpenHelper{
 		}
 		db.close();
 	}
+	
+	protected long insertImages( String url ){
+		long resultId=-1;
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues val = new ContentValues();
+		val.clear();
+		val.put(IMAGE_URL_COLUMN,url);
+		try {
+			resultId=db.insertOrThrow(IMAGES_TABLE_NAME, null,val);
+		} catch ( SQLException e ) {
+			Log.d("DBHelper", "Erreur BDD: " + e.getMessage());
+		}
+		db.close();
+		return resultId;
+	}
+	
 	public Cursor getAllLegoSets() {
 		//String selectQuery = "SELECT  * FROM "+LEGOSETS_TABLE_NAME+ " ;";
 		SQLiteDatabase db = this.getReadableDatabase();
@@ -230,6 +262,21 @@ public class dbHelper extends SQLiteOpenHelper{
 		Cursor cursor =db.query(BUILDING_INSTRUCTIONS_TABLE_NAME, null, null, null, null, null, null);
 		return cursor;
 	}
+	public Cursor getBuildingInstructionsInfo(String setId) {
+		SQLiteDatabase db = this.getReadableDatabase();
+		Cursor cursor =db.query(BUILDING_INSTRUCTIONS_TABLE_NAME, null, BUILDING_INSTRUCTIONS_NAME_COLUMN + "="+ setId, null, null, null, null);
+		return cursor;
+	}
+	//NOT TESTED YET
+	public Cursor getBuildingInstructionsImages(String setId) {
+		SQLiteDatabase db = this.getReadableDatabase();
+		String sql = "Select "+IMAGE_URL_COLUMN +" from " +IMAGES_TABLE_NAME +" , " + STEP_GROUP_IMAGES_LINK_TABLE_NAME + " , " + STEP_GROUP_INSTRUCTIONS_LINK_TABLE_NAME + " , " + INSTRUCTION_IMAGES_TABLE_NAME + " , "+ BUILDING_INSTRUCTIONS_TABLE_NAME + "where " + setId + "=" + BUILDING_INSTRUCTIONS_NAME_COLUMN + " AND " + BUILDING_INSTRUCTIONS_TABLE_NAME+"."+KEY_ID +" = " +STEP_GROUP_INSTRUCTIONS_INSTRUCTIONS_ID_COLUMN   + " AND " + STEP_GROUP_IMAGES_IMAGE_ID_COLUMN + " = " + IMAGES_TABLE_NAME+"."+KEY_ID;
+		Cursor cursor =db.rawQuery(sql, null);
+		return cursor;
+	}
+	
+	
+	
 	
 	public Cursor search(String keywords , String minPrice , String maxPrice , String minYear , String maxYear , String minPieces , String maxPieces  ){
 		SQLiteDatabase db = this.getReadableDatabase();

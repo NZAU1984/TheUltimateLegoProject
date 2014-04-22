@@ -33,6 +33,13 @@ public class AllBuildingInstructionsAPICaller extends TulpAPICaller  {
 			String json = EntityUtils.toString(buildingInstructionsPage, HTTP.UTF_8);
 			JSONArray jsArrayBuildingInstructions = new JSONArray(json);
 			for (int i=0 ; i<jsArrayBuildingInstructions.length(); i++){
+				new SpecificBuildingInstructionsAPICaller(context, dbh, i+"").execute();
+				/*
+				 * All this will be replaced by SpecificBuildingInstructionsAPICall
+				 
+				
+				
+				
 				JSONObject currentJsonBuildingInstuction = jsArrayBuildingInstructions.getJSONObject(i);			
 				String buildingInstructionsDescription =currentJsonBuildingInstuction.getString("description");
 				int idInstruction = currentJsonBuildingInstuction.getInt("idInstruction");
@@ -48,6 +55,10 @@ public class AllBuildingInstructionsAPICaller extends TulpAPICaller  {
 				}
 				Log.d("TULP","Instructions name :"+ buildingInstuctionsName);
 				Log.d("TULP","Instructions description :"+ buildingInstructionsDescription);
+				
+				
+				
+				
 				/*
 				for (int j=0 ; j<stepgroups.length(); j++){
 					JSONObject currentStepGroup = stepgroups.getJSONObject(j);			
@@ -58,12 +69,13 @@ public class AllBuildingInstructionsAPICaller extends TulpAPICaller  {
 					}
 						
 				}
-				*/
+				
 				
 				this.dbh.insertBuildingInstructions(idInstruction,buildingInstructionsDescription, shortcutPicture, buildingInstuctionsName);				
 				if (TextUtils.isDigitsOnly(buildingInstuctionsName)){
 					new LegoSetsApiCaller(this.context , this.dbh).execute(buildingInstuctionsName);					
 				}
+				*/
 			}
 
 		} catch (ClientProtocolException e) {

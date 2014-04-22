@@ -14,7 +14,7 @@ import android.os.AsyncTask;
 
 public abstract class TulpAPICaller extends AsyncTask<String, String, String> {
 	protected static final String GET_LEGO_SET_URL = "http://www.cubiculus.com/api-rest/lego-set/";
-	protected static final String API_KEY = "fchi4855j4iqah1c5v7mr28publlbp05dhe7fk3cjtbgaltglj88l6labhe9u8t6";
+	protected static final String API_KEY = "75mbg89mmad8as06fvc3kq9fl91t1b6j67ihou4cmq9l4830222gco2qnaffjqtf";
 	protected static final String GET_ALL_BUILDINGS_INSTRUCTIONS_URL ="http://www.cubiculus.com/api-rest/building-instruction/"+API_KEY;
 	Context context;
 	dbHelper dbh;
