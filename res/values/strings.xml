@@ -25,6 +25,7 @@
     <string name="garbage_showSet123">Show set 123 (in favorites)</string>
     <string name="garbage_infoForSet">Showing info for set %s</string>
     <string name="garbage_buildingInstructionsForSet">Building instructions for set %s</string>
+    <string name="garbage_lorem_ipsum">Lorem ipsum ...</string>
     
     
     <!--  ## SearchActivity strings ## -->
