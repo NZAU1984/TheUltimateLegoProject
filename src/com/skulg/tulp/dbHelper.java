@@ -1,4 +1,4 @@
-package com.skulg.tulpv2;
+package com.skulg.tulp;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 public class dbHelper extends SQLiteOpenHelper{
 	SQLiteDatabase db ;
-	static final int VERSION=15;
+	static final int VERSION=18;
 
 	//Tables Names
 	static final String LEGOSETS_TABLE_NAME = "LegoSets";
@@ -62,6 +62,7 @@ public class dbHelper extends SQLiteOpenHelper{
 
 	// IMAGES COLUMN NAME
 	static final String  IMAGE_URL_COLUMN= "url";
+	static final String IMAGE_INSTRUCTIONSID_COLUMN = "instructionsId";
 	
 	
 	Context context;	
@@ -109,23 +110,24 @@ public class dbHelper extends SQLiteOpenHelper{
 				+ KEY_ID +" integer primary key AUTOINCREMENT, "
 				+ INSTRUCTION_IMAGES_URL_COLUMN  + " text"
 				+ ")";		
-		db.execSQL(sql);
+		//db.execSQL(sql);
 		sql = "create table " + STEP_GROUP_INSTRUCTIONS_LINK_TABLE_NAME + " ("
 				+ KEY_ID +" integer primary key AUTOINCREMENT , "
 				+ STEP_GROUP_INSTRUCTIONS_STEP_GROUP_ID_COLUMN  + " integer,"
 				+ STEP_GROUP_INSTRUCTIONS_INSTRUCTIONS_ID_COLUMN  + " integer"
 				+ ")";		
-		db.execSQL(sql);
+		//db.execSQL(sql);
 		sql = "create table " + STEP_GROUP_IMAGES_LINK_TABLE_NAME + " ("
 				+ KEY_ID +" integer primary key AUTOINCREMENT, "
 				+ STEP_GROUP_IMAGES_STEP_GROUP_ID_COLUMN  + " integer,"
 				+ STEP_GROUP_IMAGES_IMAGE_ID_COLUMN  + " integer"
 				+ ")";		
-		db.execSQL(sql);
+		//db.execSQL(sql);
 		
 		sql = "create table " + IMAGES_TABLE_NAME + " ("
 				+ KEY_ID +" integer primary key AUTOINCREMENT, "
-				+ IMAGE_URL_COLUMN  + " text"
+				+ IMAGE_URL_COLUMN  + " text,"
+				+ IMAGE_INSTRUCTIONSID_COLUMN + " integer"
 				+ ")";		
 		db.execSQL(sql);
 
@@ -235,12 +237,13 @@ public class dbHelper extends SQLiteOpenHelper{
 		db.close();
 	}
 	
-	protected long insertImages( String url ){
+	protected long insertImages( String url , int instructionId ){
 		long resultId=-1;
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues val = new ContentValues();
 		val.clear();
 		val.put(IMAGE_URL_COLUMN,url);
+		val.put(IMAGE_INSTRUCTIONSID_COLUMN,instructionId);
 		try {
 			resultId=db.insertOrThrow(IMAGES_TABLE_NAME, null,val);
 		} catch ( SQLException e ) {
@@ -270,7 +273,8 @@ public class dbHelper extends SQLiteOpenHelper{
 	//NOT TESTED YET
 	public Cursor getBuildingInstructionsImages(String setId) {
 		SQLiteDatabase db = this.getReadableDatabase();
-		String sql = "Select "+IMAGE_URL_COLUMN +" from " +IMAGES_TABLE_NAME +" , " + STEP_GROUP_IMAGES_LINK_TABLE_NAME + " , " + STEP_GROUP_INSTRUCTIONS_LINK_TABLE_NAME + " , " + INSTRUCTION_IMAGES_TABLE_NAME + " , "+ BUILDING_INSTRUCTIONS_TABLE_NAME + "where " + setId + "=" + BUILDING_INSTRUCTIONS_NAME_COLUMN + " AND " + BUILDING_INSTRUCTIONS_TABLE_NAME+"."+KEY_ID +" = " +STEP_GROUP_INSTRUCTIONS_INSTRUCTIONS_ID_COLUMN   + " AND " + STEP_GROUP_IMAGES_IMAGE_ID_COLUMN + " = " + IMAGES_TABLE_NAME+"."+KEY_ID;
+		String sql = "Select "+IMAGE_URL_COLUMN +" from " +IMAGES_TABLE_NAME +" , " + BUILDING_INSTRUCTIONS_TABLE_NAME + " where " + setId + " = " + BUILDING_INSTRUCTIONS_NAME_COLUMN + " AND " + BUILDING_INSTRUCTIONS_TABLE_NAME+"."+KEY_ID +" = " +IMAGE_INSTRUCTIONSID_COLUMN ;
+		Log.d("TULP","Content of sql :"+ sql);
 		Cursor cursor =db.rawQuery(sql, null);
 		return cursor;
 	}

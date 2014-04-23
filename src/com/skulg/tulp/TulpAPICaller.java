@@ -1,4 +1,4 @@
-package com.skulg.tulpv2;
+package com.skulg.tulp;
 
 import java.io.IOException;
 
