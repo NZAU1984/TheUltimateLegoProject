@@ -13,28 +13,19 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.Spinner;
 
 public class SearchActivity extends Activity
 {
 
-	private EditText searchBox;
-	private EditText pieceText;
+	private EditText searchBox, anneeMinBox, anneeMaxBox, prixMinBox, prixMaxBox, pieceMinBox, pieceMaxBox;
+	private String searchText;
+	private int anneeMin, anneeMax, prixMin, prixMax, pieceMin, pieceMax;
 	private Button searchGo;
 	private static ArrayList<String> historique;
 
-	private String[] tableauAnnee = new String[]{"","1970 - 1980","1980 - 1990","1990 - 2000","2000 - 2010","> 2010"};
-	private String[] tableauPrix = new String[]{"","0-50","50-100","100-150","150-200",">200"};
-
-	private int anneeSelectPosition;
-	private int prixSelectPosition;
-	private String searchText;
-	private int piecesMaximum;
+	
 
 
 	@Override
@@ -43,46 +34,18 @@ public class SearchActivity extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search);
 
-		tableauAnnee[0]	= getApplicationContext().getString(R.string.search_select_year_range);
-		tableauPrix[0]	= getApplicationContext().getString(R.string.search_select_price_range);
 		// Show the Up button in the action bar.
 		setupActionBar();
+		
+		initiateButton();
+		initiateEditTexts();
 
-		initiateComponents();
-
-
-	}
-
-	/* � d�beug�
-	@Override
-	public void onStop(){
-
-		historique.add(
-		((searchText==null)?"":searchText) + ";" + this.getAnnee() + ";" + this.getPrix() + ";" + this.getPiecesMax());
-	}
- 	*/
-
-	private void initiateComponents(){
-
-				//boutton de recherche
-				initiateButton();
-
-				//Barre de recherche
-				initiateEditText();
-
-				//menu d�roulant ann�e
-				initiateSpinnerAnnee();
-
-				//menu d�roulant prix
-				initiateSpinnerPrix();
-
-				//Seek Bar nombre de pi�ces
-				initiateSeekBar();
-
-				//Formule la demande sql
-				//toSqlDemand();
 
 	}
+
+	
+
+
 
 
 	/**
@@ -139,7 +102,7 @@ public class SearchActivity extends Activity
 
 	private void initiateButton()
 	{
-		searchGo = (Button) findViewById(R.id.button_search);
+		searchGo = (Button)findViewById(R.id.button_search);
 
 		searchGo.setOnClickListener(new View.OnClickListener()
 		{
@@ -154,10 +117,11 @@ public class SearchActivity extends Activity
 	}
 
 
-	private void initiateEditText() {
+	private void initiateEditTexts() {
+		
+		//KeyWord EditText
 
 		searchBox = (EditText)findViewById(R.id.searchBox);
-
 		 TextWatcher textWatcher = new TextWatcher(){
 
 			    @Override
@@ -173,95 +137,134 @@ public class SearchActivity extends Activity
 			    	searchText = s.toString();
 			    }
 		};
-
 		searchBox.addTextChangedListener(textWatcher);
 
-	}
+		
+		//anne_min EditText
 
+		anneeMinBox = (EditText)findViewById(R.id.annee_min_search);
+		 TextWatcher textWatcher2 = new TextWatcher(){
 
-	private void initiateSpinnerAnnee(){
+			    @Override
+			    public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
+			    @Override
+			    public void beforeTextChanged(CharSequence s, int start, int count,
+			      int after) {}
 
-		final Spinner spinnerAnnee = (Spinner)findViewById(R.id.spinnerAnnee);
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,tableauAnnee);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			    @Override
+			    public void afterTextChanged(Editable s) {
 
-		spinnerAnnee.setAdapter(adapter);
-		spinnerAnnee.setEnabled(true);
-
-		anneeSelectPosition = spinnerAnnee.getSelectedItemPosition();
-
-	}
-
-
-	private void initiateSpinnerPrix(){
-
-		final Spinner spinnerPrix = (Spinner)findViewById(R.id.spinnerPrix);
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,tableauPrix);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-		spinnerPrix.setAdapter(adapter);
-		spinnerPrix.setEnabled(true);
-
-		prixSelectPosition = spinnerPrix.getSelectedItemPosition();
-
-	}
-
-
-	private void initiateSeekBar(){
-
-		final SeekBar seekBar = (SeekBar)findViewById(R.id.seekBar);
-		pieceText = (EditText)findViewById(R.id.nombre_pieces_text);
-
-		//on ne modifi pas ce champ manuellement, il s'adapte � la seekBar
-		pieceText.setClickable(false);
-
-		seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-
-			//La barre va de 0 � 100, j'ai multipli� par 30 sans vraiment savoir si 3000 �tait le nombre de pi�ces maximum
-	        @Override
-			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-	            //pieceText.setText("Nombres de pi�ces maximum :" + (seekBar.getProgress()*30));
-	        	int numberOfPieces	= seekBar.getProgress() * 30;
-	        	pieceText.setText(String.format(getApplicationContext().getString(R.string.search_number_of_pieces), numberOfPieces));
-	        }
-
-	        @Override
-			public void onStartTrackingTouch(SeekBar seekBar) {
-
-	        }
-
-	        @Override
-			public void onStopTrackingTouch(SeekBar seekBar) {
-	        	piecesMaximum = seekBar.getProgress()*30;
-	        }});
-	}
-
-	public ArrayList<String> getHistorique(){
-		return SearchActivity.historique;
-	}
-
-	public String getAnnee(){
-
-		String temp="";
-		if(anneeSelectPosition!=0){
-			temp = tableauAnnee[anneeSelectPosition];
+			    	anneeMin = Integer.parseInt(s.toString());
+			    }
 		};
-		return temp;
-	}
+		anneeMinBox.addTextChangedListener(textWatcher2);
 
-	public String getPrix(){
+		//annee_max EditText
 
-		String temp="";
-		if(prixSelectPosition!=0){
-			temp = tableauPrix[prixSelectPosition];
+		anneeMaxBox = (EditText)findViewById(R.id.annee_max_search);
+		 TextWatcher textWatcher3 = new TextWatcher(){
+
+			    @Override
+			    public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+			    @Override
+			    public void beforeTextChanged(CharSequence s, int start, int count,
+			      int after) {}
+
+			    @Override
+			    public void afterTextChanged(Editable s) {
+
+			    	anneeMax = Integer.parseInt(s.toString());
+			    }
 		};
-		return temp;
+		anneeMaxBox.addTextChangedListener(textWatcher3);
+
+		//prix_min EditText
+
+		prixMinBox = (EditText)findViewById(R.id.prix_min_search);
+		 TextWatcher textWatcher4 = new TextWatcher(){
+
+			    @Override
+			    public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+			    @Override
+			    public void beforeTextChanged(CharSequence s, int start, int count,
+			      int after) {}
+
+			    @Override
+			    public void afterTextChanged(Editable s) {
+
+			    	prixMin = Integer.parseInt(s.toString());
+			    }
+		};
+		prixMinBox.addTextChangedListener(textWatcher4);
+
+		//prix_max EditText
+
+		prixMaxBox = (EditText)findViewById(R.id.prix_max_search);
+		 TextWatcher textWatcher5 = new TextWatcher(){
+
+			    @Override
+			    public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+			    @Override
+			    public void beforeTextChanged(CharSequence s, int start, int count,
+			      int after) {}
+
+			    @Override
+			    public void afterTextChanged(Editable s) {
+
+			    	prixMax = Integer.parseInt(s.toString());
+			    }
+		};
+		prixMaxBox.addTextChangedListener(textWatcher5);
+
+		//piece_min EditText
+
+		pieceMinBox = (EditText)findViewById(R.id.piece_min_search);
+		 TextWatcher textWatcher6 = new TextWatcher(){
+
+			    @Override
+			    public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+			    @Override
+			    public void beforeTextChanged(CharSequence s, int start, int count,
+			      int after) {}
+
+			    @Override
+			    public void afterTextChanged(Editable s) {
+
+			    	pieceMin = Integer.parseInt(s.toString());
+			    }
+		};
+		pieceMinBox.addTextChangedListener(textWatcher6);
+
+
+		//piece_max EditText
+
+		pieceMaxBox = (EditText)findViewById(R.id.piece_max_search);
+		 TextWatcher textWatcher7 = new TextWatcher(){
+
+			    @Override
+			    public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+			    @Override
+			    public void beforeTextChanged(CharSequence s, int start, int count,
+			      int after) {}
+
+			    @Override
+			    public void afterTextChanged(Editable s) {
+
+			    	pieceMax = Integer.parseInt(s.toString());
+			    }
+		};
+		pieceMaxBox.addTextChangedListener(textWatcher7);
 	}
 
-	public String getPiecesMax(){
-		return (""+piecesMaximum);
-	}
+
+
+	
 
 //	private void toSqlDemand(){}
 

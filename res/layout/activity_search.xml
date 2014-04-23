@@ -1,118 +1,159 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" 
+    android:orientation="vertical"
     android:background="@drawable/red_background">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"  >
-        
-        
-
+    <LinearLayout 
+    	android:layout_width="fill_parent"
+    	android:layout_height="fill_parent"
+    	android:orientation="vertical"  
+    	android:padding="@dimen/linear_padding_side"  >
+    	
         <EditText
-          	android:background="@drawable/button_custom"
-			
-			android:textColor="@color/black"
-			android:textSize="@dimen/text_size"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:gravity="center"
-            
             android:id="@+id/searchBox"
             android:hint="@string/search_field" 
-            android:layout_gravity="center_horizontal" 
-            
-            android:layout_marginTop="@dimen/vertical_seperate_item"
-            android:layout_marginBottom="@dimen/vertical_seperate_item"
-            android:layout_marginLeft="@dimen/horizontal_seperate_item"
-            android:layout_marginRight="@dimen/horizontal_seperate_item" />
-        
-        <Spinner
-            android:background="@drawable/button_custom"
-			android:textColor="@color/black"
-			android:textSize="@dimen/text_size"
-			
-            android:id="@+id/spinnerPrix"
-            android:text="@string/button_search"
+            style="@style/EditText" />
+	
+        <Space
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:clickable="true"
+        	android:layout_height="@dimen/linear_padding_height" />
+        	
+        <TextView
+            android:text="@string/annee_indication"
+            style="@style/IndicationText" />
             
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin" 
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/vertical_seperate_item"
-            android:layout_marginBottom="@dimen/vertical_seperate_item"
-            android:layout_marginLeft="@dimen/horizontal_seperate_item"
-            android:layout_marginRight="@dimen/horizontal_seperate_item" />
+        <LinearLayout 
+        	android:layout_width="fill_parent"
+      		android:layout_height="wrap_content"
+      		android:layout_gravity="center"
+      		android:orientation="horizontal">
 
-        <Spinner
-           android:background="@drawable/button_custom"
-			android:textColor="@color/black"
-			android:textSize="@dimen/text_size"
-			
-            android:id="@+id/spinnerAnnee"
+	        <EditText
+	            android:id="@+id/annee_min_search"
+	            android:hint="@string/annee_min_search"
+	            style="@style/EditText"
+	            android:layout_weight="1"
+	            android:paddingRight="5dp"
+	            android:inputType="number" />
+	        
+	        <Space
+            	android:layout_width="@dimen/space_between_box"
+        		android:layout_height="fill_parent" />
+	                 
+	      	<EditText
+	            android:id="@+id/annee_max_search"
+	            android:hint="@string/annee_max_search" 
+	            style="@style/EditText"
+	            android:layout_weight="1"
+	            android:paddingLeft="5dp"
+	            android:inputType="number" />
+	        
+        </LinearLayout>
+        
+         <Space
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin" 
-            android:layout_gravity="center"
-            android:text="@string/button_search"
-            
-            android:layout_marginTop="@dimen/vertical_seperate_item"
-            android:layout_marginBottom="@dimen/vertical_seperate_item"
-            android:layout_marginLeft="@dimen/horizontal_seperate_item"
-            android:layout_marginRight="@dimen/horizontal_seperate_item" />
+        	android:layout_height="@dimen/linear_padding_height" />
+        	
+         <TextView
+            android:text="@string/prix_indication"
+            style="@style/IndicationText" />
+         
+        <LinearLayout 
+        	android:layout_width="fill_parent"
+      		android:layout_height="wrap_content"
+      		android:layout_gravity="center"
+      		android:orientation="horizontal">
 
-        <EditText
-            android:background="@drawable/button_custom"
-            android:src="@drawable/button_custom"
-			android:textColor="@color/black"
-			android:text="@string/piece_maximum_text" 
-			 android:gravity="center"
-			
-			
-            android:id="@+id/nombre_pieces_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/vertical_seperate_item"
-            android:layout_marginLeft="@dimen/horizontal_seperate_item"
-            android:layout_marginRight="@dimen/horizontal_seperate_item" />
+	        <EditText
+	            android:id="@+id/prix_min_search"
+	            android:hint="@string/prix_min_search"
+	            style="@style/EditText"
+	            android:layout_weight="1"
+	            android:paddingRight="5dp"
+	            android:inputType="number" />
+	        
+	        <Space
+            	android:layout_width="@dimen/space_between_box"
+        		android:layout_height="fill_parent" />
+	                 
+	      	<EditText
+	            android:id="@+id/prix_max_search"
+	            android:hint="@string/prix_max_search" 
+	            style="@style/EditText"
+	            android:layout_weight="1"
+	            android:paddingLeft="5dp"
+	            android:inputType="number" />
+        
+     	</LinearLayout> 
+     
+         <Space
+            android:layout_width="fill_parent"
+        	android:layout_height="@dimen/linear_padding_height" />
+        	
+         <TextView
+            android:text="@string/piece_indication"
+            style="@style/IndicationText" />
+         
+        <LinearLayout 
+        	android:layout_width="fill_parent"
+      		android:layout_height="wrap_content"
+      		android:layout_gravity="center"
+      		android:orientation="horizontal">
 
-        <SeekBar
-            style="@drawable/custom_seek_bar"
-            
-            android:id="@+id/seekBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:progress="3000"
-            android:layout_marginBottom="@dimen/vertical_seperate_item"
-            android:layout_marginLeft="@dimen/horizontal_seperate_item"
-            android:layout_marginRight="@dimen/horizontal_seperate_item" />
-        
-        <Button
-           	android:background="@drawable/button_custom"
-            
-			android:textColor="@color/black"
-			android:textSize="@dimen/text_size"
-			android:gravity="center"
-            android:drawableLeft="@drawable/search_button_icon"
-            
-			android:text="@string/button_search" 
-            android:id="@+id/button_search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/vertical_seperate_item"
-            android:layout_marginBottom="@dimen/vertical_seperate_item"
-            android:layout_marginLeft="@dimen/horizontal_seperate_item"
-            android:layout_marginRight="@dimen/horizontal_seperate_item" />
-
-        
-        
-    </LinearLayout>
+	        <EditText
+	            android:id="@+id/piece_min_search"
+	            android:hint="@string/piece_min_search"
+	            style="@style/EditText"
+	            android:layout_weight="1"
+	            android:paddingRight="5dp"
+	            android:inputType="number" />
+	        
+	        <Space
+            	android:layout_width="@dimen/space_between_box"
+        		android:layout_height="fill_parent" />
+	                 
+	      	<EditText
+	            android:id="@+id/piece_max_search"
+	            android:hint="@string/piece_max_search" 
+	            style="@style/EditText"
+	            android:layout_weight="1"
+	            android:paddingLeft="5dp"
+	            android:inputType="number" />
     
+        </LinearLayout>
+        
+        <Space
+            android:layout_width="fill_parent"
+        	android:layout_height="@dimen/linear_padding_height" />
+        	
+        <LinearLayout
+		    android:id="@+id/button_search"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:background="@drawable/button_custom"
+		    android:gravity="center"
+		    android:orientation="horizontal"
+		    android:clickable="true">
+
+		    <ImageView
+		        android:layout_width="fill_parent"
+		        android:layout_height="fill_parent"
+		        android:src="@drawable/search_button_icon" 
+		        android:layout_weight="2"/>
+		
+		    <TextView
+		        android:layout_width="fill_parent"
+		        android:layout_height="fill_parent"
+		        android:gravity="left"
+		        android:text="@string/button_search" 
+		        android:textSize="@dimen/text_box_size"
+		        android:layout_weight="1"/>
+
+		</LinearLayout>
+             
+     </LinearLayout>
+        
+        
 </RelativeLayout>
+ 

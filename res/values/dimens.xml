@@ -3,8 +3,13 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="vertical_seperate_item">40dp</dimen>
-    <dimen name="horizontal_seperate_item">100dp</dimen>
-    <dimen name="text_size">20sp</dimen>
-
+    
+    
+	<dimen name="linear_padding_side">80dp</dimen>
+    <dimen name="text_box_size">35sp</dimen>
+    <dimen name="linear_padding_height">80dp</dimen>
+    <dimen name="search_button_icon_padding">10dp</dimen>
+    <dimen name="textInBox_padding_height">6sp</dimen>
+    <dimen name="space_between_box">5dp</dimen>
+    
 </resources>
