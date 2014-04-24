@@ -71,8 +71,8 @@ public class TulpApplication extends Application
 				"http://www.cubiculus.com/images/54521?",
 				"http://www.cubiculus.com/images/54522?",
 				"http://www.cubiculus.com/images/54523?",
-				"http://www.cubiculus.com/imaxxxges/54524?",
-				"http://upload.wikimedia.org/wikipedia/commons/8/8d/Perth_skyline_at_night.jpg"
+				//"http://www.cubiculus.com/imaxxxges/54524?",
+				//"http://upload.wikimedia.org/wikipedia/commons/8/8d/Perth_skyline_at_night.jpg"
 			};
 	}
 

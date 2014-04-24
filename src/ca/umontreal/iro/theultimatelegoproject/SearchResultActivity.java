@@ -48,7 +48,9 @@ public class SearchResultActivity extends Activity
 		imageLoader		= tulpApplication.getImageLoader();
 		imagesURL		= new String[1000];
 
-		for (int i = 0; i < 1000; ++i)
+		imagesURL[0]= "http://www.cubiculus.com/images/507";
+
+		for (int i = 1; i < 1000; ++i)
 		{
 			String j = String.valueOf(i);
 
