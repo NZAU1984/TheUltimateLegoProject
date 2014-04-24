@@ -22,7 +22,7 @@ public class SearchActivity extends Activity
 	private EditText searchBox, anneeMinBox, anneeMaxBox, prixMinBox, prixMaxBox, pieceMinBox, pieceMaxBox;
 	private String searchText;
 	private int anneeMin, anneeMax, prixMin, prixMax, pieceMin, pieceMax;
-	private Button searchGo;
+	private View searchGo;
 	private static ArrayList<String> historique;
 
 	
@@ -102,7 +102,7 @@ public class SearchActivity extends Activity
 
 	private void initiateButton()
 	{
-		searchGo = (Button)findViewById(R.id.button_search);
+		searchGo = findViewById(R.id.button_search);
 
 		searchGo.setOnClickListener(new View.OnClickListener()
 		{
