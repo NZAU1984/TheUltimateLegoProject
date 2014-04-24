@@ -13,8 +13,9 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+
+import com.skulg.tulp.dbHelper;
 
 public class SearchActivity extends Activity
 {
@@ -266,6 +267,6 @@ public class SearchActivity extends Activity
 
 	
 
-//	private void toSqlDemand(){}
+	//private void toSqlDemand(){}
 
 }

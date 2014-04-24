@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/LinearLayout1"
+    android:background="@drawable/red_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="bottom"
@@ -48,19 +49,26 @@
 
             <TextView
                 android:id="@+id/textview_description"
+                android:textColor="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
    </ScrollView>
+   
+    <Space
+            android:layout_width="fill_parent"
+        	android:layout_height="@dimen/margin_item_height" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="20dp"
+        android:background="@color/black"
         android:layout_gravity="bottom"
         android:orientation="horizontal" >
 
         <TextView
             android:id="@+id/textview_year"
+            android:textColor="@color/white"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
@@ -68,6 +76,7 @@
 
         <TextView
             android:id="@+id/textview_price"
+            android:textColor="@color/white"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
@@ -75,6 +84,7 @@
 
         <TextView
             android:id="@+id/textview_nbpieces"
+            android:textColor="@color/white"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"

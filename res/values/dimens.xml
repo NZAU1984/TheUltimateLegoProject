@@ -11,5 +11,7 @@
     <dimen name="search_button_icon_padding">10dp</dimen>
     <dimen name="textInBox_padding_height">6sp</dimen>
     <dimen name="space_between_box">5dp</dimen>
+    <dimen name="margin_item_side">10dp</dimen>
+    <dimen name="margin_item_height">10dp</dimen>
     
 </resources>
