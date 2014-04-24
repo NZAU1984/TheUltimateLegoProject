@@ -5,5 +5,5 @@
     <color name="white">#ffffff</color>
     <color name="selected">#94B5D1</color>
     <color name="hint_text_color">#66676E</color>
-    
+    <color name="transparent">#FFFFF0</color>
 </resources>
