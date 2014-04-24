@@ -40,7 +40,7 @@ public class SetInfoActivity extends Activity
 
 		if(null == setInfo)
 		{
-			Tools.shortToast(getApplicationContext(), "setInfo is null ! Error ?");
+			//Tools.shortToast(getApplicationContext(), "setInfo is null ! Error ?");
 
 			return;
 		}

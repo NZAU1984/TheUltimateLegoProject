@@ -61,7 +61,7 @@ public class BuildingInstructionActivity extends Activity
 			@Override
 			public void onPageSelected(int arg0)
 			{
-				Tools.shortToast(getApplicationContext(), "Page changed : " + arg0);
+				//Tools.shortToast(getApplicationContext(), "Page changed : " + arg0);
 				viewPagerThumbnails.setCurrentItem(arg0);
 
 				updateThumbnailViewPager(arg0);
@@ -268,7 +268,7 @@ public class BuildingInstructionActivity extends Activity
 				@Override
 				public void onClick(View v)
 				{
-					Tools.shortToast(getApplicationContext(), "image click" + finalPosition);
+					//Tools.shortToast(getApplicationContext(), "image click" + finalPosition);
 
 					viewPagerBig.setCurrentItem(finalPosition - 1);
 				}

@@ -16,7 +16,7 @@ public class TulpApplication extends Application
 	public void onCreate()
 	{
 		super.onCreate();
-		Tools.shortToast(getApplicationContext(), "TulpApplication.onCreate()");
+		//Tools.shortToast(getApplicationContext(), "TulpApplication.onCreate()");
 	}
 
 	private void initImageLoader()

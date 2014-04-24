@@ -74,6 +74,7 @@ public class SearchResultActivity extends Activity
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 			{
+				launchSetInfoActivity("123");
 				// startImagePagerActivity(position);
 			}
 		});
@@ -130,6 +131,9 @@ public class SearchResultActivity extends Activity
 		showSet123 = (Button) findViewById(R.id.button_showset123);
 		showSet456 = (Button) findViewById(R.id.button_showset456);
 
+		showSet123.setVisibility(View.GONE);
+		showSet456.setVisibility(View.GONE);
+/*
 		if (isFav)
 		{
 			showSet456.setVisibility(View.GONE);
@@ -154,7 +158,7 @@ public class SearchResultActivity extends Activity
 			{
 				launchSetInfoActivity("456");
 			}
-		});
+		});*/
 	}
 
 	private void launchSetInfoActivity(String setId)
