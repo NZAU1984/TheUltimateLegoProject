@@ -222,7 +222,10 @@ public class BuildingInstructionActivity extends Activity
 
 			if(2 == imagesURLlength)
 			{
-				return 0.5f;
+				return 1f;
+
+				// return 0.5f;
+				// Why would you want to see 2 images side by side if there are only two ?! Nonsense...
 			}
 
 			return 1f;
