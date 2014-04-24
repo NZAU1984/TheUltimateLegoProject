@@ -39,7 +39,7 @@ Integer non felis in libero malesuada hendrerit. Donec sed leo laoreet, iaculis 
     
     
     <!--  ## SearchActivity strings ## -->
-    <string name="search_field">Set type </string>
+    <string name="search_field">Key word</string>
     <string name="button_search">Search</string>
     <string name="annee_min_search">From</string>
     <string name="annee_max_search">To</string>
