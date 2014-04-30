@@ -21,6 +21,12 @@ public class MainActivity extends Activity
 
 		tulpApplication	= (TulpApplication) getApplication();
 
+		if(!tulpApplication.isDbCreated())
+		{
+			//Tools.shortToast(getApplicationContext(), "...");
+			//launchUpdateDbActivity();
+		}
+
 		initiateButtons();
 	}
 
@@ -74,6 +80,12 @@ public class MainActivity extends Activity
 		launchSearchResultActivity.putExtra("favorites", true);
 
 		startActivity(launchSearchResultActivity);
+	}
+
+	private void launchUpdateDbActivity()
+	{
+		Intent launchUpdateDbActivity = new Intent(this, UpdateDbActivity.class);
+		startActivity(launchUpdateDbActivity);
 	}
 
 }

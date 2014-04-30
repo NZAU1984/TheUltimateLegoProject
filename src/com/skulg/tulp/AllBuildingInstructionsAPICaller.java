@@ -14,89 +14,118 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import ca.umontreal.iro.theultimatelegoproject.UpdateDbActivity;
 
-
-public class AllBuildingInstructionsAPICaller extends TulpAPICaller  {
+public class AllBuildingInstructionsAPICaller extends TulpAPICaller
+{
 
 	// Sera null s'il n'y a pas d'erreur
-	String erreur;
+	String	erreur;
+	private UpdateDbActivity updateDbActivity;
 
-	AllBuildingInstructionsAPICaller(Context context , dbHelper dbh){
-		super(context , dbh);
+	public AllBuildingInstructionsAPICaller(Context context, dbHelper dbh, UpdateDbActivity argUpdateDbActivity)
+	{
+		super(context, dbh);
+
+		updateDbActivity	= argUpdateDbActivity;
 	}
 
-	public String doInBackground (String...strings ){
+	@Override
+	public String doInBackground(String... strings)
+	{
 
 		erreur = null;
-		try {
-			HttpEntity buildingInstructionsPage = getHttp(GET_ALL_BUILDINGS_INSTRUCTIONS_URL);
-			String json = EntityUtils.toString(buildingInstructionsPage, HTTP.UTF_8);
-			JSONArray jsArrayBuildingInstructions = new JSONArray(json);
-			for (int i=0 ; i<jsArrayBuildingInstructions.length(); i++){
-				
-				//new SpecificBuildingInstructionsAPICaller(context, dbh, i+"").execute();
-				
-				
+		try
+		{
+			HttpEntity buildingInstructionsPage    = getHttp(GET_ALL_BUILDINGS_INSTRUCTIONS_URL);
+			String     json                        = EntityUtils.toString(buildingInstructionsPage, HTTP.UTF_8);
+			JSONArray  jsArrayBuildingInstructions = new JSONArray(json);
+			int			nbInstructions				= jsArrayBuildingInstructions.length();
+
+			updateDbActivity.setTotalNumberOfSets(nbInstructions);
+
+			Log.d("douda", "there are " + nbInstructions + " instructions");
+
+			for (int i = 0; i < nbInstructions; i++)
+			{
+
+				// new SpecificBuildingInstructionsAPICaller(context, dbh,
+				// i+"").execute();
+
 				/*
-				 * All this will be replaced by SpecificBuildingInstructionsAPICall
-				*/ 
-				
-				
-				
-				JSONObject currentJsonBuildingInstuction = jsArrayBuildingInstructions.getJSONObject(i);			
-				//String buildingInstructionsDescription =currentJsonBuildingInstuction.getString("description");
-				//int idInstruction = currentJsonBuildingInstuction.getInt("idInstruction");
+				 * All this will be replaced by
+				 * SpecificBuildingInstructionsAPICall
+				 */
+
+				JSONObject currentJsonBuildingInstuction = jsArrayBuildingInstructions.getJSONObject(i);
+				// String buildingInstructionsDescription
+				// =currentJsonBuildingInstuction.getString("description");
+				// int idInstruction =
+				// currentJsonBuildingInstuction.getInt("idInstruction");
 				String buildingInstuctionsName = currentJsonBuildingInstuction.getString("name");
 				/*
-				String shortcutPicture = currentJsonBuildingInstuction.getString("shortcutPicture");
-				JSONArray stepgroups;
-				try {
-					 stepgroups = currentJsonBuildingInstuction.getJSONArray("stepGroups");
-					 Log.d("TULP", "FOUND A STEPGROUP");
-				}catch (JSONException e) {
-					erreur = "Erreur JSON :"+e.getMessage();
-					e.printStackTrace();
+				 * String shortcutPicture =
+				 * currentJsonBuildingInstuction.getString("shortcutPicture");
+				 * JSONArray stepgroups; try { stepgroups =
+				 * currentJsonBuildingInstuction.getJSONArray("stepGroups");
+				 * Log.d("TULP", "FOUND A STEPGROUP"); }catch (JSONException e)
+				 * { erreur = "Erreur JSON :"+e.getMessage();
+				 * e.printStackTrace(); } Log.d("TULP","Instructions name :"+
+				 * buildingInstuctionsName);
+				 * Log.d("TULP","Instructions description :"+
+				 * buildingInstructionsDescription);
+				 *
+				 *
+				 *
+				 *
+				 * /* for (int j=0 ; j<stepgroups.length(); j++){ JSONObject
+				 * currentStepGroup = stepgroups.getJSONObject(j); String name =
+				 * currentStepGroup.getString("name"); JSONArray filenames =
+				 * currentStepGroup.getJSONArray("filenames"); for (int k=0 ;
+				 * k<filenames.length(); k++){ Log.d("TULP","Filename :"+
+				 * filenames.getJSONObject(k)); }
+				 *
+				 * }
+				 *
+				 *
+				 * this.dbh.insertBuildingInstructions(idInstruction,
+				 * buildingInstructionsDescription, shortcutPicture,
+				 * buildingInstuctionsName);
+				 */
+				if (TextUtils.isDigitsOnly(buildingInstuctionsName))
+				{
+					Log.d("AllBuildingInstructionsAPICaller", "Fetching building instruction " + buildingInstuctionsName);
+
+					//updateDbActivity.incrementNumberOfSets();
+
+					new LegoSetsApiCaller(context, dbh, updateDbActivity).execute(buildingInstuctionsName);
 				}
-				Log.d("TULP","Instructions name :"+ buildingInstuctionsName);
-				Log.d("TULP","Instructions description :"+ buildingInstructionsDescription);
-				
-				
-				
-				
-				/*
-				for (int j=0 ; j<stepgroups.length(); j++){
-					JSONObject currentStepGroup = stepgroups.getJSONObject(j);			
-					String name = currentStepGroup.getString("name");
-					JSONArray filenames = currentStepGroup.getJSONArray("filenames");
-					for (int k=0 ; k<filenames.length(); k++){
-						Log.d("TULP","Filename :"+ filenames.getJSONObject(k));
-					}
-						
-				}
-				
-				
-				this.dbh.insertBuildingInstructions(idInstruction,buildingInstructionsDescription, shortcutPicture, buildingInstuctionsName);				
-				*/
-				if (TextUtils.isDigitsOnly(buildingInstuctionsName)){
-					new LegoSetsApiCaller(this.context , this.dbh).execute(buildingInstuctionsName);					
-				}
-				
+
 			}
 
-		} catch (ClientProtocolException e) {
-			erreur = "Erreur HTTP (protocole) :"+e.getMessage();
+		} catch (ClientProtocolException e)
+		{
+			erreur = "Erreur HTTP (protocole) :" + e.getMessage();
 			e.printStackTrace();
-		} catch (IOException e) {
-			erreur = "Erreur HTTP (IO) :"+e.getMessage();
+		} catch (IOException e)
+		{
+			erreur = "Erreur HTTP (IO) :" + e.getMessage();
 			e.printStackTrace();
-		} catch (ParseException e) {
-			erreur = "Erreur JSON (parse) :"+e.getMessage();
+		} catch (ParseException e)
+		{
+			erreur = "Erreur JSON (parse) :" + e.getMessage();
 			e.printStackTrace();
-		} catch (JSONException e) {
-			erreur = "Erreur JSON :"+e.getMessage();
+		} catch (JSONException e)
+		{
+			erreur = "Erreur JSON :" + e.getMessage();
 			e.printStackTrace();
 		}
 		return "Success";
 	}
+
+	protected void onPostExecute(Long result)
+	{
+        Log.d("AllBuildingInstructionsAPICaller", "onPostExecute");
+    }
 
 }

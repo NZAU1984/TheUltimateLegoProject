@@ -7,25 +7,18 @@
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="19" />
-    
-    <uses-permission
-        android:name="android.permission.INTERNET" />
 
-	<uses-permission
-	    android:name="android.permission.ACCESS_NETWORK_STATE" />
-	
-	<uses-permission
-	    android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-	
-	<uses-permission
-	    android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
+        android:name="ca.umontreal.iro.theultimatelegoproject.TulpApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        android:name="ca.umontreal.iro.theultimatelegoproject.TulpApplication">
+        android:theme="@style/AppTheme" >
         <activity
             android:name="ca.umontreal.iro.theultimatelegoproject.MainActivity"
             android:label="@string/app_name" >
@@ -54,6 +47,10 @@
         <activity
             android:name="ca.umontreal.iro.theultimatelegoproject.BuildingInstructionActivity"
             android:label="@string/title_activity_building_instruction" >
+        </activity>
+        <activity
+            android:name="ca.umontreal.iro.theultimatelegoproject.UpdateDbActivity"
+            android:label="@string/title_activity_update_db" >
         </activity>
     </application>
 

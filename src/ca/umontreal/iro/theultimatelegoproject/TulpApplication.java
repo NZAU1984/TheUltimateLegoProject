@@ -1,6 +1,8 @@
 package ca.umontreal.iro.theultimatelegoproject;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -12,11 +14,13 @@ public class TulpApplication extends Application
 {
 	private ImageLoader			imageLoader;
 	private DisplayImageOptions	imageLoaderOptions;
+	private SharedPreferences	sharedPreferences;
 	@Override
 	public void onCreate()
 	{
 		super.onCreate();
-		//Tools.shortToast(getApplicationContext(), "TulpApplication.onCreate()");
+
+		sharedPreferences	= getSharedPreferences(getString(R.string.preferences_filename), Context.MODE_PRIVATE);
 	}
 
 	private void initImageLoader()
@@ -94,6 +98,16 @@ public class TulpApplication extends Application
 				2010,
 				56.45,
 				0);
+	}
+
+	public Boolean isDbCreated()
+	{
+		if(!sharedPreferences.contains(getString(R.string.preferences_last_db_import_date)))
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 /*	public boolean isOnline() {
