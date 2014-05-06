@@ -38,7 +38,7 @@ Etiam ultricies elementum arcu, in volutpat dui condimentum id. Sed at faucibus 
 Integer non felis in libero malesuada hendrerit. Donec sed leo laoreet, iaculis lorem vel, egestas nulla. Phasellus vitae auctor erat, ac venenatis augue. Aenean vestibulum, lorem in consectetur eleifend, diam libero dignissim quam, malesuada lacinia tellus tellus sed est. Vivamus feugiat adipiscing neque, eu ultricies diam adipiscing vitae. Nulla vel mi eu nibh mollis tincidunt. Fusce auctor, dui sed sodales bibendum, dui sapien congue nibh, sed facilisis massa lectus sed erat. Donec facilisis ligula ac mauris sodales tincidunt.</string>
 
     <!-- ## SearchActivity strings ## -->
-    <string name="search_field">Key word</string>
+    <string name="search_field">Key word...</string>
     <string name="button_search">Search</string>
     <string name="annee_min_search">From</string>
     <string name="annee_max_search">To</string>
