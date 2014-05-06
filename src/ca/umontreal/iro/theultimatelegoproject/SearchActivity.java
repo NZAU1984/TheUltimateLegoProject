@@ -15,8 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-import com.skulg.tulp.dbHelper;
-
 public class SearchActivity extends Activity
 {
 
@@ -26,7 +24,7 @@ public class SearchActivity extends Activity
 	private View searchGo;
 	private static ArrayList<String> historique;
 
-	
+
 
 
 	@Override
@@ -37,14 +35,21 @@ public class SearchActivity extends Activity
 
 		// Show the Up button in the action bar.
 		setupActionBar();
-		
+
 		initiateButton();
-		initiateEditTexts();
 
 
 	}
 
-	
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+	    super.onPostCreate(savedInstanceState);
+
+	    // Sync the toggle state after onRestoreInstanceState has occurred.
+	    initiateEditTexts();
+	}
+
+
 
 
 
@@ -119,7 +124,7 @@ public class SearchActivity extends Activity
 
 
 	private void initiateEditTexts() {
-		
+
 		//KeyWord EditText
 
 		searchBox = (EditText)findViewById(R.id.searchBox);
@@ -140,7 +145,7 @@ public class SearchActivity extends Activity
 		};
 		searchBox.addTextChangedListener(textWatcher);
 
-		
+
 		//anne_min EditText
 
 		anneeMinBox = (EditText)findViewById(R.id.annee_min_search);
@@ -265,7 +270,7 @@ public class SearchActivity extends Activity
 
 
 
-	
+
 
 	//private void toSqlDemand(){}
 

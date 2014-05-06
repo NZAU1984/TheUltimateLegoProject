@@ -13,7 +13,6 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 import ca.umontreal.iro.theultimatelegoproject.UpdateDbActivity;
 
 public class AllBuildingInstructionsAPICaller extends TulpAPICaller
@@ -22,12 +21,14 @@ public class AllBuildingInstructionsAPICaller extends TulpAPICaller
 	// Sera null s'il n'y a pas d'erreur
 	String	erreur;
 	private UpdateDbActivity updateDbActivity;
+	private Boolean			success;
 
 	public AllBuildingInstructionsAPICaller(Context context, dbHelper dbh, UpdateDbActivity argUpdateDbActivity)
 	{
 		super(context, dbh);
 
 		updateDbActivity	= argUpdateDbActivity;
+		success				= false;
 	}
 
 	@Override
@@ -42,9 +43,9 @@ public class AllBuildingInstructionsAPICaller extends TulpAPICaller
 			JSONArray  jsArrayBuildingInstructions = new JSONArray(json);
 			int			nbInstructions				= jsArrayBuildingInstructions.length();
 
-			updateDbActivity.setTotalNumberOfSets(nbInstructions);
+			//updateDbActivity.setTotalNumberOfSets(nbInstructions);
 
-			Log.d("douda", "there are " + nbInstructions + " instructions");
+//			Log.d("douda", "there are " + nbInstructions + " instructions");
 
 			for (int i = 0; i < nbInstructions; i++)
 			{
@@ -62,7 +63,7 @@ public class AllBuildingInstructionsAPICaller extends TulpAPICaller
 				// =currentJsonBuildingInstuction.getString("description");
 				// int idInstruction =
 				// currentJsonBuildingInstuction.getInt("idInstruction");
-				String buildingInstuctionsName = currentJsonBuildingInstuction.getString("name");
+				String buildingInstructionsName = currentJsonBuildingInstuction.getString("name");
 				/*
 				 * String shortcutPicture =
 				 * currentJsonBuildingInstuction.getString("shortcutPicture");
@@ -92,40 +93,58 @@ public class AllBuildingInstructionsAPICaller extends TulpAPICaller
 				 * buildingInstructionsDescription, shortcutPicture,
 				 * buildingInstuctionsName);
 				 */
-				if (TextUtils.isDigitsOnly(buildingInstuctionsName))
+				if (TextUtils.isDigitsOnly(buildingInstructionsName))
 				{
-					Log.d("AllBuildingInstructionsAPICaller", "Fetching building instruction " + buildingInstuctionsName);
+					//Log.d("AllBuildingInstructionsAPICaller", "Inserting building instruction in import table : " + buildingInstructionsName);
 
-					//updateDbActivity.incrementNumberOfSets();
-
-					new LegoSetsApiCaller(context, dbh, updateDbActivity).execute(buildingInstuctionsName);
+					dbh.insertImportSet(Integer.valueOf(buildingInstructionsName));
 				}
 
 			}
 
-		} catch (ClientProtocolException e)
+			success	= true;
+
+		}
+		catch (ClientProtocolException e)
 		{
 			erreur = "Erreur HTTP (protocole) :" + e.getMessage();
 			e.printStackTrace();
-		} catch (IOException e)
+		}
+		catch (IOException e)
 		{
 			erreur = "Erreur HTTP (IO) :" + e.getMessage();
 			e.printStackTrace();
-		} catch (ParseException e)
+		}
+		catch(IllegalStateException e)
+		{
+			erreur = "Erreur HTTP (IllegalState) :" + e.getMessage();
+			e.printStackTrace();
+		}
+		catch (ParseException e)
 		{
 			erreur = "Erreur JSON (parse) :" + e.getMessage();
 			e.printStackTrace();
-		} catch (JSONException e)
+		}
+		catch (JSONException e)
 		{
 			erreur = "Erreur JSON :" + e.getMessage();
 			e.printStackTrace();
 		}
+
 		return "Success";
 	}
 
-	protected void onPostExecute(Long result)
+	@Override
+	protected void onPostExecute(String result)
 	{
-        Log.d("AllBuildingInstructionsAPICaller", "onPostExecute");
+		if(success)
+		{
+			updateDbActivity.AllBuildingInstructionsAPICallerHasFinished();
+		}
+		else
+		{
+			updateDbActivity.AllBuildingInstructionsAPICallerHasFailed();
+		}
     }
 
 }

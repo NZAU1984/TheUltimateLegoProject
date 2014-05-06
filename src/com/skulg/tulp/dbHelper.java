@@ -7,12 +7,17 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import ca.umontreal.iro.theultimatelegoproject.Tools;
 
 public class dbHelper extends SQLiteOpenHelper
 {
 	SQLiteDatabase db;
+
+	SQLiteDatabase writableDb;
+
 	static final int VERSION = 18;
+
+	// Filename
+	static final String DATABASE_FILENAME = "Tulp.db";
 
 	// Tables Names
 	static final String LEGOSETS_TABLE_NAME = "LegoSets";
@@ -22,6 +27,7 @@ public class dbHelper extends SQLiteOpenHelper
 	static final String STEP_GROUP_INSTRUCTIONS_LINK_TABLE_NAME = "StepGroupInstructionsLink";
 	static final String STEP_GROUP_IMAGES_LINK_TABLE_NAME = "StepGroupImagesLink";
 	static final String IMAGES_TABLE_NAME = "Images";
+	static final String IMPORT_TABLE_NAME	= "ImportTable";
 
 	// Shared Columns
 	static final String KEY_ID = "_id";
@@ -67,59 +73,56 @@ public class dbHelper extends SQLiteOpenHelper
 
 	public dbHelper(Context context)
 	{
-		super(context, "Tulp.db", null, VERSION);
+		super(context, DATABASE_FILENAME, null, VERSION);
 		this.context = context;
 	}
 
 	@Override
 	public void onCreate(SQLiteDatabase db)
 	{
-		Tools.shortToast(context, "dbHelper::onCreate");
-		// TODO Auto-generated method stub
 		this.db = db;
 		Log.d("TULP", "Creation of Database");
-		String sql = "create table " + LEGOSETS_TABLE_NAME + " (" + KEY_ID
-				+ " integer primary key , " + LEGOSETS_DESCRIPTION_COLUMN
-				+ " text," + LEGOSETS_BOX_NUMBER_COLUMN + " integer,"
-				+ LEGOSETS_IMAGE_URL_COLUMN + " text," + LEGOSETS_NAME_COLUMN
-				+ " text, " + LEGOSETS_LEGO_MODEL_NAME_COLUMN + " text, "
-				+ LEGOSETS_PIECES_COLUMN + " integer," + LEGOSETS_PRICE_COLUMN
-				+ " double," + LEGOSETS_RELEASED_COLUMN + " integer,"
-				+ LEGOSETS_FAVORITE_COLUMN + " boolean," + LEGOSETS_SEEN_COLUMN
-				+ " boolean" + ")";
-		db.execSQL(sql);
-
-		sql = "create table " + BUILDING_INSTRUCTIONS_TABLE_NAME + " ("
-				+ KEY_ID + " integer primary key , "
-				+ BUILDING_INSTRUCTIONS_DESCRIPTION_COLUMN + " text,"
-				+ BUILDING_INSTRUCTIONS_NAME_COLUMN + " text,"
-				+ BUILDING_INSTRUCTIONS_SHORTCUT_IMAGE_URL_COLUMN + " text"
+		String sql = "create table " + LEGOSETS_TABLE_NAME
+				+ " ("
+					+ KEY_ID							+ " integer primary key , "
+					+ LEGOSETS_DESCRIPTION_COLUMN		+ " text, "
+					+ LEGOSETS_BOX_NUMBER_COLUMN		+ " integer, "
+					+ LEGOSETS_IMAGE_URL_COLUMN			+ " text, "
+					+ LEGOSETS_NAME_COLUMN				+ " text, "
+					+ LEGOSETS_LEGO_MODEL_NAME_COLUMN	+ " text, "
+					+ LEGOSETS_PIECES_COLUMN			+ " integer, "
+					+ LEGOSETS_PRICE_COLUMN				+ " double, "
+					+ LEGOSETS_RELEASED_COLUMN			+ " integer, "
+					+ LEGOSETS_FAVORITE_COLUMN			+ " boolean, "
+					+ LEGOSETS_SEEN_COLUMN				+ " boolean "
 				+ ")";
 		db.execSQL(sql);
 
-		sql = "create table " + STEP_GROUP_TABLE_NAME + " (" + KEY_ID
-				+ " integer primary key AUTOINCREMENT, "
+		sql = "create table " + BUILDING_INSTRUCTIONS_TABLE_NAME + " (" + KEY_ID + " integer primary key , "
+				+ BUILDING_INSTRUCTIONS_DESCRIPTION_COLUMN + " text," + BUILDING_INSTRUCTIONS_NAME_COLUMN + " text,"
+				+ BUILDING_INSTRUCTIONS_SHORTCUT_IMAGE_URL_COLUMN + " text" + ")";
+		db.execSQL(sql);
+
+		sql = "create table " + STEP_GROUP_TABLE_NAME + " (" + KEY_ID + " integer primary key AUTOINCREMENT, "
 				+ STEP_GROUP_NAME_COLUMN + " text" + ")";
 		db.execSQL(sql);
-		sql = "create table " + INSTRUCTION_IMAGES_TABLE_NAME + " (" + KEY_ID
-				+ " integer primary key AUTOINCREMENT, "
+		sql = "create table " + INSTRUCTION_IMAGES_TABLE_NAME + " (" + KEY_ID + " integer primary key AUTOINCREMENT, "
 				+ INSTRUCTION_IMAGES_URL_COLUMN + " text" + ")";
 		// db.execSQL(sql);
-		sql = "create table " + STEP_GROUP_INSTRUCTIONS_LINK_TABLE_NAME + " ("
-				+ KEY_ID + " integer primary key AUTOINCREMENT , "
-				+ STEP_GROUP_INSTRUCTIONS_STEP_GROUP_ID_COLUMN + " integer,"
-				+ STEP_GROUP_INSTRUCTIONS_INSTRUCTIONS_ID_COLUMN + " integer"
-				+ ")";
+		sql = "create table " + STEP_GROUP_INSTRUCTIONS_LINK_TABLE_NAME + " (" + KEY_ID
+				+ " integer primary key AUTOINCREMENT , " + STEP_GROUP_INSTRUCTIONS_STEP_GROUP_ID_COLUMN + " integer,"
+				+ STEP_GROUP_INSTRUCTIONS_INSTRUCTIONS_ID_COLUMN + " integer" + ")";
 		// db.execSQL(sql);
-		sql = "create table " + STEP_GROUP_IMAGES_LINK_TABLE_NAME + " ("
-				+ KEY_ID + " integer primary key AUTOINCREMENT, "
-				+ STEP_GROUP_IMAGES_STEP_GROUP_ID_COLUMN + " integer,"
+		sql = "create table " + STEP_GROUP_IMAGES_LINK_TABLE_NAME + " (" + KEY_ID
+				+ " integer primary key AUTOINCREMENT, " + STEP_GROUP_IMAGES_STEP_GROUP_ID_COLUMN + " integer,"
 				+ STEP_GROUP_IMAGES_IMAGE_ID_COLUMN + " integer" + ")";
 		// db.execSQL(sql);
 
-		sql = "create table " + IMAGES_TABLE_NAME + " (" + KEY_ID
-				+ " integer primary key AUTOINCREMENT, " + IMAGE_URL_COLUMN
-				+ " text," + IMAGE_INSTRUCTIONSID_COLUMN + " integer" + ")";
+		sql = "create table " + IMAGES_TABLE_NAME + " (" + KEY_ID + " integer primary key AUTOINCREMENT, "
+				+ IMAGE_URL_COLUMN + " text," + IMAGE_INSTRUCTIONSID_COLUMN + " integer" + ")";
+		db.execSQL(sql);
+
+		sql = "create table " + IMPORT_TABLE_NAME + " (" + KEY_ID + " integer primary key AUTOINCREMENT)";
 		db.execSQL(sql);
 
 	}
@@ -143,18 +146,16 @@ public class dbHelper extends SQLiteOpenHelper
 		db.execSQL("drop table if exists " + INSTRUCTION_IMAGES_TABLE_NAME);
 		db.execSQL("drop table if exists " + STEP_GROUP_TABLE_NAME);
 		db.execSQL("drop table if exists " + STEP_GROUP_IMAGES_LINK_TABLE_NAME);
-		db.execSQL("drop table if exists "
-				+ STEP_GROUP_INSTRUCTIONS_LINK_TABLE_NAME);
+		db.execSQL("drop table if exists " + STEP_GROUP_INSTRUCTIONS_LINK_TABLE_NAME);
 		db.execSQL("drop table if exists " + IMAGES_TABLE_NAME);
 
 	}
 
-	//protected void insertLegoSets(String description, int boxNumber,
-	protected void insertLegoSets(String description, int boxNumber,
-			String imageUrl, String name, String modelName, int nbPieces,
-			double price, int released)
+	// protected void insertLegoSets(String description, int boxNumber,
+	protected void insertLegoSets(String description, int boxNumber, String imageUrl, String name, String modelName,
+			int nbPieces, double price, int released)
 	{
-		SQLiteDatabase db = getWritableDatabase();
+		//SQLiteDatabase db = getWritableDatabase();
 		ContentValues val = new ContentValues();
 		val.clear();
 		val.put(KEY_ID, boxNumber);
@@ -169,20 +170,21 @@ public class dbHelper extends SQLiteOpenHelper
 		val.put(LEGOSETS_RELEASED_COLUMN, released);
 		val.put(LEGOSETS_SEEN_COLUMN, false);
 		val.put(LEGOSETS_FAVORITE_COLUMN, false);
+
 		try
 		{
-			db.insertOrThrow(LEGOSETS_TABLE_NAME, null, val);
-		} catch (SQLException e)
+			writableDb.insertWithOnConflict(LEGOSETS_TABLE_NAME, null, val, SQLiteDatabase.CONFLICT_REPLACE);
+		}
+		catch (SQLException e)
 		{
 			Log.d("DBHelper", "Erreur BDD: " + e.getMessage());
 		}
-		db.close();
+		//db.close();
 	}
 
-	protected void insertBuildingInstructions(int idInstruction,
-			String description, String imageUrl, String name)
+	protected void insertBuildingInstructions(int idInstruction, String description, String imageUrl, String name)
 	{
-		SQLiteDatabase db = getWritableDatabase();
+		//SQLiteDatabase db = getWritableDatabase();
 		ContentValues val = new ContentValues();
 		val.clear();
 		val.put(KEY_ID, idInstruction);
@@ -191,12 +193,12 @@ public class dbHelper extends SQLiteOpenHelper
 		val.put(BUILDING_INSTRUCTIONS_SHORTCUT_IMAGE_URL_COLUMN, imageUrl);
 		try
 		{
-			db.insertOrThrow(BUILDING_INSTRUCTIONS_TABLE_NAME, null, val);
+			writableDb.insertOrThrow(BUILDING_INSTRUCTIONS_TABLE_NAME, null, val);
 		} catch (SQLException e)
 		{
 			Log.d("DBHelper", "Erreur BDD: " + e.getMessage());
 		}
-		db.close();
+		//db.close();
 	}
 
 	protected long insertStepGroup(String name)
@@ -234,8 +236,7 @@ public class dbHelper extends SQLiteOpenHelper
 		db.close();
 	}
 
-	protected void insertStepGroupInstructionsLink(int instructionId,
-			int stepGroupId)
+	protected void insertStepGroupInstructionsLink(int instructionId, int stepGroupId)
 	{
 		SQLiteDatabase db = getWritableDatabase();
 		ContentValues val = new ContentValues();
@@ -275,8 +276,7 @@ public class dbHelper extends SQLiteOpenHelper
 	{
 		// String selectQuery = "SELECT  * FROM "+LEGOSETS_TABLE_NAME+ " ;";
 		SQLiteDatabase db = getReadableDatabase();
-		Cursor cursor = db.query(LEGOSETS_TABLE_NAME, null, null, null, null,
-				null, null);
+		Cursor cursor = db.query(LEGOSETS_TABLE_NAME, null, null, null, null, null, null);
 		// Cursor cursor = db.rawQuery(selectQuery, null);
 		return cursor;
 	}
@@ -284,17 +284,15 @@ public class dbHelper extends SQLiteOpenHelper
 	public Cursor getAllBuildingInstructions()
 	{
 		SQLiteDatabase db = getReadableDatabase();
-		Cursor cursor = db.query(BUILDING_INSTRUCTIONS_TABLE_NAME, null, null,
-				null, null, null, null);
+		Cursor cursor = db.query(BUILDING_INSTRUCTIONS_TABLE_NAME, null, null, null, null, null, null);
 		return cursor;
 	}
 
 	public Cursor getBuildingInstructionsInfo(String setId)
 	{
 		SQLiteDatabase db = getReadableDatabase();
-		Cursor cursor = db.query(BUILDING_INSTRUCTIONS_TABLE_NAME, null,
-				BUILDING_INSTRUCTIONS_NAME_COLUMN + "=" + setId, null, null,
-				null, null);
+		Cursor cursor = db.query(BUILDING_INSTRUCTIONS_TABLE_NAME, null, BUILDING_INSTRUCTIONS_NAME_COLUMN + "="
+				+ setId, null, null, null, null);
 		return cursor;
 	}
 
@@ -302,18 +300,16 @@ public class dbHelper extends SQLiteOpenHelper
 	public Cursor getBuildingInstructionsImages(String setId)
 	{
 		SQLiteDatabase db = getReadableDatabase();
-		String sql = "Select " + IMAGE_URL_COLUMN + " from "
-				+ IMAGES_TABLE_NAME + " , " + BUILDING_INSTRUCTIONS_TABLE_NAME
-				+ " where " + setId + " = " + BUILDING_INSTRUCTIONS_NAME_COLUMN
-				+ " AND " + BUILDING_INSTRUCTIONS_TABLE_NAME + "." + KEY_ID
-				+ " = " + IMAGE_INSTRUCTIONSID_COLUMN;
+		String sql = "Select " + IMAGE_URL_COLUMN + " from " + IMAGES_TABLE_NAME + " , "
+				+ BUILDING_INSTRUCTIONS_TABLE_NAME + " where " + setId + " = " + BUILDING_INSTRUCTIONS_NAME_COLUMN
+				+ " AND " + BUILDING_INSTRUCTIONS_TABLE_NAME + "." + KEY_ID + " = " + IMAGE_INSTRUCTIONSID_COLUMN;
 		Log.d("TULP", "Content of sql :" + sql);
 		Cursor cursor = db.rawQuery(sql, null);
 		return cursor;
 	}
 
-	public Cursor search(String keywords, String minPrice, String maxPrice,
-			String minYear, String maxYear, String minPieces, String maxPieces)
+	public Cursor search(String keywords, String minPrice, String maxPrice, String minYear, String maxYear,
+			String minPieces, String maxPieces)
 	{
 		SQLiteDatabase db = getReadableDatabase();
 		String keywordsSqlPart = "";
@@ -331,8 +327,7 @@ public class dbHelper extends SQLiteOpenHelper
 			{
 				keywordsSqlPart = keywordsSqlPart + " AND ";
 			}
-			keywordsSqlPart = keywordsSqlPart + LEGOSETS_DESCRIPTION_COLUMN
-					+ " like '%" + keywords + "%'";
+			keywordsSqlPart = keywordsSqlPart + LEGOSETS_DESCRIPTION_COLUMN + " like '%" + keywords + "%'";
 			firstPart = false;
 		}
 
@@ -342,8 +337,7 @@ public class dbHelper extends SQLiteOpenHelper
 			{
 				minPriceSqlPart = minPriceSqlPart + " AND ";
 			}
-			minPriceSqlPart = minPriceSqlPart + LEGOSETS_PRICE_COLUMN + ">="
-					+ minPrice;
+			minPriceSqlPart = minPriceSqlPart + LEGOSETS_PRICE_COLUMN + ">=" + minPrice;
 			firstPart = false;
 		}
 		if (maxPrice != null)
@@ -352,8 +346,7 @@ public class dbHelper extends SQLiteOpenHelper
 			{
 				maxPriceSqlPart = maxPriceSqlPart + " AND ";
 			}
-			maxPriceSqlPart = maxPriceSqlPart + LEGOSETS_PRICE_COLUMN + "<="
-					+ maxPrice;
+			maxPriceSqlPart = maxPriceSqlPart + LEGOSETS_PRICE_COLUMN + "<=" + maxPrice;
 			firstPart = false;
 		}
 
@@ -363,8 +356,7 @@ public class dbHelper extends SQLiteOpenHelper
 			{
 				minPiecesSqlPart = minPiecesSqlPart + " AND ";
 			}
-			minPiecesSqlPart = minPiecesSqlPart + LEGOSETS_PIECES_COLUMN + ">="
-					+ minPieces;
+			minPiecesSqlPart = minPiecesSqlPart + LEGOSETS_PIECES_COLUMN + ">=" + minPieces;
 			firstPart = false;
 		}
 
@@ -374,8 +366,7 @@ public class dbHelper extends SQLiteOpenHelper
 			{
 				maxPiecesSqlPart = maxPiecesSqlPart + " AND ";
 			}
-			maxPiecesSqlPart = maxPiecesSqlPart + LEGOSETS_PIECES_COLUMN + "<="
-					+ maxPieces;
+			maxPiecesSqlPart = maxPiecesSqlPart + LEGOSETS_PIECES_COLUMN + "<=" + maxPieces;
 			firstPart = false;
 		}
 
@@ -385,8 +376,7 @@ public class dbHelper extends SQLiteOpenHelper
 			{
 				minYearSqlPart = minYearSqlPart + " AND ";
 			}
-			minYearSqlPart = minYearSqlPart + LEGOSETS_RELEASED_COLUMN + ">="
-					+ minYear;
+			minYearSqlPart = minYearSqlPart + LEGOSETS_RELEASED_COLUMN + ">=" + minYear;
 			firstPart = false;
 		}
 
@@ -396,14 +386,103 @@ public class dbHelper extends SQLiteOpenHelper
 			{
 				maxYearSqlPart = maxYearSqlPart + " AND ";
 			}
-			maxYearSqlPart = maxYearSqlPart + LEGOSETS_RELEASED_COLUMN + "<="
-					+ maxYear;
+			maxYearSqlPart = maxYearSqlPart + LEGOSETS_RELEASED_COLUMN + "<=" + maxYear;
 			firstPart = false;
 		}
-		Cursor cursor = db.query(LEGOSETS_TABLE_NAME, null, keywordsSqlPart
-				+ minPriceSqlPart + maxPriceSqlPart + minPiecesSqlPart
-				+ maxPiecesSqlPart + minYearSqlPart + maxYearSqlPart, null,
-				null, null, null);
+		Cursor cursor = db.query(LEGOSETS_TABLE_NAME, null, keywordsSqlPart + minPriceSqlPart + maxPriceSqlPart
+				+ minPiecesSqlPart + maxPiecesSqlPart + minYearSqlPart + maxYearSqlPart, null, null, null, null);
 		return cursor;
+	}
+
+	public Boolean deleteDbFile()
+	{
+		return context.deleteDatabase(DATABASE_FILENAME);
+	}
+
+	public Boolean insertImportSet(int setId)
+	{
+		openWritableDatabase();
+
+		ContentValues val = new ContentValues();
+		val.clear();
+		val.put(KEY_ID, setId);
+
+		try
+		{
+			// insertWithOnConflict() with CONFLICT_IGNORE at last parameter doesn't not generate an exception if inserting
+			// an already existing row.
+			writableDb.insertWithOnConflict(IMPORT_TABLE_NAME, null, val, SQLiteDatabase.CONFLICT_IGNORE);
+		}
+		catch (SQLException e)
+		{
+			Log.d("DBHelper", "Erreur BDD: " + e.getMessage());
+
+			return false;
+		}
+
+		// Not closing writable database since there are going to be many inserts soon.
+
+		//Log.d("dbHelper", "    " + setId + " added in import table");
+
+		return true;
+	}
+
+	public Cursor getAllSetsToBeImported()
+	{
+		openWritableDatabase();
+		Cursor cursor = writableDb.query(IMPORT_TABLE_NAME, null, null, null, null, null, null);
+
+		return cursor;
+	}
+
+	public void removeSetFromImportTable(int setId)
+	{
+		openWritableDatabase();
+
+		writableDb.delete(IMPORT_TABLE_NAME, KEY_ID + "=?", new String[] { String.valueOf(setId) });
+	}
+
+	public int getNumberOfSetsToBeImported()
+	{
+		openWritableDatabase();
+
+		int count	= 0;
+
+		Cursor cursor	= writableDb.rawQuery("SELECT COUNT(*) FROM " + IMPORT_TABLE_NAME, null);
+
+		if(null == cursor)
+		{
+			return 0;
+		}
+
+		if(0 < cursor.getCount())
+		{
+			cursor.moveToFirst();
+
+			count	= cursor.getInt(0);
+		}
+
+		return count;
+	}
+
+	public void openWritableDatabase()
+	{
+		if(null == writableDb)
+		{
+			writableDb = getWritableDatabase();
+		}
+	}
+
+	public void closeWritableDatabase()
+	{
+		if(null != writableDb)
+		{
+			//writableDb.close();
+		}
+	}
+
+	public static boolean databaseExists(Context context)
+	{
+		return context.getDatabasePath(DATABASE_FILENAME).exists();
 	}
 }

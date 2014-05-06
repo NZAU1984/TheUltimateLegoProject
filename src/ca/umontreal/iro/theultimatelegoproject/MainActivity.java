@@ -7,11 +7,14 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 
+import com.skulg.tulp.dbHelper;
+
 public class MainActivity extends Activity
 {
 	TulpApplication	tulpApplication;
 	private Button	searchButton;
 	private Button	favoritesButton;
+	private dbHelper dbHelper;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -21,10 +24,40 @@ public class MainActivity extends Activity
 
 		tulpApplication	= (TulpApplication) getApplication();
 
-		if(!tulpApplication.isDbCreated())
+		Tools.shortToast(getApplicationContext(), "MAIN :: onCreate");
+
+		dbHelper	= new dbHelper(getApplicationContext());
+	}
+
+	@Override
+	protected void onStart()
+	{
+		super.onStart();
+
+		// If database file does not exist we'll show UpdateDbActibity and create it and load values in it.
+		Boolean updateDb	= !dbHelper.databaseExists(getApplicationContext());
+
+		// By default, we want to first fetch all building instructions and then get the sets from them.
+		String updateIntent	= "from_building_instructions";
+
+		// db exists if updateDb = !true = false
+		if(!updateDb)
 		{
-			//Tools.shortToast(getApplicationContext(), "...");
-			//launchUpdateDbActivity();
+			// Let's check if the last time we updated is older than today - ...
+			// if(...) { ... }
+			// else ...
+
+			// Let's check if there are sets to be imported
+			if(0 < dbHelper.getNumberOfSetsToBeImported())
+			{
+				updateDb		= true;
+				updateIntent	= "from_import_table";
+			}
+		}
+
+		if(updateDb)
+		{
+			launchUpdateDbActivity(updateIntent);
 		}
 
 		initiateButtons();
@@ -82,9 +115,11 @@ public class MainActivity extends Activity
 		startActivity(launchSearchResultActivity);
 	}
 
-	private void launchUpdateDbActivity()
+	private void launchUpdateDbActivity(String updateIntent)
 	{
 		Intent launchUpdateDbActivity = new Intent(this, UpdateDbActivity.class);
+		launchUpdateDbActivity.putExtra("strategy", updateIntent);
+
 		startActivity(launchUpdateDbActivity);
 	}
 

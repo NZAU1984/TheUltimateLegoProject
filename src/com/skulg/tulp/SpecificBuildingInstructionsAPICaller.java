@@ -24,7 +24,7 @@ public class SpecificBuildingInstructionsAPICaller extends TulpAPICaller
 	{
 		super(context, dbh);
 
-		this.id	= id;
+		this.id = id;
 
 		// TODO Auto-generated constructor stub
 	}
@@ -37,25 +37,18 @@ public class SpecificBuildingInstructionsAPICaller extends TulpAPICaller
 		HttpEntity buildingInstructionsPage;
 		try
 		{
-			buildingInstructionsPage = getHttp(GET_ALL_BUILDINGS_INSTRUCTIONS_URL
-					+ "/" + id);
+			buildingInstructionsPage = getHttp(GET_ALL_BUILDINGS_INSTRUCTIONS_URL + "/" + id);
 
-			String json = EntityUtils.toString(buildingInstructionsPage,
-					HTTP.UTF_8);
+			String json = EntityUtils.toString(buildingInstructionsPage, HTTP.UTF_8);
 			JSONObject currentJsonBuildingInstuction = new JSONObject(json);
-			String buildingInstructionsDescription = currentJsonBuildingInstuction
-					.getString("description");
-			int idInstruction = currentJsonBuildingInstuction
-					.getInt("idInstruction");
-			String buildingInstuctionsName = currentJsonBuildingInstuction
-					.getString("name");
-			String shortcutPicture = currentJsonBuildingInstuction
-					.getString("shortcutPicture");
+			String buildingInstructionsDescription = currentJsonBuildingInstuction.getString("description");
+			int idInstruction = currentJsonBuildingInstuction.getInt("idInstruction");
+			String buildingInstuctionsName = currentJsonBuildingInstuction.getString("name");
+			String shortcutPicture = currentJsonBuildingInstuction.getString("shortcutPicture");
 			JSONArray stepgroups;
 			try
 			{
-				stepgroups = currentJsonBuildingInstuction
-						.getJSONArray("stepGroups");
+				stepgroups = currentJsonBuildingInstuction.getJSONArray("stepGroups");
 				Log.d("TULP", "FOUND A STEPGROUP");
 
 				for (int j = 0; j < stepgroups.length(); j++)
@@ -65,12 +58,10 @@ public class SpecificBuildingInstructionsAPICaller extends TulpAPICaller
 					// long currentStepGroupId=dbh.insertStepGroup(name);
 					// dbh.insertStepGroupInstructionsLink(idInstruction, (int)
 					// currentStepGroupId);
-					JSONArray filenames = currentStepGroup
-							.getJSONArray("fileNames");
+					JSONArray filenames = currentStepGroup.getJSONArray("fileNames");
 					for (int k = 0; k < filenames.length(); k++)
 					{
-						long currentImageId = dbh.insertImages(
-								"" + filenames.getString(k), idInstruction);
+						long currentImageId = dbh.insertImages("" + filenames.getString(k), idInstruction);
 						// dbh.insertStepGroupImageLink((int)currentImageId,(int)
 						// currentStepGroupId);
 						Log.d("TULP", "Filename :" + filenames.getString(k));
@@ -82,11 +73,9 @@ public class SpecificBuildingInstructionsAPICaller extends TulpAPICaller
 				e.printStackTrace();
 			}
 			Log.d("TULP", "Instructions name :" + buildingInstuctionsName);
-			Log.d("TULP", "Instructions description :"
-					+ buildingInstructionsDescription);
+			Log.d("TULP", "Instructions description :" + buildingInstructionsDescription);
 
-			dbh.insertBuildingInstructions(idInstruction,
-					buildingInstructionsDescription, shortcutPicture,
+			dbh.insertBuildingInstructions(idInstruction, buildingInstructionsDescription, shortcutPicture,
 					buildingInstuctionsName);
 			if (TextUtils.isDigitsOnly(buildingInstuctionsName))
 			{

@@ -10,6 +10,9 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -23,6 +26,9 @@ public abstract class TulpAPICaller extends AsyncTask<String, String, String>
 			+ API_KEY;
 	protected static final String GET_ALL_LEGO_SETS_URL	= "http://www.cubiculus.com/api-rest/lego-sets/"
 			+ API_KEY;
+
+	private static final int CONNECTION_TIMEOUT = 10000;
+
 	Context context;
 	dbHelper dbh;
 
@@ -37,6 +43,20 @@ public abstract class TulpAPICaller extends AsyncTask<String, String, String>
 	protected HttpEntity getHttp(String url) throws ClientProtocolException, IOException
 	{
 		HttpClient httpClient	= new DefaultHttpClient();
+		HttpGet http			= new HttpGet(url);
+		HttpResponse response	= httpClient.execute(http);
+
+		return response.getEntity();
+	}
+
+	protected HttpEntity getHttpWithTimeout(String url) throws ClientProtocolException, IOException
+	{
+		HttpParams httpParams	= new BasicHttpParams();
+
+		HttpConnectionParams.setConnectionTimeout(httpParams, CONNECTION_TIMEOUT);
+		HttpConnectionParams.setSoTimeout(httpParams, CONNECTION_TIMEOUT);
+
+		HttpClient httpClient	= new DefaultHttpClient(httpParams);
 		HttpGet http			= new HttpGet(url);
 		HttpResponse response	= httpClient.execute(http);
 
