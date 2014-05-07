@@ -28,61 +28,45 @@ public class UpdateDbActivity extends Activity
 	private int 			nbErrorSets;
 	private String 			strategy;
 	private Boolean 		canPressBack;
-	private Object			lock;
+	public Object			lock;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_update_db);
-
 		// Let's simply disable change of orientation. Otherwise, activity will be recreated and everything starts back. Annoying.
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 
-		// Dummy object for synchronized blocks.
 		lock = new Object();
 
 		// Initializing status variables.
 		nbCurrentSets	= 0;
-		nbErrorSets		= 0;
+		setNbErrorSets(0);
 		nbTotalSets		= 0;
 
 		canPressBack	= true;
-
-		// Let's get the update strategy that was passed by MainActivity. This tells us if we must fetch all building instructions
-		// to get set id's, or to simply check in the import table to get set id's to import.
 		strategy		= getIntent().getStringExtra("strategy");
-
-		// Let's init the view components.
 		initElements();
 
-		// Let's create a new database helper.
 		dbHelper	= new dbHelper(getApplicationContext());
 
-		// Let's open the writable database.
 		dbHelper.openWritableDatabase();
 
 		if(strategy.equals("from_building_instructions"))
 		{
 			// We must fetch all building instructions to get set id's.
-
-			// User can't press back until updating is complete.
 			canPressBack	= false;
-
-			// At first, we show an indeterminate progressbar because there is a big delay to fetch / parse all building instructions.
 			progressBarProgressBar.setIndeterminate(true);
 
 			// Let's tell the user that we are initializing update.
 			textviewPercentageDone.setText(R.string.update_db_initializing);
 
-			// Let's create the asynctask that will fetch all building instructions.
-			// When that task has succeeded, AllBuildingInstructionsAPICallerHasFinished() is called.
-			// If that task fails (eg. network error / JSON error), AllBuildingInstructionsAPICallerHasFailed() is called.
+			// Fetching all building instructions.
 			(new AllBuildingInstructionsAPICaller(getApplicationContext(), dbHelper, this)).execute("");
 		}
 		else if(strategy.equals("from_import_table"))
 		{
-			// We must only fetch set info from the import table. Let's go.
 			importSetsFromDb();
 		}
 	}
@@ -98,7 +82,6 @@ public class UpdateDbActivity extends Activity
 	@Override
 	public void onBackPressed()
 	{
-		// Let's allow back button only if the used can (all sets imported with or without error / no asynctasks running).
 		if(canPressBack)
 		{
 			super.onBackPressed();
@@ -122,32 +105,20 @@ public class UpdateDbActivity extends Activity
 
 		buttonErrorRetry		= (Button)			findViewById(R.id.button_retry);
 
-		// ActionListener for 'retry' button (when there are errors).
 		buttonErrorRetry.setOnClickListener(new View.OnClickListener()
 		{
-
 			@Override
 			public void onClick(View v)
 			{
-				showProgressLayout();
+				relativeLayoutProgress.setVisibility(View.VISIBLE);
+				relativeLayoutError.setVisibility(View.GONE);
 				importSetsFromDb();
 			}
 		});
 
-		// At first, we want to show the progress layout (not the error layout).
-		showProgressLayout();
-
-		// At first, we set the percentage to 0 because nothing was loaded.
-		setCurrentPercentage(0);
-	}
-
-	/**
-	 * Show the 'progress' layout.
-	 */
-	private void showProgressLayout()
-	{
 		relativeLayoutProgress.setVisibility(View.VISIBLE);
 		relativeLayoutError.setVisibility(View.GONE);
+		setCurrentPercentage(0);
 	}
 
 	/**
@@ -155,50 +126,19 @@ public class UpdateDbActivity extends Activity
 	 */
 	private void importSetsFromDb()
 	{
-		// We don't want the user to press back until loading has finished.
 		canPressBack	= false;
-
-		// Let's open the database for writing.
 		dbHelper.openWritableDatabase();
-
-		// Let's set the total number of sets to the number of rows in the import table.
-		setTotalNumberOfSets(dbHelper.getNumberOfSetsToBeImported());
-
-		// Let's set the current percentage to 0.
+		synchronized (lock)
+		{
+			nbTotalSets	= dbHelper.getNumberOfSetsToBeImported();
+		}
 		setCurrentPercentage(0);
 
 		// Reinitializing status variables.
 		nbCurrentSets	= 0;
-		nbErrorSets		= 0;
+		setNbErrorSets(0);
 
-		// Let's launch the ImportLegoSets asynctask.
 		(new ImportLegoSets(getApplicationContext(), dbHelper, this)).execute("");
-	}
-
-	/**
-	 * Sets the total number of sets to be loaded.
-	 */
-	public void setTotalNumberOfSets(int argNbSets)
-	{
-		// Because threads might call this method at the same time, we use a synchronized block to prevent errors
-		// in the incrementation process.
-		synchronized (lock)
-		{
-			nbTotalSets	= argNbSets;
-		}
-	}
-
-	/**
-	 * Increments the number of (network) errors.
-	 */
-	public void incrementNumberOfErrors()
-	{
-		// Because threads might call this method at the same time, we use a synchronized block to prevent errors
-		// in the incrementation process.
-		synchronized(lock)
-		{
-			++nbErrorSets;
-		}
 	}
 
 	/**
@@ -206,21 +146,15 @@ public class UpdateDbActivity extends Activity
 	 */
 	public void incrementNumberOfSets()
 	{
-		// Because threads might call this method at the same time, we use a synchronized block to prevent errors
-		// in the incrementation process.
 		synchronized (lock)
 		{
 			++nbCurrentSets;
-
 			if(0 != nbTotalSets)
 			{
-				// Simple check to prevent division by 0, in case...
 				setCurrentPercentage((double) nbCurrentSets / nbTotalSets);
 			}
-
 			if(nbCurrentSets == nbTotalSets)
 			{
-				// All sets were loaded.
 				allSetsLoaded();
 			}
 		}
@@ -242,24 +176,21 @@ public class UpdateDbActivity extends Activity
 	 */
 	private void allSetsLoaded()
 	{
-		// Now the user can press back.
 		canPressBack	= true;
 
-		// Database doesn't need to be writable anymore so let's close it.
 		dbHelper.closeWritableDatabase();
 
-		if(0 != nbErrorSets)
+		if(0 != getNbErrorSets())
 		{
 			// If there were (network) errors, let's change the visible layout to show there were errors and let's update the 'error status'
 			// according to if all sets failed or only some of them.
 			relativeLayoutProgress.setVisibility(View.GONE);
 			relativeLayoutError.setVisibility(View.VISIBLE);
 
-			textviewErrorStatus.setText((nbErrorSets == nbTotalSets) ? R.string.update_db_total_errors_status : R.string.update_db_partial_errors_status);
+			textviewErrorStatus.setText((getNbErrorSets() == nbTotalSets) ? R.string.update_db_total_errors_status : R.string.update_db_partial_errors_status);
 		}
 		else
 		{
-			// Everything went without a single error. Let's press back for the user and go back to MainActivity.
 			onBackPressed();
 		}
 	}
@@ -272,8 +203,6 @@ public class UpdateDbActivity extends Activity
 	{
 		// We will now load a precise number of sets so the progressbar will not be indeterminate.
 		progressBarProgressBar.setIndeterminate(false);
-
-		// Let's import sets from the import table.
 		importSetsFromDb();
 	}
 
@@ -283,5 +212,13 @@ public class UpdateDbActivity extends Activity
 	public void AllBuildingInstructionsAPICallerHasFailed()
 	{
 		// TODO !!
+	}
+
+	public int getNbErrorSets() {
+		return nbErrorSets;
+	}
+
+	public void setNbErrorSets(int nbErrorSets) {
+		this.nbErrorSets = nbErrorSets;
 	}
 }

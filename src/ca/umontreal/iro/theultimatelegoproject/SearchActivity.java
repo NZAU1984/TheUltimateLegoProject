@@ -33,15 +33,9 @@ public class SearchActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search);
-
-		// Show the Up button in the action bar.
 		setupActionBar();
-
 		initiateButton();
-
 		initiateEditTexts();
-
-
 	}
 
 
@@ -75,13 +69,6 @@ public class SearchActivity extends Activity
 		switch (item.getItemId())
 		{
 		case android.R.id.home:
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		}
@@ -108,14 +95,12 @@ public class SearchActivity extends Activity
 	private void initiateButton()
 	{
 		searchGo = findViewById(R.id.button_search);
-
 		searchGo.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
 			public void onClick(View v)
 			{
 				String keyword	= editTextKeyword.getText().toString();
-
 				//editTextYearFrom
 
 				String yearFrom		= editTextYearFrom.getText().toString();
@@ -149,7 +134,6 @@ public class SearchActivity extends Activity
 					String temp	= yearTo;
 					yearTo		= yearFrom;
 					yearFrom	= temp;
-
 					editTextYearFrom.setText(yearFrom);
 					editTextYearTo.setText(yearTo);
 				}
@@ -175,9 +159,7 @@ public class SearchActivity extends Activity
 				}
 
 				dbHelper dbHelper	= new dbHelper(getApplicationContext());
-
-				Cursor cursor	= dbHelper.search(keyword, priceFrom, priceTo, yearFrom, yearTo, nbPiecesFrom, nbPiecesTo, false, true);
-
+				Cursor cursor	= dbHelper.searchLegoSets(keyword, priceFrom, priceTo, yearFrom, yearTo, nbPiecesFrom, nbPiecesTo, false, true);
 				int count	= 0;
 
 				if(0 < cursor.getCount())

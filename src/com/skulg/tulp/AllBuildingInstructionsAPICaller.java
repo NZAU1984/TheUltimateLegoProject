@@ -43,57 +43,12 @@ public class AllBuildingInstructionsAPICaller extends TulpAPICaller
 			JSONArray  jsArrayBuildingInstructions = new JSONArray(json);
 			int			nbInstructions				= jsArrayBuildingInstructions.length();
 
-			//updateDbActivity.setTotalNumberOfSets(nbInstructions);
-
-//			Log.d("douda", "there are " + nbInstructions + " instructions");
-
 			for (int i = 0; i < nbInstructions; i++)
 			{
 
-				// new SpecificBuildingInstructionsAPICaller(context, dbh,
-				// i+"").execute();
-
-				/*
-				 * All this will be replaced by
-				 * SpecificBuildingInstructionsAPICall
-				 */
-
 				JSONObject currentJsonBuildingInstuction = jsArrayBuildingInstructions.getJSONObject(i);
-				// String buildingInstructionsDescription
-				// =currentJsonBuildingInstuction.getString("description");
-				// int idInstruction =
-				// currentJsonBuildingInstuction.getInt("idInstruction");
 				String buildingInstructionName	= currentJsonBuildingInstuction.getString("name");
 				String buildingInstructionId	= currentJsonBuildingInstuction.getString("idInstruction");
-				/*
-				 * String shortcutPicture =
-				 * currentJsonBuildingInstuction.getString("shortcutPicture");
-				 * JSONArray stepgroups; try { stepgroups =
-				 * currentJsonBuildingInstuction.getJSONArray("stepGroups");
-				 * Log.d("TULP", "FOUND A STEPGROUP"); }catch (JSONException e)
-				 * { erreur = "Erreur JSON :"+e.getMessage();
-				 * e.printStackTrace(); } Log.d("TULP","Instructions name :"+
-				 * buildingInstuctionsName);
-				 * Log.d("TULP","Instructions description :"+
-				 * buildingInstructionsDescription);
-				 *
-				 *
-				 *
-				 *
-				 * /* for (int j=0 ; j<stepgroups.length(); j++){ JSONObject
-				 * currentStepGroup = stepgroups.getJSONObject(j); String name =
-				 * currentStepGroup.getString("name"); JSONArray filenames =
-				 * currentStepGroup.getJSONArray("filenames"); for (int k=0 ;
-				 * k<filenames.length(); k++){ Log.d("TULP","Filename :"+
-				 * filenames.getJSONObject(k)); }
-				 *
-				 * }
-				 *
-				 *
-				 * this.dbh.insertBuildingInstructions(idInstruction,
-				 * buildingInstructionsDescription, shortcutPicture,
-				 * buildingInstuctionsName);
-				 */
 				if (TextUtils.isDigitsOnly(buildingInstructionName))
 				{
 					dbh.insertImportSet(buildingInstructionName, buildingInstructionId);

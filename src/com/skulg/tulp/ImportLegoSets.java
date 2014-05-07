@@ -34,19 +34,15 @@ public class ImportLegoSets extends TulpAPICaller
 		{
 			String setId					= cursor.getString(keyIndex);
 			String buildingInstructionId	= cursor.getString(buildingInstructionsIdIndex);
-
 			if(Tools.currentSets < Tools.totalSets)
 			{
 				new LegoSetsApiCaller(context, dbh, updateDbActivity).execute(setId, buildingInstructionId);
 
 				++Tools.currentSets;
 			}
-
 			cursor.moveToNext();
 		}
-
 		cursor.close();
-
 		return null;
 	}
 

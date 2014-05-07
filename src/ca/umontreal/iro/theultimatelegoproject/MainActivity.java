@@ -21,11 +21,7 @@ public class MainActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
 		tulpApplication	= (TulpApplication) getApplication();
-
-		Tools.shortToast(getApplicationContext(), "MAIN :: onCreate");
-
 		dbHelper	= new dbHelper(getApplicationContext());
 	}
 
@@ -40,7 +36,6 @@ public class MainActivity extends Activity
 		// By default, we want to first fetch all building instructions and then get the sets from them.
 		String updateIntent	= "from_building_instructions";
 
-		// db exists if updateDb = !true = false
 		if(!updateDb)
 		{
 			// Let's check if the last time we updated is older than today - ...
@@ -106,12 +101,9 @@ public class MainActivity extends Activity
 	private void launchSearchResultActivity()
 	{
 		String sqlRequest = "SELECT * FROM sets WHERE is_favorite=1";
-
 		Intent launchSearchResultActivity = new Intent(this, SearchResultActivity.class);
-
 		launchSearchResultActivity.putExtra("sql_request", sqlRequest);
 		launchSearchResultActivity.putExtra("favorites", true);
-
 		startActivity(launchSearchResultActivity);
 	}
 
@@ -119,7 +111,6 @@ public class MainActivity extends Activity
 	{
 		Intent launchUpdateDbActivity = new Intent(this, UpdateDbActivity.class);
 		launchUpdateDbActivity.putExtra("strategy", updateIntent);
-
 		startActivity(launchUpdateDbActivity);
 	}
 

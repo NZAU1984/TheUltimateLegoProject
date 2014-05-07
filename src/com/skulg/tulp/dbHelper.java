@@ -113,20 +113,6 @@ public class dbHelper extends SQLiteOpenHelper
 				+ STEP_GROUP_NAME_COLUMN + " text" + ")";
 		db.execSQL(sql);
 
-		sql = "create table " + INSTRUCTION_IMAGES_TABLE_NAME + " (" + KEY_ID + " integer primary key AUTOINCREMENT, "
-				+ INSTRUCTION_IMAGES_URL_COLUMN + " text" + ")";
-		// db.execSQL(sql);
-
-		sql = "create table " + STEP_GROUP_INSTRUCTIONS_LINK_TABLE_NAME + " (" + KEY_ID
-				+ " integer primary key AUTOINCREMENT , " + STEP_GROUP_INSTRUCTIONS_STEP_GROUP_ID_COLUMN + " integer,"
-				+ STEP_GROUP_INSTRUCTIONS_INSTRUCTIONS_ID_COLUMN + " integer" + ")";
-		// db.execSQL(sql);
-
-		sql = "create table " + STEP_GROUP_IMAGES_LINK_TABLE_NAME + " (" + KEY_ID
-				+ " integer primary key AUTOINCREMENT, " + STEP_GROUP_IMAGES_STEP_GROUP_ID_COLUMN + " integer,"
-				+ STEP_GROUP_IMAGES_IMAGE_ID_COLUMN + " integer" + ")";
-		// db.execSQL(sql);
-
 		sql = "create table " + IMAGES_TABLE_NAME + " (" + KEY_ID + " integer primary key AUTOINCREMENT, "
 				+ IMAGE_URL_COLUMN + " text," + IMAGE_INSTRUCTIONSID_COLUMN + " integer" + ")";
 		db.execSQL(sql);
@@ -173,7 +159,6 @@ public class dbHelper extends SQLiteOpenHelper
 		val.put(LEGOSETS_IMAGE_URL_COLUMN, imageUrl);
 		val.put(LEGOSETS_NAME_COLUMN, name);
 		val.put(LEGOSETS_LEGO_MODEL_NAME_COLUMN, modelName);
-		// DUPLICATE val.put(LEGOSETS_LEGO_MODEL_NAME_COLUMN, modelName);
 		val.put(LEGOSETS_PIECES_COLUMN, nbPieces);
 		val.put(LEGOSETS_PRICE_COLUMN, price);
 		val.put(LEGOSETS_RELEASED_COLUMN, released);
@@ -284,21 +269,16 @@ public class dbHelper extends SQLiteOpenHelper
 
 	public Cursor getAllLegoSets()
 	{
-		// String selectQuery = "SELECT  * FROM "+LEGOSETS_TABLE_NAME+ " ;";
 		SQLiteDatabase db = getReadableDatabase();
 		Cursor cursor = db.query(LEGOSETS_TABLE_NAME, null, null, null, null, null, null);
-		// Cursor cursor = db.rawQuery(selectQuery, null);
 		return cursor;
 	}
 
 	public Cursor getLegoSet(String setId, Boolean updateSeen)
 	{
 		String selectColumns[]	= {LEGOSETS_IMAGE_URL_COLUMN, LEGOSETS_DESCRIPTION_COLUMN, LEGOSETS_RELEASED_COLUMN, LEGOSETS_PRICE_COLUMN, LEGOSETS_PIECES_COLUMN, LEGOSETS_FAVORITE_COLUMN};
-
 		openWritableDatabase();
-
 		Cursor cursor	= null;
-
 		try
 		{
 			cursor = writableDb.query(LEGOSETS_TABLE_NAME, selectColumns, KEY_ID + "=?", new String[] {setId}, null, null, null);
@@ -384,7 +364,7 @@ public class dbHelper extends SQLiteOpenHelper
 		return cursor;
 	}
 
-	public Cursor search(String keywords, String minPrice, String maxPrice, String minYear, String maxYear,
+	public Cursor searchLegoSets(String keywords, String minPrice, String maxPrice, String minYear, String maxYear,
 			String minPieces, String maxPieces, Boolean favorite, Boolean returnCount)
 	{
 		//SQLiteDatabase db = getReadableDatabase();
@@ -523,8 +503,6 @@ public class dbHelper extends SQLiteOpenHelper
 
 		try
 		{
-			// insertWithOnConflict() with CONFLICT_IGNORE at last parameter doesn't not generate an exception if inserting
-			// an already existing row.
 			writableDb.insertWithOnConflict(IMPORT_TABLE_NAME, null, val, SQLiteDatabase.CONFLICT_IGNORE);
 		}
 		catch (SQLException e)
@@ -533,10 +511,6 @@ public class dbHelper extends SQLiteOpenHelper
 
 			return false;
 		}
-
-		// Not closing writable database since there are going to be many inserts soon.
-
-		//Log.d("dbHelper", "    " + setId + " added in import table");
 
 		return true;
 	}

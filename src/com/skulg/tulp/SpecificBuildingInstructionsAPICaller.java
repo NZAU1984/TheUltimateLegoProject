@@ -54,16 +54,10 @@ public class SpecificBuildingInstructionsAPICaller extends TulpAPICaller
 				for (int j = 0; j < stepgroups.length(); j++)
 				{
 					JSONObject currentStepGroup = stepgroups.getJSONObject(j);
-					// String name = currentStepGroup.getString("name");
-					// long currentStepGroupId=dbh.insertStepGroup(name);
-					// dbh.insertStepGroupInstructionsLink(idInstruction, (int)
-					// currentStepGroupId);
 					JSONArray filenames = currentStepGroup.getJSONArray("fileNames");
 					for (int k = 0; k < filenames.length(); k++)
 					{
 						long currentImageId = dbh.insertImages("" + filenames.getString(k), idInstruction);
-						// dbh.insertStepGroupImageLink((int)currentImageId,(int)
-						// currentStepGroupId);
 						Log.d("TULP", "Filename :" + filenames.getString(k));
 					}
 				}

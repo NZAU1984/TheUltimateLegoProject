@@ -96,7 +96,7 @@ public class SearchResultActivity extends Activity
 
 		if (isFav)
 		{
-			searchResults = dbHelper.search(null, null, null, null, null, null, null, true, false);
+			searchResults = dbHelper.searchLegoSets(null, null, null, null, null, null, null, true, false);
 		} else
 		{
 			String keyword = intent.getStringExtra("keyword");
@@ -107,7 +107,7 @@ public class SearchResultActivity extends Activity
 			String nbPiecesFrom = intent.getStringExtra("pieces_from");
 			String nbPiecesTo = intent.getStringExtra("pieces_to");
 
-			searchResults = dbHelper.search(keyword, priceFrom, priceTo, yearFrom, yearTo, nbPiecesFrom, nbPiecesTo, false, false);
+			searchResults = dbHelper.searchLegoSets(keyword, priceFrom, priceTo, yearFrom, yearTo, nbPiecesFrom, nbPiecesTo, false, false);
 		}
 
 		nbResults = searchResults.getCount();

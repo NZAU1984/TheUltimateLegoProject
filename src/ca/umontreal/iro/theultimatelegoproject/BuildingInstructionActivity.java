@@ -63,9 +63,7 @@ public class BuildingInstructionActivity extends Activity
 			{
 				//Tools.shortToast(getApplicationContext(), "Page changed : " + arg0);
 				viewPagerThumbnails.setCurrentItem(arg0);
-
 				updateThumbnailViewPager(arg0);
-
 				bigPosition	= arg0;
 			}
 

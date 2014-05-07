@@ -40,11 +40,8 @@ public class SetInfoActivity extends Activity
 		tulpApplication		= (TulpApplication) getApplication();
 
 		Intent intent	= getIntent();
-
 		dbHelper	= new dbHelper(getApplicationContext());
-
 		Cursor cursor	= dbHelper.getLegoSet(intent.getStringExtra("set_id"), true);
-
 		if(null == cursor)
 		{
 			Tools.longToast(getApplicationContext(), "The specified set does not exist.");
@@ -70,8 +67,6 @@ public class SetInfoActivity extends Activity
 
 		if(null == setInfo)
 		{
-			//Tools.shortToast(getApplicationContext(), "setInfo is null ! Error ?");
-
 			return;
 		}
 
