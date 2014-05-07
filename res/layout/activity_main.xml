@@ -13,7 +13,7 @@
         <Button
             android:id="@+id/button_search_acceuil"
             style="@style/EditText"
-            android:text="@string/button_search"  />
+            android:text="@string/search_button_search"  />
         
         <Space
             android:layout_width="fill_parent"

@@ -10,35 +10,15 @@
     tools:context=".SearchResultActivity"
     android:background="@drawable/red_background" >
 
-
-    <Button
-        android:id="@+id/button_showset456"
-        android:background="@drawable/button_custom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:text="@string/garbage_showSet456" />
-
-    <Button
-        android:id="@+id/button_showset123"
-        android:background="@drawable/button_custom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/button_showset456"
-        android:text="@string/garbage_showSet123" />
-
     <GridView
         android:id="@+id/gridview_lego_sets"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/button_showset123"
-        android:numColumns="3" 
         android:horizontalSpacing="@dimen/margin_item_side"
-        android:verticalSpacing="@dimen/margin_item_height">
+        android:numColumns="3"
+        android:verticalSpacing="@dimen/margin_item_height" >
+
     </GridView>
 
 </RelativeLayout>

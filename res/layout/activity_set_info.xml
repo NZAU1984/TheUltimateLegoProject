@@ -13,8 +13,9 @@
     tools:context=".SetInfoActivity" >
     
     <RelativeLayout
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
+        	android:id="@+id/relativelayout_imagewrapper"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
 			android:layout_weight="2">
 
 			<ImageView
@@ -39,6 +40,14 @@
 			    android:layout_alignParentRight="true"
 			    android:clickable="true"
 			    android:src="@drawable/image_spanner" />
+			<ImageView
+			    android:id="@+id/imageview_favorite"
+			    android:layout_width="100dp"
+			    android:layout_height="100dp"
+			    android:layout_alignParentTop="true"
+			    android:layout_alignParentRight="true"
+			    android:clickable="true"
+			    android:src="@drawable/image_star" />
         
     </RelativeLayout>
     <ScrollView

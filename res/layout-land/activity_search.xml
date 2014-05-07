@@ -12,7 +12,7 @@
     	
         <EditText
             android:id="@+id/searchBox"
-            android:hint="@string/search_field" 
+            android:hint="@string/search_search_field" 
             style="@style/EditText" />
         
         <Space
@@ -31,12 +31,12 @@
 	    		android:orientation="vertical"  > 
 	    		
 	    	    <TextView
-		            android:text="@string/annee_indication"
+		            android:text="@string/search_year_indication"
 		            style="@style/IndicationText" />
 	    	    
 	    	    <EditText
 		            android:id="@+id/annee_min_search"
-		            android:hint="@string/annee_min_search"
+		            android:hint="@string/search_year_min_search"
 		            style="@style/EditText"
 		            android:layout_weight="1"
 		            android:paddingRight="5dp"
@@ -44,7 +44,7 @@
 	    	    
 	    	    <EditText
 		            android:id="@+id/annee_max_search"
-		            android:hint="@string/annee_max_search" 
+		            android:hint="@string/search_year_max_search" 
 		            style="@style/EditText"
 		            android:layout_weight="1"
 		            android:paddingLeft="5dp"
@@ -63,12 +63,12 @@
 	    		android:orientation="vertical"  > 
 	    		
 	    	    <TextView
-		            android:text="@string/prix_indication"
+		            android:text="@string/search_price_indication"
 		            style="@style/IndicationText" />
 	    	    
 	    	    <EditText
 		            android:id="@+id/prix_min_search"
-		            android:hint="@string/prix_min_search"
+		            android:hint="@string/search_price_min_search"
 		            style="@style/EditText"
 		            android:layout_weight="1"
 		            android:paddingRight="5dp"
@@ -76,7 +76,7 @@
 	    	    
 	    	    <EditText
 		            android:id="@+id/prix_max_search"
-		            android:hint="@string/prix_max_search" 
+		            android:hint="@string/search_price_max_search" 
 		            style="@style/EditText"
 		            android:layout_weight="1"
 		            android:paddingLeft="5dp"
@@ -96,12 +96,12 @@
 	    		android:orientation="vertical"  > 
 	    		
 	    	    <TextView
-		            android:text="@string/piece_indication"
+		            android:text="@string/search_piece_indication"
 		            style="@style/IndicationText" />
 	    	    
 	    	    <EditText
 		            android:id="@+id/piece_min_search"
-		            android:hint="@string/piece_min_search"
+		            android:hint="@string/search_piece_min_search"
 		            style="@style/EditText"
 		            android:layout_weight="1"
 		            android:paddingRight="5dp"
@@ -109,7 +109,7 @@
 	    	    
 	    	    <EditText
 		            android:id="@+id/piece_max_search"
-		            android:hint="@string/piece_max_search" 
+		            android:hint="@string/search_piece_max_search" 
 		            style="@style/EditText"
 		            android:layout_weight="1"
 		            android:paddingLeft="5dp"
@@ -144,7 +144,7 @@
 		        android:layout_width="fill_parent"
 		        android:layout_height="fill_parent"
 		        android:gravity="left"
-		        android:text="@string/button_search" 
+		        android:text="@string/search_button_search" 
 		        android:textSize="@dimen/text_box_size"
 		        android:layout_weight="1"/>
 

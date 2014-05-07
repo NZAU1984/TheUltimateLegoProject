@@ -4,6 +4,13 @@
     android:orientation="vertical"
     android:background="@drawable/red_background">
 
+    
+    <!-- http://stackoverflow.com/questions/1555109/stop-edittext-from-gaining-focus-at-activity-startup
+    Dummy item to prevent AutoCompleteTextView from receiving focus -->
+	<LinearLayout
+    android:focusable="true" android:focusableInTouchMode="true"
+    android:layout_width="0px" android:layout_height="0px"/>
+    
     <LinearLayout 
     	android:layout_width="fill_parent"
     	android:layout_height="fill_parent"
@@ -12,15 +19,16 @@
     	
         <EditText
             android:id="@+id/searchBox"
-            android:hint="@string/search_field" 
-            style="@style/EditText" />
+            style="@style/EditText"
+            android:hint="@string/search_search_field"
+            android:nextFocusDown="@+id/annee_min_search" />
 	
         <Space
             android:layout_width="fill_parent"
         	android:layout_height="@dimen/linear_padding_height" />
         	
         <TextView
-            android:text="@string/annee_indication"
+            android:text="@string/search_year_indication"
             style="@style/IndicationText" />
             
         <LinearLayout 
@@ -31,23 +39,30 @@
 
 	        <EditText
 	            android:id="@+id/annee_min_search"
-	            android:hint="@string/annee_min_search"
 	            style="@style/EditText"
 	            android:layout_weight="1"
-	            android:paddingRight="5dp"
-	            android:inputType="number" />
+	            android:hint="@string/search_year_min_search"
+	            android:inputType="number"
+	            android:nextFocusDown="@+id/annee_max_search"
+	            android:nextFocusLeft="@+id/searchBox"
+	            android:nextFocusRight="@+id/annee_max_search"
+	            android:paddingRight="5dp" />
 	        
 	        <Space
             	android:layout_width="@dimen/space_between_box"
         		android:layout_height="fill_parent" />
 	                 
 	      	<EditText
-	            android:id="@+id/annee_max_search"
-	            android:hint="@string/annee_max_search" 
-	            style="@style/EditText"
-	            android:layout_weight="1"
-	            android:paddingLeft="5dp"
-	            android:inputType="number" />
+	      	    android:id="@+id/annee_max_search"
+	      	    style="@style/EditText"
+	      	    android:layout_weight="1"
+	      	    android:hint="@string/search_year_max_search"
+	      	    android:inputType="number"
+	      	    android:nextFocusDown="@+id/prix_min_search"
+	      	    android:nextFocusLeft="@+id/annee_min_search"
+	      	    android:nextFocusRight="@+id/prix_min_search"
+	      	    android:nextFocusUp="@+id/annee_min_search"
+	      	    android:paddingLeft="5dp" />
 	        
         </LinearLayout>
         
@@ -56,7 +71,7 @@
         	android:layout_height="@dimen/linear_padding_height" />
         	
          <TextView
-            android:text="@string/prix_indication"
+            android:text="@string/search_price_indication"
             style="@style/IndicationText" />
          
         <LinearLayout 
@@ -67,23 +82,27 @@
 
 	        <EditText
 	            android:id="@+id/prix_min_search"
-	            android:hint="@string/prix_min_search"
 	            style="@style/EditText"
 	            android:layout_weight="1"
-	            android:paddingRight="5dp"
-	            android:inputType="number" />
+	            android:hint="@string/search_price_min_search"
+	            android:inputType="numberDecimal"
+	            android:nextFocusDown="@+id/prix_max_search"
+	            android:nextFocusUp="@+id/annee_max_search"
+	            android:paddingRight="5dp" />
 	        
 	        <Space
             	android:layout_width="@dimen/space_between_box"
         		android:layout_height="fill_parent" />
 	                 
 	      	<EditText
-	            android:id="@+id/prix_max_search"
-	            android:hint="@string/prix_max_search" 
-	            style="@style/EditText"
-	            android:layout_weight="1"
-	            android:paddingLeft="5dp"
-	            android:inputType="number" />
+	      	    android:id="@+id/prix_max_search"
+	      	    style="@style/EditText"
+	      	    android:layout_weight="1"
+	      	    android:hint="@string/search_price_max_search"
+	      	    android:inputType="numberDecimal"
+	      	    android:nextFocusDown="@+id/piece_min_search"
+	      	    android:nextFocusUp="@+id/prix_min_search"
+	      	    android:paddingLeft="5dp" />
         
      	</LinearLayout> 
      
@@ -92,7 +111,7 @@
         	android:layout_height="@dimen/linear_padding_height" />
         	
          <TextView
-            android:text="@string/piece_indication"
+            android:text="@string/search_piece_indication"
             style="@style/IndicationText" />
          
         <LinearLayout 
@@ -103,23 +122,26 @@
 
 	        <EditText
 	            android:id="@+id/piece_min_search"
-	            android:hint="@string/piece_min_search"
 	            style="@style/EditText"
 	            android:layout_weight="1"
-	            android:paddingRight="5dp"
-	            android:inputType="number" />
+	            android:hint="@string/search_piece_min_search"
+	            android:inputType="number"
+	            android:nextFocusDown="@+id/piece_max_search"
+	            android:nextFocusUp="@+id/prix_max_search"
+	            android:paddingRight="5dp" />
 	        
 	        <Space
             	android:layout_width="@dimen/space_between_box"
         		android:layout_height="fill_parent" />
 	                 
 	      	<EditText
-	            android:id="@+id/piece_max_search"
-	            android:hint="@string/piece_max_search" 
-	            style="@style/EditText"
-	            android:layout_weight="1"
-	            android:paddingLeft="5dp"
-	            android:inputType="number" />
+	      	    android:id="@+id/piece_max_search"
+	      	    style="@style/EditText"
+	      	    android:layout_weight="1"
+	      	    android:hint="@string/search_piece_max_search"
+	      	    android:inputType="number"
+	      	    android:nextFocusUp="@+id/piece_min_search"
+	      	    android:paddingLeft="5dp" />
     
         </LinearLayout>
         
@@ -145,10 +167,10 @@
 		    <TextView
 		        android:layout_width="fill_parent"
 		        android:layout_height="fill_parent"
+		        android:layout_weight="1"
 		        android:gravity="left"
-		        android:text="@string/button_search" 
-		        android:textSize="@dimen/text_box_size"
-		        android:layout_weight="1"/>
+		        android:text="@string/search_button_search"
+		        android:textSize="@dimen/text_box_size" />
 
 		</LinearLayout>
              
