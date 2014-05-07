@@ -90,14 +90,7 @@ public class TulpApplication extends Application
 		}
 
 		// SetInfo(Context argContext, String argSetId, String argImageURL, String argDescription, int argYear, float argPrice, int argNbPieces)
-		return new SetInfo(
-				getApplicationContext(),
-				"123",
-				"http://www.cubiculus.com/images/507",
-				getApplicationContext().getString(R.string.garbage_lorem_ipsum),
-				2010,
-				56.45,
-				0);
+		return null;
 	}
 
 	public Boolean isDbCreated()

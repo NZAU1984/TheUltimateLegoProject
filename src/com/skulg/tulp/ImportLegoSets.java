@@ -25,19 +25,19 @@ public class ImportLegoSets extends TulpAPICaller
 
 		Cursor cursor	= dbh.getAllSetsToBeImported();
 
+		int keyIndex					= cursor.getColumnIndex(dbh.KEY_ID);
+		int buildingInstructionsIdIndex	= cursor.getColumnIndex(dbh.IMPORT_BUILDING_INSTRUCTIONS_ID);
+
 		cursor.moveToFirst();
 
-		while(false == cursor.isAfterLast())
+		while(!cursor.isAfterLast())
 		{
-			String setId	= cursor.getString(0);
-
-			//Log.d("ImportLegoSets", "Set id is " + setId);
-
-			//updateDbActivity.incrementNumberOfSets();
+			String setId					= cursor.getString(keyIndex);
+			String buildingInstructionId	= cursor.getString(buildingInstructionsIdIndex);
 
 			if(Tools.currentSets < Tools.totalSets)
 			{
-				new LegoSetsApiCaller(context, dbh, updateDbActivity).execute(setId);
+				new LegoSetsApiCaller(context, dbh, updateDbActivity).execute(setId, buildingInstructionId);
 
 				++Tools.currentSets;
 			}

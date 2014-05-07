@@ -1,28 +1,29 @@
 package ca.umontreal.iro.theultimatelegoproject;
 
-import java.util.ArrayList;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.skulg.tulp.dbHelper;
+
 public class SearchActivity extends Activity
 {
 
-	private EditText searchBox, anneeMinBox, anneeMaxBox, prixMinBox, prixMaxBox, pieceMinBox, pieceMaxBox;
-	private String searchText;
-	private int anneeMin, anneeMax, prixMin, prixMax, pieceMin, pieceMax;
+	private EditText editTextKeyword, editTextYearFrom, editTextYearTo, editTextPriceFrom, editTextPriceTo, editTextPieceFrom, editTextPieceTo;
 	private View searchGo;
-	private static ArrayList<String> historique;
+
+	//private String searchText;
+	//private int anneeMin, anneeMax, prixMin, prixMax, pieceMin, pieceMax;
+	//private static ArrayList<String> historique;
 
 
 
@@ -38,15 +39,9 @@ public class SearchActivity extends Activity
 
 		initiateButton();
 
+		initiateEditTexts();
 
-	}
 
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-	    super.onPostCreate(savedInstanceState);
-
-	    // Sync the toggle state after onRestoreInstanceState has occurred.
-	    initiateEditTexts();
 	}
 
 
@@ -94,13 +89,17 @@ public class SearchActivity extends Activity
 	}
 
 
-	private void launchSearchResultActivity()
+	private void launchSearchResultActivity(String keyword, String yearFrom, String yearTo, String priceFrom, String priceTo, String nbPiecesFrom, String nbPiecesTo)
 	{
-		String sqlRequest = "SELECT * FROM sets WHERE id=456";
-
 		Intent launchSearchResultActivity = new Intent(this, SearchResultActivity.class);
 
-		launchSearchResultActivity.putExtra("sql_request", sqlRequest);
+		launchSearchResultActivity.putExtra("keyword", keyword);
+		launchSearchResultActivity.putExtra("year_from", yearFrom);
+		launchSearchResultActivity.putExtra("year_to", yearTo);
+		launchSearchResultActivity.putExtra("price_from", priceFrom);
+		launchSearchResultActivity.putExtra("price_to", priceTo);
+		launchSearchResultActivity.putExtra("pieces_from", nbPiecesFrom);
+		launchSearchResultActivity.putExtra("pieces_to", nbPiecesTo);
 
 		startActivity(launchSearchResultActivity);
 	}
@@ -115,8 +114,87 @@ public class SearchActivity extends Activity
 			@Override
 			public void onClick(View v)
 			{
-				launchSearchResultActivity();
+				String keyword	= editTextKeyword.getText().toString();
 
+				//editTextYearFrom
+
+				String yearFrom		= editTextYearFrom.getText().toString();
+				String yearTo		= editTextYearTo.getText().toString();
+				String priceFrom	= editTextPriceFrom.getText().toString();
+				String priceTo		= editTextPriceTo.getText().toString();
+				String nbPiecesFrom	= editTextPieceFrom.getText().toString();
+				String nbPiecesTo	= editTextPieceTo.getText().toString();
+
+				if(
+					!TextUtils.isDigitsOnly(yearFrom)
+					||
+					!TextUtils.isDigitsOnly(yearTo)
+					||
+					(!priceFrom.equals("") && !priceFrom.matches("-?\\d+(\\.\\d+)?"))
+					||
+					(!priceTo.equals("") && !priceTo.matches("-?\\d+(\\.\\d+)?"))
+					||
+					!TextUtils.isDigitsOnly(nbPiecesFrom)
+					||
+					!TextUtils.isDigitsOnly(nbPiecesTo)
+				)
+				{
+					Tools.shortToast(getApplicationContext(), getApplicationContext().getString(R.string.search_enter_numeric_values_only));
+
+					return;
+				}
+
+				if(!yearFrom.equals("") && !yearTo.equals("") && (0 < yearFrom.compareTo(yearTo)))
+				{
+					String temp	= yearTo;
+					yearTo		= yearFrom;
+					yearFrom	= temp;
+
+					editTextYearFrom.setText(yearFrom);
+					editTextYearTo.setText(yearTo);
+				}
+
+				if(!priceFrom.equals("") && !priceTo.equals("") && (Float.valueOf(priceFrom) > Float.valueOf(priceTo)))
+				{
+					String temp	= priceTo;
+					priceTo		= priceFrom;
+					priceFrom	= temp;
+
+					editTextPriceFrom.setText(priceFrom);
+					editTextPriceTo.setText(priceTo);
+				}
+
+				if(!nbPiecesFrom.equals("") && !nbPiecesTo.equals("") && (0 < nbPiecesFrom.compareTo(nbPiecesTo)))
+				{
+					String temp		= nbPiecesTo;
+					nbPiecesTo		= nbPiecesFrom;
+					nbPiecesFrom	= temp;
+
+					editTextPieceFrom.setText(nbPiecesFrom);
+					editTextPieceTo.setText(nbPiecesTo);
+				}
+
+				dbHelper dbHelper	= new dbHelper(getApplicationContext());
+
+				Cursor cursor	= dbHelper.search(keyword, priceFrom, priceTo, yearFrom, yearTo, nbPiecesFrom, nbPiecesTo, false, true);
+
+				int count	= 0;
+
+				if(0 < cursor.getCount())
+				{
+					cursor.moveToFirst();
+
+					count	= cursor.getInt(0);
+				}
+
+				if(0 == count)
+				{
+					Tools.longToast(getApplicationContext(), getApplicationContext().getString(R.string.search_no_results));
+
+					return;
+				}
+
+				launchSearchResultActivity(keyword, yearFrom, yearTo, priceFrom, priceTo, nbPiecesFrom, nbPiecesTo);
 			}
 		});
 
@@ -125,10 +203,17 @@ public class SearchActivity extends Activity
 
 	private void initiateEditTexts() {
 
+		editTextKeyword = (EditText)findViewById(R.id.searchBox);
+		editTextYearFrom = (EditText)findViewById(R.id.annee_min_search);
+		editTextYearTo = (EditText)findViewById(R.id.annee_max_search);
+		editTextPriceFrom = (EditText)findViewById(R.id.prix_min_search);
+		editTextPriceTo = (EditText)findViewById(R.id.prix_max_search);
+		editTextPieceFrom = (EditText)findViewById(R.id.piece_min_search);
+		editTextPieceTo = (EditText)findViewById(R.id.piece_max_search);
+
 		//KeyWord EditText
 
-		searchBox = (EditText)findViewById(R.id.searchBox);
-		 TextWatcher textWatcher = new TextWatcher(){
+		 /*TextWatcher textWatcher = new TextWatcher(){
 
 			    @Override
 			    public void onTextChanged(CharSequence s, int start, int before, int count) {}
@@ -143,13 +228,12 @@ public class SearchActivity extends Activity
 			    	searchText = s.toString();
 			    }
 		};
-		searchBox.addTextChangedListener(textWatcher);
+		searchBox.addTextChangedListener(textWatcher);*/
 
 
 		//anne_min EditText
 
-		anneeMinBox = (EditText)findViewById(R.id.annee_min_search);
-		 TextWatcher textWatcher2 = new TextWatcher(){
+		/*TextWatcher textWatcher2 = new TextWatcher(){
 
 			    @Override
 			    public void onTextChanged(CharSequence s, int start, int before, int count) {}
@@ -164,12 +248,11 @@ public class SearchActivity extends Activity
 			    	anneeMin = Integer.parseInt(s.toString());
 			    }
 		};
-		anneeMinBox.addTextChangedListener(textWatcher2);
+		anneeMinBox.addTextChangedListener(textWatcher2);*/
 
 		//annee_max EditText
 
-		anneeMaxBox = (EditText)findViewById(R.id.annee_max_search);
-		 TextWatcher textWatcher3 = new TextWatcher(){
+		 /*TextWatcher textWatcher3 = new TextWatcher(){
 
 			    @Override
 			    public void onTextChanged(CharSequence s, int start, int before, int count) {}
@@ -184,12 +267,11 @@ public class SearchActivity extends Activity
 			    	anneeMax = Integer.parseInt(s.toString());
 			    }
 		};
-		anneeMaxBox.addTextChangedListener(textWatcher3);
+		anneeMaxBox.addTextChangedListener(textWatcher3);*/
 
 		//prix_min EditText
 
-		prixMinBox = (EditText)findViewById(R.id.prix_min_search);
-		 TextWatcher textWatcher4 = new TextWatcher(){
+		 /*TextWatcher textWatcher4 = new TextWatcher(){
 
 			    @Override
 			    public void onTextChanged(CharSequence s, int start, int before, int count) {}
@@ -204,12 +286,11 @@ public class SearchActivity extends Activity
 			    	prixMin = Integer.parseInt(s.toString());
 			    }
 		};
-		prixMinBox.addTextChangedListener(textWatcher4);
+		prixMinBox.addTextChangedListener(textWatcher4);*/
 
 		//prix_max EditText
 
-		prixMaxBox = (EditText)findViewById(R.id.prix_max_search);
-		 TextWatcher textWatcher5 = new TextWatcher(){
+		 /*TextWatcher textWatcher5 = new TextWatcher(){
 
 			    @Override
 			    public void onTextChanged(CharSequence s, int start, int before, int count) {}
@@ -224,12 +305,12 @@ public class SearchActivity extends Activity
 			    	prixMax = Integer.parseInt(s.toString());
 			    }
 		};
-		prixMaxBox.addTextChangedListener(textWatcher5);
+		prixMaxBox.addTextChangedListener(textWatcher5);*/
 
 		//piece_min EditText
 
-		pieceMinBox = (EditText)findViewById(R.id.piece_min_search);
-		 TextWatcher textWatcher6 = new TextWatcher(){
+
+		 /*TextWatcher textWatcher6 = new TextWatcher(){
 
 			    @Override
 			    public void onTextChanged(CharSequence s, int start, int before, int count) {}
@@ -244,13 +325,12 @@ public class SearchActivity extends Activity
 			    	pieceMin = Integer.parseInt(s.toString());
 			    }
 		};
-		pieceMinBox.addTextChangedListener(textWatcher6);
+		pieceMinBox.addTextChangedListener(textWatcher6);*/
 
 
 		//piece_max EditText
 
-		pieceMaxBox = (EditText)findViewById(R.id.piece_max_search);
-		 TextWatcher textWatcher7 = new TextWatcher(){
+		 /*TextWatcher textWatcher7 = new TextWatcher(){
 
 			    @Override
 			    public void onTextChanged(CharSequence s, int start, int before, int count) {}
@@ -265,7 +345,7 @@ public class SearchActivity extends Activity
 			    	pieceMax = Integer.parseInt(s.toString());
 			    }
 		};
-		pieceMaxBox.addTextChangedListener(textWatcher7);
+		pieceMaxBox.addTextChangedListener(textWatcher7);*/
 	}
 
 

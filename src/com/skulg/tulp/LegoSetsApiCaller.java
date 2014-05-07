@@ -40,7 +40,8 @@ public class LegoSetsApiCaller extends TulpAPICaller
 	protected String doInBackground(String... legoSets)
 	{
 		// There is only one set because we create a new instance of LegoSetsApiCalled() for each set to be imported.
-		String setId	= legoSets[0];
+		String setId					= legoSets[0];
+		String buildingInstructionsId	= legoSets[1];
 		Boolean removeFromImportTable	= false;
 		HttpEntity legoSetPage;
 
@@ -77,7 +78,7 @@ public class LegoSetsApiCaller extends TulpAPICaller
 					released = currentJsonLegoSet.getInt("released");
 				}
 
-				dbh.insertLegoSets(description, boxNumber, imageUrl, name, modelName, nbPieces, price, released);
+				dbh.insertLegoSets(description, boxNumber, imageUrl, name, modelName, nbPieces, price, released, buildingInstructionsId);
 
 				removeFromImportTable	= true;
 			}

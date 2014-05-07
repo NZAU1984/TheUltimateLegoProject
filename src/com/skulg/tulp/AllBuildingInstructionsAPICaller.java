@@ -63,7 +63,8 @@ public class AllBuildingInstructionsAPICaller extends TulpAPICaller
 				// =currentJsonBuildingInstuction.getString("description");
 				// int idInstruction =
 				// currentJsonBuildingInstuction.getInt("idInstruction");
-				String buildingInstructionsName = currentJsonBuildingInstuction.getString("name");
+				String buildingInstructionName	= currentJsonBuildingInstuction.getString("name");
+				String buildingInstructionId	= currentJsonBuildingInstuction.getString("idInstruction");
 				/*
 				 * String shortcutPicture =
 				 * currentJsonBuildingInstuction.getString("shortcutPicture");
@@ -93,11 +94,9 @@ public class AllBuildingInstructionsAPICaller extends TulpAPICaller
 				 * buildingInstructionsDescription, shortcutPicture,
 				 * buildingInstuctionsName);
 				 */
-				if (TextUtils.isDigitsOnly(buildingInstructionsName))
+				if (TextUtils.isDigitsOnly(buildingInstructionName))
 				{
-					//Log.d("AllBuildingInstructionsAPICaller", "Inserting building instruction in import table : " + buildingInstructionsName);
-
-					dbh.insertImportSet(Integer.valueOf(buildingInstructionsName));
+					dbh.insertImportSet(buildingInstructionName, buildingInstructionId);
 				}
 
 			}
