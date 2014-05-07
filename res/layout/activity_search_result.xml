@@ -15,9 +15,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
-        android:horizontalSpacing="@dimen/margin_item_side"
+        android:horizontalSpacing="@dimen/between_item"
         android:numColumns="3"
-        android:verticalSpacing="@dimen/margin_item_height" >
+        android:verticalSpacing="@dimen/between_item" >
 
     </GridView>
 

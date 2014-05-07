@@ -5,17 +5,9 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     
     
-	<dimen name="linear_padding_side">80dp</dimen>
-    <dimen name="text_box_size">35sp</dimen>
-    <dimen name="linear_padding_height">80dp</dimen>
-    <dimen name="search_button_icon_padding">10dp</dimen>
-    <dimen name="textInBox_padding_height">6sp</dimen>
-    <dimen name="space_between_box">5dp</dimen>
-    <dimen name="margin_item_side">10dp</dimen>
-    <dimen name="margin_item_height">10dp</dimen>
-    <dimen name="space_black_degrade">20dp</dimen>
-    <dimen name="linear_padding_side_land">400dp</dimen>
-    <dimen name="linear_padding_height_land">40dp</dimen>
-    <dimen name="space_between_box_land">50dp</dimen>
+	<dimen name="activity_padding">80dp</dimen>
+	<dimen name="between_item">10dp</dimen>
+	<dimen name="text_defaut_size">12sp</dimen>
+    <dimen name="margin_item_size"></dimen>
     
 </resources>

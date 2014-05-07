@@ -6,8 +6,8 @@
   
     <ImageView
         android:id="@+id/imageview_image"
-        android:paddingLeft="@dimen/margin_item_side"
-        android:paddingRight="@dimen/margin_item_side"
+        android:paddingLeft="@dimen/between_item"
+        android:paddingRight="@dimen/between_item"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:scaleType="fitCenter" />

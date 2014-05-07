@@ -64,10 +64,6 @@
 
    </ScrollView>
    
-    <Space
-            android:layout_width="fill_parent"
-            android:background="@drawable/degrade_black_transparent"
-        	android:layout_height="@dimen/space_black_degrade" />
 
     <LinearLayout
         android:layout_width="match_parent"

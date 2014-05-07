@@ -8,7 +8,7 @@
     	android:layout_width="fill_parent"
     	android:layout_height="fill_parent"
     	android:orientation="vertical"  
-    	android:padding="@dimen/linear_padding_side"  >
+    	android:padding="@dimen/activity_padding"  >
     	
         <Button
             android:id="@+id/button_search_acceuil"
@@ -17,7 +17,7 @@
         
         <Space
             android:layout_width="fill_parent"
-        	android:layout_height="@dimen/linear_padding_height" />
+        	android:layout_height="@dimen/activity_padding" />
         
         <Button
             android:id="@+id/button_favorites"
