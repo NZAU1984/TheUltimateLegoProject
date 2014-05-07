@@ -5,8 +5,6 @@
     android:background="@drawable/red_background">
 
     
-    <!-- http://stackoverflow.com/questions/1555109/stop-edittext-from-gaining-focus-at-activity-startup
-    Dummy item to prevent AutoCompleteTextView from receiving focus -->
 	<LinearLayout
     android:focusable="true" android:focusableInTouchMode="true"
     android:layout_width="0px" android:layout_height="0px"/>

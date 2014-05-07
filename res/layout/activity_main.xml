@@ -15,6 +15,12 @@
             style="@style/EditText"
             android:text="@string/search_button_search"  />
         
+        <LinearLayout
+	        android:layout_width="fill_parent"
+	    	android:layout_height="wrap_content"
+	    	android:orientation="vertical"  
+        />
+        
         <Space
             android:layout_width="fill_parent"
         	android:layout_height="@dimen/linear_padding_height" />
