@@ -246,6 +246,7 @@ public class SearchResultActivity extends Activity
 				holder.imageView	= (ImageView) view.findViewById(R.id.imageview_image);
 				holder.progressBar	= (ProgressBar) view.findViewById(R.id.progressbar_spinner);
 				holder.favoriteImageView	= (ImageView) view.findViewById(R.id.imageview_favorite);
+				holder.wrapper				= (RelativeLayout) view.findViewById(R.id.relativelayout_wrapper);
 
 				view.setTag(holder);
 
@@ -274,11 +275,11 @@ public class SearchResultActivity extends Activity
 
 			if(currentSet.seen)
 			{
-				// TODO change color to seen color
+				holder.wrapper.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.button_seen));
 			}
 			else
 			{
-				// TODO change color to NOT seen color
+				holder.wrapper.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.button_defaut));
 			}
 
 			imageLoader.displayImage(currentSet.imageUrl, holder.imageView, options, new SimpleImageLoadingListener()
@@ -318,6 +319,7 @@ public class SearchResultActivity extends Activity
 			ImageView imageView;
 			ProgressBar progressBar;
 			ImageView favoriteImageView;
+			RelativeLayout wrapper;
 		}
 	}
 }
