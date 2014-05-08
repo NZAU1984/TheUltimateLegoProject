@@ -77,6 +77,7 @@ public class SearchResultActivity extends Activity
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 			{
+				
 				launchSetInfoActivity(searchResultsArrayList.get(position).id);
 			}
 		});
