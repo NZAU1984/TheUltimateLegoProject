@@ -72,7 +72,6 @@ public abstract class TulpAPICaller extends AsyncTask<String, String, String>
 		http.setHeader("Content-Type", "application/json");
 
 		http.setEntity(new StringEntity(data));
-		//http.setHeader("Content-Length", String.valueOf(data.length()));
 
 		HttpResponse response	= httpClient.execute(http);
 

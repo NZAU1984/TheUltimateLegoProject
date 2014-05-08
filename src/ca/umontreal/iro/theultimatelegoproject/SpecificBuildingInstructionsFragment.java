@@ -14,7 +14,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 
 import com.skulg.tulp.TulpAPICaller;
 import com.skulg.tulp.dbHelper;
@@ -76,10 +75,7 @@ public class SpecificBuildingInstructionsFragment extends Fragment
 
 		String theId	= getArguments().getString("building_instructions_id");
 
-		Log.d("== fragment ==", "theId = " + theId);
-
 		dbHelper dbHelper	= new dbHelper(getActivity().getApplicationContext());
-
 
 		// Create and execute the background task.
 		specificBuildingInstructionsAsyncTask = new SpecificBuildingInstructionsAsyncTask(getActivity().getApplicationContext(), dbHelper, theId);
@@ -172,8 +168,6 @@ public class SpecificBuildingInstructionsFragment extends Fragment
 				{
 					stepgroups	= currentJsonBuildingInstuction.getJSONArray("stepGroups");
 
-					Log.d("TULP", "FOUND A STEPGROUP");
-
 					for (int j = 0, stepgroupsLength = stepgroups.length(); j < stepgroupsLength; j++)
 					{
 						JSONObject currentStepGroup	= stepgroups.getJSONObject(j);
@@ -182,8 +176,6 @@ public class SpecificBuildingInstructionsFragment extends Fragment
 						for (int k = 0, filenamesLength = filenames.length(); k < filenamesLength; k++)
 						{
 							long currentImageId = dbh.insertImages("" + filenames.getString(k), Integer.valueOf(buildingInstructionsId));
-
-							Log.d("TULP", "Filename :" + filenames.getString(k));
 						}
 					}
 				}
