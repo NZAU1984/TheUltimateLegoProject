@@ -33,6 +33,7 @@
 		        android:layout_centerVertical="true" />
 
 			<ImageView
+			    android:gravity="left"
 			    android:id="@+id/imageview_favorite"
 			    android:layout_width="50dp"
 			    android:layout_height="50dp"
