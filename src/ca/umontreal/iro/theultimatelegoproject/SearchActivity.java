@@ -21,13 +21,6 @@ public class SearchActivity extends Activity
 	private EditText editTextKeyword, editTextYearFrom, editTextYearTo, editTextPriceFrom, editTextPriceTo, editTextPieceFrom, editTextPieceTo;
 	private View searchGo;
 
-	//private String searchText;
-	//private int anneeMin, anneeMax, prixMin, prixMax, pieceMin, pieceMax;
-	//private static ArrayList<String> historique;
-
-
-
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -37,11 +30,6 @@ public class SearchActivity extends Activity
 		initiateButton();
 		initiateEditTexts();
 	}
-
-
-
-
-
 
 	/**
 	 * Set up the {@link android.app.ActionBar}, if the API is available.
@@ -100,9 +88,7 @@ public class SearchActivity extends Activity
 			@Override
 			public void onClick(View v)
 			{
-				String keyword	= editTextKeyword.getText().toString();
-				//editTextYearFrom
-
+				String keyword		= editTextKeyword.getText().toString();
 				String yearFrom		= editTextYearFrom.getText().toString();
 				String yearTo		= editTextYearTo.getText().toString();
 				String priceFrom	= editTextPriceFrom.getText().toString();
@@ -159,14 +145,19 @@ public class SearchActivity extends Activity
 				}
 
 				dbHelper dbHelper	= new dbHelper(getApplicationContext());
-				Cursor cursor	= dbHelper.searchLegoSets(keyword, priceFrom, priceTo, yearFrom, yearTo, nbPiecesFrom, nbPiecesTo, false, true);
-				int count	= 0;
+				Cursor cursor		= dbHelper.searchLegoSets(keyword, priceFrom, priceTo, yearFrom, yearTo, nbPiecesFrom, nbPiecesTo, false, true);
+				int count			= 0;
 
-				if(0 < cursor.getCount())
+				if(null != cursor)
 				{
-					cursor.moveToFirst();
+					if(0 < cursor.getCount())
+					{
+						cursor.moveToFirst();
 
-					count	= cursor.getInt(0);
+						count	= cursor.getInt(0);
+					}
+
+					cursor.close();
 				}
 
 				if(0 == count)
@@ -182,158 +173,14 @@ public class SearchActivity extends Activity
 
 	}
 
-
-	private void initiateEditTexts() {
-
-		editTextKeyword = (EditText)findViewById(R.id.searchBox);
-		editTextYearFrom = (EditText)findViewById(R.id.annee_min_search);
-		editTextYearTo = (EditText)findViewById(R.id.annee_max_search);
-		editTextPriceFrom = (EditText)findViewById(R.id.prix_min_search);
-		editTextPriceTo = (EditText)findViewById(R.id.prix_max_search);
-		editTextPieceFrom = (EditText)findViewById(R.id.piece_min_search);
-		editTextPieceTo = (EditText)findViewById(R.id.piece_max_search);
-
-		//KeyWord EditText
-
-		 /*TextWatcher textWatcher = new TextWatcher(){
-
-			    @Override
-			    public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-			    @Override
-			    public void beforeTextChanged(CharSequence s, int start, int count,
-			      int after) {}
-
-			    @Override
-			    public void afterTextChanged(Editable s) {
-
-			    	searchText = s.toString();
-			    }
-		};
-		searchBox.addTextChangedListener(textWatcher);*/
-
-
-		//anne_min EditText
-
-		/*TextWatcher textWatcher2 = new TextWatcher(){
-
-			    @Override
-			    public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-			    @Override
-			    public void beforeTextChanged(CharSequence s, int start, int count,
-			      int after) {}
-
-			    @Override
-			    public void afterTextChanged(Editable s) {
-
-			    	anneeMin = Integer.parseInt(s.toString());
-			    }
-		};
-		anneeMinBox.addTextChangedListener(textWatcher2);*/
-
-		//annee_max EditText
-
-		 /*TextWatcher textWatcher3 = new TextWatcher(){
-
-			    @Override
-			    public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-			    @Override
-			    public void beforeTextChanged(CharSequence s, int start, int count,
-			      int after) {}
-
-			    @Override
-			    public void afterTextChanged(Editable s) {
-
-			    	anneeMax = Integer.parseInt(s.toString());
-			    }
-		};
-		anneeMaxBox.addTextChangedListener(textWatcher3);*/
-
-		//prix_min EditText
-
-		 /*TextWatcher textWatcher4 = new TextWatcher(){
-
-			    @Override
-			    public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-			    @Override
-			    public void beforeTextChanged(CharSequence s, int start, int count,
-			      int after) {}
-
-			    @Override
-			    public void afterTextChanged(Editable s) {
-
-			    	prixMin = Integer.parseInt(s.toString());
-			    }
-		};
-		prixMinBox.addTextChangedListener(textWatcher4);*/
-
-		//prix_max EditText
-
-		 /*TextWatcher textWatcher5 = new TextWatcher(){
-
-			    @Override
-			    public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-			    @Override
-			    public void beforeTextChanged(CharSequence s, int start, int count,
-			      int after) {}
-
-			    @Override
-			    public void afterTextChanged(Editable s) {
-
-			    	prixMax = Integer.parseInt(s.toString());
-			    }
-		};
-		prixMaxBox.addTextChangedListener(textWatcher5);*/
-
-		//piece_min EditText
-
-
-		 /*TextWatcher textWatcher6 = new TextWatcher(){
-
-			    @Override
-			    public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-			    @Override
-			    public void beforeTextChanged(CharSequence s, int start, int count,
-			      int after) {}
-
-			    @Override
-			    public void afterTextChanged(Editable s) {
-
-			    	pieceMin = Integer.parseInt(s.toString());
-			    }
-		};
-		pieceMinBox.addTextChangedListener(textWatcher6);*/
-
-
-		//piece_max EditText
-
-		 /*TextWatcher textWatcher7 = new TextWatcher(){
-
-			    @Override
-			    public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-			    @Override
-			    public void beforeTextChanged(CharSequence s, int start, int count,
-			      int after) {}
-
-			    @Override
-			    public void afterTextChanged(Editable s) {
-
-			    	pieceMax = Integer.parseInt(s.toString());
-			    }
-		};
-		pieceMaxBox.addTextChangedListener(textWatcher7);*/
+	private void initiateEditTexts()
+	{
+		editTextKeyword		= (EditText)findViewById(R.id.searchBox);
+		editTextYearFrom	= (EditText)findViewById(R.id.annee_min_search);
+		editTextYearTo		= (EditText)findViewById(R.id.annee_max_search);
+		editTextPriceFrom	= (EditText)findViewById(R.id.prix_min_search);
+		editTextPriceTo 	= (EditText)findViewById(R.id.prix_max_search);
+		editTextPieceFrom 	= (EditText)findViewById(R.id.piece_min_search);
+		editTextPieceTo		= (EditText)findViewById(R.id.piece_max_search);
 	}
-
-
-
-
-
-	//private void toSqlDemand(){}
-
 }

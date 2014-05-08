@@ -44,7 +44,7 @@ public class dbHelper extends SQLiteOpenHelper
 	public static final String LEGOSETS_RELEASED_COLUMN = "released";
 	public static final String LEGOSETS_FAVORITE_COLUMN = "favorite";
 	public static final String LEGOSETS_SEEN_COLUMN = "seen";
-	static final String LEGOSETS_BUILDING_INSTRUCTIONS_ID	= "buildingInstructionsId";
+	public static final String LEGOSETS_BUILDING_INSTRUCTIONS_ID	= "buildingInstructionsId";
 
 	// BUILDING INSTRUCTIONS COLUMN NAME
 
@@ -67,7 +67,7 @@ public class dbHelper extends SQLiteOpenHelper
 	static final String STEP_GROUP_IMAGES_IMAGE_ID_COLUMN = "imageId";
 
 	// IMAGES COLUMN NAME
-	static final String IMAGE_URL_COLUMN = "url";
+	public static final String IMAGE_URL_COLUMN = "url";
 	static final String IMAGE_INSTRUCTIONSID_COLUMN = "instructionsId";
 
 	// IMPORT COLUMN NAME
@@ -177,7 +177,7 @@ public class dbHelper extends SQLiteOpenHelper
 		//db.close();
 	}
 
-	protected void insertBuildingInstructions(int idInstruction, String description, String imageUrl, String name)
+	public void insertBuildingInstructions(int idInstruction, String description, String imageUrl, String name)
 	{
 		//SQLiteDatabase db = getWritableDatabase();
 		ContentValues val = new ContentValues();
@@ -248,7 +248,7 @@ public class dbHelper extends SQLiteOpenHelper
 		db.close();
 	}
 
-	protected long insertImages(String url, int instructionId)
+	public long insertImages(String url, int instructionId)
 	{
 		long resultId = -1;
 		SQLiteDatabase db = getWritableDatabase();
@@ -276,7 +276,7 @@ public class dbHelper extends SQLiteOpenHelper
 
 	public Cursor getLegoSet(String setId, Boolean updateSeen)
 	{
-		String selectColumns[]	= {LEGOSETS_IMAGE_URL_COLUMN, LEGOSETS_DESCRIPTION_COLUMN, LEGOSETS_RELEASED_COLUMN, LEGOSETS_PRICE_COLUMN, LEGOSETS_PIECES_COLUMN, LEGOSETS_FAVORITE_COLUMN};
+		String selectColumns[]	= {LEGOSETS_BUILDING_INSTRUCTIONS_ID, LEGOSETS_IMAGE_URL_COLUMN, LEGOSETS_DESCRIPTION_COLUMN, LEGOSETS_RELEASED_COLUMN, LEGOSETS_PRICE_COLUMN, LEGOSETS_PIECES_COLUMN, LEGOSETS_FAVORITE_COLUMN};
 		openWritableDatabase();
 		Cursor cursor	= null;
 		try
@@ -353,15 +353,35 @@ public class dbHelper extends SQLiteOpenHelper
 	}
 
 	// NOT TESTED YET
-	public Cursor getBuildingInstructionsImages(String setId)
+	public Cursor getBuildingInstructionsImages(String buildingInstructionsId)
 	{
-		SQLiteDatabase db = getReadableDatabase();
+		openWritableDatabase();
+
+		Cursor cursor	= null;
+
+		try
+		{
+			cursor	= writableDb.query(IMAGES_TABLE_NAME, new String[] {IMAGE_URL_COLUMN}, IMAGE_INSTRUCTIONSID_COLUMN + "=?", new String[] {buildingInstructionsId}, null, null, KEY_ID + " ASC");
+		}
+		catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally
+		{
+			closeWritableDatabase();
+		}
+
+		return cursor;
+
+		/*SQLiteDatabase db = getReadableDatabase();
 		String sql = "Select " + IMAGE_URL_COLUMN + " from " + IMAGES_TABLE_NAME + " , "
 				+ BUILDING_INSTRUCTIONS_TABLE_NAME + " where " + setId + " = " + BUILDING_INSTRUCTIONS_NAME_COLUMN
 				+ " AND " + BUILDING_INSTRUCTIONS_TABLE_NAME + "." + KEY_ID + " = " + IMAGE_INSTRUCTIONSID_COLUMN;
 		Log.d("TULP", "Content of sql :" + sql);
 		Cursor cursor = db.rawQuery(sql, null);
-		return cursor;
+		return cursor;*/
 	}
 
 	public Cursor searchLegoSets(String keywords, String minPrice, String maxPrice, String minYear, String maxYear,
@@ -551,6 +571,41 @@ public class dbHelper extends SQLiteOpenHelper
 		}
 
 		return count;
+	}
+
+	public Boolean buildingInstructionsExist(String buildingInstructionsId)
+	{
+		openWritableDatabase();
+
+		Cursor cursor	= null;
+
+		try
+		{
+			cursor = writableDb.query(IMAGES_TABLE_NAME, new String[] {"COUNT(*)"}, IMAGE_INSTRUCTIONSID_COLUMN + "=?", new String[] {buildingInstructionsId}, null, null, null);
+		}
+		catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		finally
+		{
+			closeWritableDatabase();
+		}
+
+		if(null == cursor)
+		{
+			return false;
+		}
+
+		int count	= 0;
+
+		cursor.moveToFirst();
+
+		count	= cursor.getInt(0);
+
+		return (0 == count) ? false : true;
 	}
 
 	public void openWritableDatabase()

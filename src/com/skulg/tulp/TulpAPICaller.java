@@ -30,7 +30,7 @@ public abstract class TulpAPICaller extends AsyncTask<String, String, String>
 	private static final int CONNECTION_TIMEOUT = 10000;
 
 	Context context;
-	dbHelper dbh;
+	protected dbHelper dbh;
 
 	public TulpAPICaller(Context context, dbHelper dbh)
 	{

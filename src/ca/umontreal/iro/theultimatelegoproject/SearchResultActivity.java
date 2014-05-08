@@ -85,11 +85,6 @@ public class SearchResultActivity extends Activity
 
 		Intent intent = getIntent();
 
-		// sqlRequest = intent.getStringExtra("sql_request");
-
-		// TEMP, the SQL request sent will tell this activity what to search, no
-		// need to tell it it's showing favorites !
-
 		isFav = intent.getBooleanExtra("favorites", false);
 
 		Cursor searchResults = null;
@@ -97,17 +92,20 @@ public class SearchResultActivity extends Activity
 		if (isFav)
 		{
 			searchResults = dbHelper.searchLegoSets(null, null, null, null, null, null, null, true, false);
-		} else
+		}
+		else
 		{
-			String keyword = intent.getStringExtra("keyword");
-			String yearFrom = intent.getStringExtra("year_from");
-			String yearTo = intent.getStringExtra("year_to");
-			String priceFrom = intent.getStringExtra("price_from");
-			String priceTo = intent.getStringExtra("price_to");
-			String nbPiecesFrom = intent.getStringExtra("pieces_from");
-			String nbPiecesTo = intent.getStringExtra("pieces_to");
-
-			searchResults = dbHelper.searchLegoSets(keyword, priceFrom, priceTo, yearFrom, yearTo, nbPiecesFrom, nbPiecesTo, false, false);
+			searchResults = dbHelper.searchLegoSets(
+				intent.getStringExtra("keyword"),
+				intent.getStringExtra("price_from"),
+				intent.getStringExtra("price_to"),
+				intent.getStringExtra("year_from"),
+				intent.getStringExtra("year_to"),
+				intent.getStringExtra("pieces_from"),
+				intent.getStringExtra("pieces_to"),
+				false,
+				false
+			);
 		}
 
 		nbResults = searchResults.getCount();
@@ -120,6 +118,11 @@ public class SearchResultActivity extends Activity
 			} else
 			{
 				Tools.longToast(getApplicationContext(), "No results. Please go back to search.");
+			}
+
+			if(null != searchResults)
+			{
+				searchResults.close();
 			}
 
 			return;
@@ -145,6 +148,8 @@ public class SearchResultActivity extends Activity
 
 			searchResults.moveToNext();
 		}
+
+		searchResults.close();
 	}
 
 	@Override

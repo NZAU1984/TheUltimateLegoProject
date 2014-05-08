@@ -5,6 +5,7 @@ import android.content.Context;
 public class SetInfo
 {
 	public String	id;
+	public String	buildingInstructionsId;
 	public String	imageURL;
 	public String	description;
 	public String	year;
@@ -15,17 +16,17 @@ public class SetInfo
 	public String	nbPiecesAsString;
 	public Boolean	favorite;
 
-	public SetInfo(Context context, String argId, String argImageURL, String argDescription, String argYear, String argPrice, String argNbPieces, String argFavorite)
+	public SetInfo(Context context, String argId, String argBuildingInstructionsId, String argImageURL, String argDescription, String argYear, String argPrice, String argNbPieces, String argFavorite)
 	{
-		id					= argId;
-		imageURL			= argImageURL;
-		description			= argDescription;
-		year				= argYear;
-		price				= argPrice;
-		nbPieces			= argNbPieces;
-		favorite			= argFavorite.equals("1");
-
-		yearAsString		= String.format(context.getString(R.string.setinfo_year), year);
+		id						= argId;
+		buildingInstructionsId	= argBuildingInstructionsId;
+		imageURL				= argImageURL;
+		description				= argDescription;
+		year					= argYear;
+		price					= argPrice;
+		nbPieces				= argNbPieces;
+		favorite				= argFavorite.equals("1");
+		yearAsString			= String.format(context.getString(R.string.setinfo_year), year);
 
 		double priceFloat	= 0;
 

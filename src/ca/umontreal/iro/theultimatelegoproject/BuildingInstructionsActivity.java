@@ -1,11 +1,14 @@
 package ca.umontreal.iro.theultimatelegoproject;
 
-import android.app.Activity;
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -14,25 +17,34 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
+import com.skulg.tulp.dbHelper;
 
 /*
  * TODO :
  * -> Simplify BigBuildingGalleryAdapter / ThumbnailBuildingGalleryAdapter ? Abstract class to be extended ?
  * -> ONE imageLoader object, not two !
  */
-public class BuildingInstructionActivity extends Activity
+public class BuildingInstructionsActivity extends android.support.v4.app.FragmentActivity implements SpecificBuildingInstructionsFragment.TaskCallbacks
 {
+	private static final String TAG_TASK_FRAGMENT = "specific_building_instructions_fragment";
+	private SpecificBuildingInstructionsFragment specificBuildingInstructionsFragment;
+
 	private TulpApplication		tulpApplication;
-	private String				setId;
+	private dbHelper			dbHelper;
+	private String				buildingInstructionsId;
 	private ImageLoader			imageLoader;
 	private DisplayImageOptions	options;
 	private LayoutInflater		inflater;
+	private LinearLayout		linearLayoutPicturesWrapper;
+	private RelativeLayout		relativeLayoutSpinnerWrapper;
 	private ViewPager			viewPagerBig;
 	private ViewPager			viewPagerThumbnails;
 	private String[]			imagesURL;
@@ -44,49 +56,46 @@ public class BuildingInstructionActivity extends Activity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_building_instruction);
+		setContentView(R.layout.activity_building_instructions);
 
-		tulpApplication		= (TulpApplication) getApplication();
-		Intent intent		= getIntent();
-		setId				= intent.getStringExtra("set_id");
-		inflater			= (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		imageLoader			= tulpApplication.getImageLoader();
-		options				= tulpApplication.getImageLoaderOptions();
-		viewPagerBig		= (ViewPager) findViewById(R.id.viewpager_big);
-		viewPagerThumbnails	= (ViewPager) findViewById(R.id.viewpager_thumbnail);
+		tulpApplication					= (TulpApplication) getApplication();
+		dbHelper						= new dbHelper(getApplicationContext());
+		Intent intent					= getIntent();
+		buildingInstructionsId			= intent.getStringExtra("building_instructions_id");
+		inflater						= (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		imageLoader						= tulpApplication.getImageLoader();
+		options							= tulpApplication.getImageLoaderOptions();
+		linearLayoutPicturesWrapper		= (LinearLayout) findViewById(R.id.linearlayout_pictures_wrapper);
+		relativeLayoutSpinnerWrapper	= (RelativeLayout) findViewById(R.id.relativelayout_spinner_wrapper);
+		viewPagerBig					= (ViewPager) findViewById(R.id.viewpager_big);
+		viewPagerThumbnails				= (ViewPager) findViewById(R.id.viewpager_thumbnail);
 
-		viewPagerBig.setOnPageChangeListener(new OnPageChangeListener()
+		Tools.longToast(getApplicationContext(), "id = " + buildingInstructionsId);
+
+		if(dbHelper.buildingInstructionsExist(buildingInstructionsId))
 		{
+			initViewPagers();
+		}
+		else
+		{
+			initLoading();
 
-			@Override
-			public void onPageSelected(int arg0)
-			{
-				//Tools.shortToast(getApplicationContext(), "Page changed : " + arg0);
-				viewPagerThumbnails.setCurrentItem(arg0);
-				updateThumbnailViewPager(arg0);
-				bigPosition	= arg0;
-			}
+			FragmentManager fragmentManager			= getSupportFragmentManager();
+			specificBuildingInstructionsFragment	= (SpecificBuildingInstructionsFragment) fragmentManager.findFragmentByTag(TAG_TASK_FRAGMENT);
 
-			@Override
-			public void onPageScrolled(int arg0, float arg1, int arg2)
-			{
-				// TODO Auto-generated method stub
-			}
+		    if(null == specificBuildingInstructionsFragment)
+		    {
+		    	specificBuildingInstructionsFragment	= new SpecificBuildingInstructionsFragment();
 
-			@Override
-			public void onPageScrollStateChanged(int arg0)
-			{
-				// TODO Auto-generated method stub
+		    	Bundle arguments	= new Bundle();
 
-			}
-		});
+		    	arguments.putString("building_instructions_id", buildingInstructionsId);
 
+		    	specificBuildingInstructionsFragment.setArguments(arguments);
 
-		imagesURL		= tulpApplication.getBuildingInstructionImages(setId);
-		imagesURLlength	= imagesURL.length;
-
-		viewPagerBig.setAdapter(new BigBuildingGalleryAdapter(this));
-		viewPagerThumbnails.setAdapter(new ThumbnailBuildingGalleryAdapter(this));
+		    	fragmentManager.beginTransaction().add(specificBuildingInstructionsFragment, TAG_TASK_FRAGMENT).commit();
+		    }
+		}
 	}
 
 	@Override
@@ -123,6 +132,84 @@ public class BuildingInstructionActivity extends Activity
 	{
 		imageLoader.stop();
 		super.onDestroy();
+	}
+
+	private void initViewPagers()
+	{
+		Cursor imagesURLCursor	= dbHelper.getBuildingInstructionsImages(buildingInstructionsId);
+
+		if((null == imagesURLCursor) || (0 == imagesURLCursor.getCount()))
+		{
+			// TODO stringification
+			Tools.shortToast(getApplicationContext(), "No images were found for this set.");
+
+			if(null != imagesURLCursor)
+			{
+				imagesURLCursor.close();
+			}
+
+			return;
+		}
+
+		int urlIndex	= imagesURLCursor.getColumnIndex(dbHelper.IMAGE_URL_COLUMN);
+
+		ArrayList<String> tempArrayList	= new ArrayList<String>();
+
+		imagesURLCursor.moveToFirst();
+
+		while(!imagesURLCursor.isAfterLast())
+		{
+			tempArrayList.add(imagesURLCursor.getString(urlIndex));
+
+			imagesURLCursor.moveToNext();
+		}
+
+		imagesURL		= tempArrayList.toArray(new String[tempArrayList.size()]);
+		imagesURLlength	= imagesURL.length;
+
+		tempArrayList.clear();
+		tempArrayList	= null;
+
+		imagesURLCursor.close();
+		imagesURLCursor	= null;
+
+		linearLayoutPicturesWrapper.setVisibility(View.VISIBLE);
+		relativeLayoutSpinnerWrapper.setVisibility(View.GONE);
+
+		viewPagerBig.setOnPageChangeListener(new OnPageChangeListener()
+		{
+
+			@Override
+			public void onPageSelected(int arg0)
+			{
+				//Tools.shortToast(getApplicationContext(), "Page changed : " + arg0);
+				viewPagerThumbnails.setCurrentItem(arg0);
+				updateThumbnailViewPager(arg0);
+				bigPosition	= arg0;
+			}
+
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2)
+			{
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void onPageScrollStateChanged(int arg0)
+			{
+				// TODO Auto-generated method stub
+
+			}
+		});
+
+		viewPagerBig.setAdapter(new BigBuildingGalleryAdapter(this));
+		viewPagerThumbnails.setAdapter(new ThumbnailBuildingGalleryAdapter(this));
+	}
+
+	private void initLoading()
+	{
+		linearLayoutPicturesWrapper.setVisibility(View.GONE);
+		relativeLayoutSpinnerWrapper.setVisibility(View.VISIBLE);
 	}
 
 	protected void addBorderToThumbnail(int position)
@@ -266,8 +353,6 @@ public class BuildingInstructionActivity extends Activity
 				@Override
 				public void onClick(View v)
 				{
-					//Tools.shortToast(getApplicationContext(), "image click" + finalPosition);
-
 					viewPagerBig.setCurrentItem(finalPosition - 1);
 				}
 			});
@@ -327,5 +412,29 @@ public class BuildingInstructionActivity extends Activity
 
 			return 0.333333333333f;
 		}
+	}
+
+	@Override
+	public void onPreExecute()
+	{
+
+	}
+
+	@Override
+	public void onProgressUpdate(int percent)
+	{
+
+	}
+
+	@Override
+	public void onCancelled()
+	{
+
+	}
+
+	@Override
+	public void onPostExecute()
+	{
+		initViewPagers();
 	}
 }

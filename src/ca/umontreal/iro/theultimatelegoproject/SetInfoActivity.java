@@ -40,10 +40,12 @@ public class SetInfoActivity extends Activity
 		tulpApplication		= (TulpApplication) getApplication();
 
 		Intent intent	= getIntent();
-		dbHelper	= new dbHelper(getApplicationContext());
+		dbHelper		= new dbHelper(getApplicationContext());
 		Cursor cursor	= dbHelper.getLegoSet(intent.getStringExtra("set_id"), true);
+
 		if(null == cursor)
 		{
+			// TODO stringification
 			Tools.longToast(getApplicationContext(), "The specified set does not exist.");
 
 			return;
@@ -55,6 +57,7 @@ public class SetInfoActivity extends Activity
 		setInfo	= new SetInfo(
 			getApplicationContext(),
 			intent.getStringExtra("set_id"),
+			cursor.getString(cursor.getColumnIndex(dbHelper.LEGOSETS_BUILDING_INSTRUCTIONS_ID)),
 			cursor.getString(cursor.getColumnIndex(dbHelper.LEGOSETS_IMAGE_URL_COLUMN)),
 			cursor.getString(cursor.getColumnIndex(dbHelper.LEGOSETS_DESCRIPTION_COLUMN)),
 			cursor.getString(cursor.getColumnIndex(dbHelper.LEGOSETS_RELEASED_COLUMN)),
@@ -63,6 +66,8 @@ public class SetInfoActivity extends Activity
 			cursor.getString(cursor.getColumnIndex(dbHelper.LEGOSETS_FAVORITE_COLUMN))
 		);
 
+		cursor.close();
+
 //		setInfo	= tulpApplication.getSetInfo(intent.getStringExtra("set_id"));
 
 		if(null == setInfo)
@@ -70,7 +75,7 @@ public class SetInfoActivity extends Activity
 			return;
 		}
 
-		Tools.shortToast(getApplicationContext(), "id is " + intent.getStringExtra("set_id"));
+		//Tools.shortToast(getApplicationContext(), "id is " + intent.getStringExtra("set_id"));
 
 		initElements();
 	}
@@ -216,9 +221,9 @@ public class SetInfoActivity extends Activity
 
 	private void launchBuildingInstructionActivity()
 	{
-		Intent launchBuildingInstructionActivity = new Intent(this, BuildingInstructionActivity.class);
+		Intent launchBuildingInstructionActivity = new Intent(this, BuildingInstructionsActivity.class);
 
-		launchBuildingInstructionActivity.putExtra("set_id", setInfo.id);
+		launchBuildingInstructionActivity.putExtra("building_instructions_id", setInfo.buildingInstructionsId);
 
 		startActivity(launchBuildingInstructionActivity);
 	}

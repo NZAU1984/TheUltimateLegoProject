@@ -13,12 +13,11 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
-import ca.umontreal.iro.theultimatelegoproject.UpdateDbActivity;
 
 public class SpecificBuildingInstructionsAPICaller extends TulpAPICaller
 {
 	private String id;
-	private UpdateDbActivity updateDbActivity;
+	//private UpdateDbActivity updateDbActivity;
 
 	public SpecificBuildingInstructionsAPICaller(Context context, dbHelper dbh, String id)
 	{
@@ -55,7 +54,7 @@ public class SpecificBuildingInstructionsAPICaller extends TulpAPICaller
 				{
 					JSONObject currentStepGroup = stepgroups.getJSONObject(j);
 					JSONArray filenames = currentStepGroup.getJSONArray("fileNames");
-					for (int k = 0; k < filenames.length(); k++)
+					for (int k = 0, filenamesLength = filenames.length(); k < filenamesLength; k++)
 					{
 						long currentImageId = dbh.insertImages("" + filenames.getString(k), idInstruction);
 						Log.d("TULP", "Filename :" + filenames.getString(k));
@@ -73,7 +72,7 @@ public class SpecificBuildingInstructionsAPICaller extends TulpAPICaller
 					buildingInstuctionsName);
 			if (TextUtils.isDigitsOnly(buildingInstuctionsName))
 			{
-				new LegoSetsApiCaller(context, dbh, updateDbActivity).execute(buildingInstuctionsName);
+				//new LegoSetsApiCaller(context, dbh, updateDbActivity).execute(buildingInstuctionsName);
 			}
 
 		} catch (ParseException e)
