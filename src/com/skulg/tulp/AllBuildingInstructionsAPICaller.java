@@ -32,7 +32,7 @@ public class AllBuildingInstructionsAPICaller extends TulpAPICaller
 	}
 
 	@Override
-	public String doInBackground(String... strings)
+	public Boolean doInBackground(String... strings)
 	{
 
 		erreur = null;
@@ -85,11 +85,11 @@ public class AllBuildingInstructionsAPICaller extends TulpAPICaller
 			e.printStackTrace();
 		}
 
-		return "Success";
+		return true;
 	}
 
 	@Override
-	protected void onPostExecute(String result)
+	protected void onPostExecute(Boolean result)
 	{
 		if(success)
 		{

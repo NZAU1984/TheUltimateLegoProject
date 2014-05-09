@@ -19,7 +19,7 @@ public class ImportLegoSets extends TulpAPICaller
 	}
 
 	@Override
-	protected String doInBackground(String... arg0)
+	protected Boolean doInBackground(String... arg0)
 	{
 		//Log.d("GetAllLegoSets", "doInBack...");
 
@@ -47,7 +47,7 @@ public class ImportLegoSets extends TulpAPICaller
 	}
 
 	@Override
-	protected void onPostExecute(String result)
+	protected void onPostExecute(Boolean result)
     {
 
     }

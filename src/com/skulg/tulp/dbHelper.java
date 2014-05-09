@@ -71,7 +71,7 @@ public class dbHelper extends SQLiteOpenHelper
 	static final String IMAGE_INSTRUCTIONSID_COLUMN = "instructionsId";
 
 	// IMPORT COLUMN NAME
-	static final String IMPORT_BUILDING_INSTRUCTIONS_ID	= "buildingInstructionsId";
+	public static final String IMPORT_BUILDING_INSTRUCTIONS_ID	= "buildingInstructionsId";
 
 
 	Context context;
@@ -129,7 +129,7 @@ public class dbHelper extends SQLiteOpenHelper
 		Log.d("TULP", "Database Update");
 
 		// Efface l'ancienne base de données
-		deleteAllTables(db);
+		deleteDbFile();
 		// Appelle onCreate, qui recrée la base de données
 		onCreate(db);
 	}
@@ -527,8 +527,6 @@ public class dbHelper extends SQLiteOpenHelper
 		}
 		catch (SQLException e)
 		{
-			Log.d("DBHelper", "Erreur BDD: " + e.getMessage());
-
 			return false;
 		}
 
@@ -538,7 +536,17 @@ public class dbHelper extends SQLiteOpenHelper
 	public Cursor getAllSetsToBeImported()
 	{
 		openWritableDatabase();
-		Cursor cursor = writableDb.query(IMPORT_TABLE_NAME, null, null, null, null, null, null);
+
+		Cursor cursor = null;
+
+		try
+		{
+			cursor	= writableDb.query(IMPORT_TABLE_NAME, null, null, null, null, null, null);
+		}
+		catch(Exception e)
+		{
+			cursor	= null;
+		}
 
 		return cursor;
 	}
