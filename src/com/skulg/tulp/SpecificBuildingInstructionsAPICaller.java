@@ -29,7 +29,7 @@ public class SpecificBuildingInstructionsAPICaller extends TulpAPICaller
 	}
 
 	@Override
-	protected String doInBackground(String... arg0)
+	protected Boolean doInBackground(String... arg0)
 	{
 		// TODO Auto-generated method stub
 

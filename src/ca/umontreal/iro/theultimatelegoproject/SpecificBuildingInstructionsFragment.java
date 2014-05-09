@@ -28,22 +28,6 @@ import com.skulg.tulp.dbHelper;
  */
 public class SpecificBuildingInstructionsFragment extends Fragment
 {
-
-	/**
-	 * Callback interface through which the fragment will report the task's
-	 * progress and results back to the Activity.
-	 */
-	static interface TaskCallbacks
-	{
-		void onPreExecute();
-
-		void onProgressUpdate(int percent);
-
-		void onCancelled();
-
-		void onPostExecute();
-	}
-
 	private TaskCallbacks callingActivity;
 	private SpecificBuildingInstructionsAsyncTask specificBuildingInstructionsAsyncTask;
 
@@ -117,16 +101,17 @@ public class SpecificBuildingInstructionsFragment extends Fragment
 		{
 			if (null != callingActivity)
 			{
-				callingActivity.onPreExecute();
+				callingActivity.onPreExecute("");
 			}
 		}
 
 
-		protected void onProgressUpdate(Integer... percent)
+		@Override
+		protected void onProgressUpdate(Float... fraction)
 		{
 			if (null != callingActivity)
 			{
-				callingActivity.onProgressUpdate(percent[0]);
+				callingActivity.onProgressUpdate(fraction[0]);
 			}
 		}
 
@@ -140,16 +125,16 @@ public class SpecificBuildingInstructionsFragment extends Fragment
 		}
 
 		@Override
-		protected void onPostExecute(String result)
+		protected void onPostExecute(Boolean result)
 		{
 			if (null != callingActivity)
 			{
-				callingActivity.onPostExecute();
+				callingActivity.onPostExecute("", result);
 			}
 		}
 
 		@Override
-		protected String doInBackground(String... arg0)
+		protected Boolean doInBackground(String... arg0)
 		{
 			HttpEntity buildingInstructionsPage;
 			try

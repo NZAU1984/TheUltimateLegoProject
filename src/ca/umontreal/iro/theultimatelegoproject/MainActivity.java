@@ -29,7 +29,7 @@ public class MainActivity extends Activity
 	protected void onStart()
 	{
 		super.onStart();
-
+		//dbHelper.deleteDbFile();
 		// If database file does not exist we'll show UpdateDbActibity and create it and load values in it.
 		Boolean updateDb	= !dbHelper.databaseExists(getApplicationContext());
 

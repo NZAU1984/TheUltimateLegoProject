@@ -32,7 +32,7 @@ import com.skulg.tulp.dbHelper;
  * -> Simplify BigBuildingGalleryAdapter / ThumbnailBuildingGalleryAdapter ? Abstract class to be extended ?
  * -> ONE imageLoader object, not two !
  */
-public class BuildingInstructionsActivity extends android.support.v4.app.FragmentActivity implements SpecificBuildingInstructionsFragment.TaskCallbacks
+public class BuildingInstructionsActivity extends android.support.v4.app.FragmentActivity implements TaskCallbacks
 {
 	private static final String TAG_TASK_FRAGMENT = "specific_building_instructions_fragment";
 	private SpecificBuildingInstructionsFragment specificBuildingInstructionsFragment;
@@ -415,13 +415,13 @@ public class BuildingInstructionsActivity extends android.support.v4.app.Fragmen
 	}
 
 	@Override
-	public void onPreExecute()
+	public void onPreExecute(String fromWho)
 	{
 
 	}
 
 	@Override
-	public void onProgressUpdate(int percent)
+	public void onProgressUpdate(double fraction)
 	{
 
 	}
@@ -433,7 +433,7 @@ public class BuildingInstructionsActivity extends android.support.v4.app.Fragmen
 	}
 
 	@Override
-	public void onPostExecute()
+	public void onPostExecute(String fromWho, Boolean success)
 	{
 		initViewPagers();
 	}

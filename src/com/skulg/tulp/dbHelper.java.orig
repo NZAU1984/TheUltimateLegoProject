@@ -14,7 +14,7 @@ public class dbHelper extends SQLiteOpenHelper
 
 	SQLiteDatabase writableDb;
 
-	static final int VERSION = 21;
+	static final int VERSION = 20;
 
 	// Filename
 	static final String DATABASE_FILENAME = "Tulp.db";
@@ -129,6 +129,10 @@ public class dbHelper extends SQLiteOpenHelper
 		Log.d("TULP", "Database Update");
 
 		// Efface l'ancienne base de données
+<<<<<<< HEAD
+=======
+		deleteAllTables(db);
+>>>>>>> origin/master
 		deleteDbFile();
 		// Appelle onCreate, qui recrée la base de données
 		onCreate(db);
@@ -528,8 +532,6 @@ public class dbHelper extends SQLiteOpenHelper
 		}
 		catch (SQLException e)
 		{
-			Log.d("DBHelper", "Erreur BDD: " + e.getMessage());
-
 			return false;
 		}
 
