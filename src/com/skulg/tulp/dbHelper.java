@@ -14,7 +14,7 @@ public class dbHelper extends SQLiteOpenHelper
 
 	SQLiteDatabase writableDb;
 
-	static final int VERSION = 20;
+	static final int VERSION = 21;
 
 	// Filename
 	static final String DATABASE_FILENAME = "Tulp.db";
