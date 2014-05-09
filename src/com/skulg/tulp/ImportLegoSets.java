@@ -27,9 +27,7 @@ public class ImportLegoSets extends TulpAPICaller
 
 		int keyIndex					= cursor.getColumnIndex(dbh.KEY_ID);
 		int buildingInstructionsIdIndex	= cursor.getColumnIndex(dbh.IMPORT_BUILDING_INSTRUCTIONS_ID);
-
 		cursor.moveToFirst();
-
 		while(!cursor.isAfterLast())
 		{
 			String setId					= cursor.getString(keyIndex);
@@ -45,7 +43,7 @@ public class ImportLegoSets extends TulpAPICaller
 		cursor.close();
 		return null;
 	}
-
+	
 	@Override
 	protected void onPostExecute(String result)
     {

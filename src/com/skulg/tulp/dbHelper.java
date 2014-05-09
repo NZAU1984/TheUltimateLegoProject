@@ -14,7 +14,7 @@ public class dbHelper extends SQLiteOpenHelper
 
 	SQLiteDatabase writableDb;
 
-	static final int VERSION = 18;
+	static final int VERSION = 20;
 
 	// Filename
 	static final String DATABASE_FILENAME = "Tulp.db";
@@ -130,6 +130,7 @@ public class dbHelper extends SQLiteOpenHelper
 
 		// Efface l'ancienne base de données
 		deleteAllTables(db);
+		deleteDbFile();
 		// Appelle onCreate, qui recrée la base de données
 		onCreate(db);
 	}
@@ -143,7 +144,8 @@ public class dbHelper extends SQLiteOpenHelper
 		db.execSQL("drop table if exists " + STEP_GROUP_IMAGES_LINK_TABLE_NAME);
 		db.execSQL("drop table if exists " + STEP_GROUP_INSTRUCTIONS_LINK_TABLE_NAME);
 		db.execSQL("drop table if exists " + IMAGES_TABLE_NAME);
-
+		db.execSQL("drop table if exists " + IMPORT_TABLE_NAME);
+		deleteDbFile();
 	}
 
 	// protected void insertLegoSets(String description, int boxNumber,

@@ -77,7 +77,7 @@ public class SearchResultActivity extends Activity
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 			{
-				
+
 				launchSetInfoActivity(searchResultsArrayList.get(position).id);
 			}
 		});
@@ -97,16 +97,16 @@ public class SearchResultActivity extends Activity
 		else
 		{
 			searchResults = dbHelper.searchLegoSets(
-				intent.getStringExtra("keyword"),
-				intent.getStringExtra("price_from"),
-				intent.getStringExtra("price_to"),
-				intent.getStringExtra("year_from"),
-				intent.getStringExtra("year_to"),
-				intent.getStringExtra("pieces_from"),
-				intent.getStringExtra("pieces_to"),
-				false,
-				false
-			);
+					intent.getStringExtra("keyword"),
+					intent.getStringExtra("price_from"),
+					intent.getStringExtra("price_to"),
+					intent.getStringExtra("year_from"),
+					intent.getStringExtra("year_to"),
+					intent.getStringExtra("pieces_from"),
+					intent.getStringExtra("pieces_to"),
+					false,
+					false
+					);
 		}
 
 		nbResults = searchResults.getCount();
@@ -115,7 +115,7 @@ public class SearchResultActivity extends Activity
 		{
 			if (isFav)
 			{
-				Tools.longToast(getApplicationContext(), "No favorites yet. Please go back to search and add some sets to favorites.");
+				Tools.longToast(getApplicationContext(), "No favorites yet. Please add some sets to favorites first.");
 			} else
 			{
 				Tools.longToast(getApplicationContext(), "No results. Please go back to search.");
@@ -141,11 +141,11 @@ public class SearchResultActivity extends Activity
 		while (!searchResults.isAfterLast())
 		{
 			searchResultsArrayList.add(new SearchResultSet(
-				searchResults.getString(keyIdIndex),
-				searchResults.getString(imageUrlIndex),
-				searchResults.getString(seenIndex),
-				searchResults.getString(favoriteIndex)
-			));
+					searchResults.getString(keyIdIndex),
+					searchResults.getString(imageUrlIndex),
+					searchResults.getString(seenIndex),
+					searchResults.getString(favoriteIndex)
+					));
 
 			searchResults.moveToNext();
 		}
