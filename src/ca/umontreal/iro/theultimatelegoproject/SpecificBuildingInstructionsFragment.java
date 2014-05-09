@@ -136,20 +136,14 @@ public class SpecificBuildingInstructionsFragment extends Fragment
 		@Override
 		protected Boolean doInBackground(String... arg0)
 		{
-			dbh.openWritableDatabase();
-
 			HttpEntity buildingInstructionsPage;
+
 			try
 			{
 				buildingInstructionsPage					= getHttp(GET_ALL_BUILDINGS_INSTRUCTIONS_URL + "/" + buildingInstructionsId);
 				String json									= EntityUtils.toString(buildingInstructionsPage, HTTP.UTF_8);
 				JSONObject currentJsonBuildingInstuction	= new JSONObject(json);
 				JSONArray stepgroups;
-
-				//String buildingInstructionsDescription = currentJsonBuildingInstuction.getString("description");
-				//int idInstruction = currentJsonBuildingInstuction.getInt("idInstruction");
-				//String buildingInstuctionsName = currentJsonBuildingInstuction.getString("name");
-				//String shortcutPicture = currentJsonBuildingInstuction.getString("shortcutPicture");
 
 				try
 				{
@@ -170,16 +164,6 @@ public class SpecificBuildingInstructionsFragment extends Fragment
 				{
 					e.printStackTrace();
 				}
-				//Log.d("TULP", "Instructions name :" + buildingInstuctionsName);
-				//Log.d("TULP", "Instructions description :" + buildingInstructionsDescription);
-
-				//dbh.insertBuildingInstructions(idInstruction, buildingInstructionsDescription, shortcutPicture,
-				//		buildingInstuctionsName);
-				//if (TextUtils.isDigitsOnly(buildingInstuctionsName))
-				//{
-					//new LegoSetsApiCaller(context, dbh, updateDbActivity).execute(buildingInstuctionsName);
-				//}
-
 			}
 			catch (ParseException e)
 			{
@@ -195,10 +179,6 @@ public class SpecificBuildingInstructionsFragment extends Fragment
 			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
-			finally
-			{
-				dbh.closeWritableDatabase();
 			}
 
 			return null;

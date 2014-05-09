@@ -21,6 +21,7 @@
     <string name="setinfo_year">%s</string>
     <string name="setinfo_price">$%.2f</string>
     <string name="setinfo_nopieces">(no pieces)</string>
+    <string name="setinfo_no_such_set">The specified set does not exist.</string>
 
     <!-- ## TEMPORARY GARBAGE ## -->
     <string name="garbage_showSet456">Exemple : set 456</string>
@@ -51,6 +52,10 @@ Integer non felis in libero malesuada hendrerit. Donec sed leo laoreet, iaculis 
     <string name="search_piece_indication">Number of pieces :</string>
     <string name="search_enter_numeric_values_only">Year / Price / Number of pieces can only be numeric values.</string>
     <string name="search_no_results">No lego sets found. Please modify your criteria and try again.</string>
+    
+    <!--  ## SearchResultActivity ## -->
+    <string name="search_results_no_favorites">No favorites yet. Please add some sets to favorites first.</string>
+    <string name="search_results_no_results">No results. Please go back to search.</string>
     
     <!--  ## UPDATE DB ACTIVITY ## -->
     <string name="update_db_title">Updating database... please wait...</string>

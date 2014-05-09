@@ -1,12 +1,9 @@
 package ca.umontreal.iro.theultimatelegoproject;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
@@ -16,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -27,11 +25,6 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 import com.skulg.tulp.dbHelper;
 
-/*
- * TODO :
- * -> Simplify BigBuildingGalleryAdapter / ThumbnailBuildingGalleryAdapter ? Abstract class to be extended ?
- * -> ONE imageLoader object, not two !
- */
 public class BuildingInstructionsActivity extends android.support.v4.app.FragmentActivity implements TaskCallbacks
 {
 	private static final String TAG_TASK_FRAGMENT = "specific_building_instructions_fragment";
@@ -51,11 +44,15 @@ public class BuildingInstructionsActivity extends android.support.v4.app.Fragmen
 	private int					imagesURLlength;
 	private int					bigPosition	= 0;
 	private ImageView[]			thumbnailImageViews;
+	private int					dummyPages;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+
 		setContentView(R.layout.activity_building_instructions);
 
 		tulpApplication					= (TulpApplication) getApplication();
@@ -70,31 +67,33 @@ public class BuildingInstructionsActivity extends android.support.v4.app.Fragmen
 		viewPagerBig					= (ViewPager) findViewById(R.id.viewpager_big);
 		viewPagerThumbnails				= (ViewPager) findViewById(R.id.viewpager_thumbnail);
 
-		Tools.longToast(getApplicationContext(), "id = " + buildingInstructionsId);
+		dummyPages	= (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) ? 3 : 1;
 
-		if(dbHelper.buildingInstructionsExist(buildingInstructionsId))
 		{
-			initViewPagers();
-		}
-		else
-		{
-			initLoading();
+			if(dbHelper.buildingInstructionsExist(buildingInstructionsId))
+			{
+				initViewPagers();
+			}
+			else
+			{
+				initLoading();
 
-			FragmentManager fragmentManager			= getSupportFragmentManager();
-			specificBuildingInstructionsFragment	= (SpecificBuildingInstructionsFragment) fragmentManager.findFragmentByTag(TAG_TASK_FRAGMENT);
+				FragmentManager fragmentManager			= getSupportFragmentManager();
+				specificBuildingInstructionsFragment	= (SpecificBuildingInstructionsFragment) fragmentManager.findFragmentByTag(TAG_TASK_FRAGMENT);
 
-		    if(null == specificBuildingInstructionsFragment)
-		    {
-		    	specificBuildingInstructionsFragment	= new SpecificBuildingInstructionsFragment();
+			    if(null == specificBuildingInstructionsFragment)
+			    {
+			    	specificBuildingInstructionsFragment	= new SpecificBuildingInstructionsFragment();
 
-		    	Bundle arguments	= new Bundle();
+			    	Bundle arguments	= new Bundle();
 
-		    	arguments.putString("building_instructions_id", buildingInstructionsId);
+			    	arguments.putString("building_instructions_id", buildingInstructionsId);
 
-		    	specificBuildingInstructionsFragment.setArguments(arguments);
+			    	specificBuildingInstructionsFragment.setArguments(arguments);
 
-		    	fragmentManager.beginTransaction().add(specificBuildingInstructionsFragment, TAG_TASK_FRAGMENT).commit();
-		    }
+			    	fragmentManager.beginTransaction().add(specificBuildingInstructionsFragment, TAG_TASK_FRAGMENT).commit();
+			    }
+			}
 		}
 	}
 
@@ -136,42 +135,8 @@ public class BuildingInstructionsActivity extends android.support.v4.app.Fragmen
 
 	private void initViewPagers()
 	{
-		Cursor imagesURLCursor	= dbHelper.getBuildingInstructionsImages(buildingInstructionsId);
-
-		if((null == imagesURLCursor) || (0 == imagesURLCursor.getCount()))
-		{
-			// TODO stringification
-			Tools.shortToast(getApplicationContext(), "No images were found for this set.");
-
-			if(null != imagesURLCursor)
-			{
-				imagesURLCursor.close();
-			}
-
-			return;
-		}
-
-		int urlIndex	= imagesURLCursor.getColumnIndex(dbHelper.IMAGE_URL_COLUMN);
-
-		ArrayList<String> tempArrayList	= new ArrayList<String>();
-
-		imagesURLCursor.moveToFirst();
-
-		while(!imagesURLCursor.isAfterLast())
-		{
-			tempArrayList.add(imagesURLCursor.getString(urlIndex));
-
-			imagesURLCursor.moveToNext();
-		}
-
-		imagesURL		= tempArrayList.toArray(new String[tempArrayList.size()]);
+		imagesURL		= dbHelper.getBuildingInstructionsImages(buildingInstructionsId);
 		imagesURLlength	= imagesURL.length;
-
-		tempArrayList.clear();
-		tempArrayList	= null;
-
-		imagesURLCursor.close();
-		imagesURLCursor	= null;
 
 		linearLayoutPicturesWrapper.setVisibility(View.VISIBLE);
 		relativeLayoutSpinnerWrapper.setVisibility(View.GONE);
@@ -182,9 +147,9 @@ public class BuildingInstructionsActivity extends android.support.v4.app.Fragmen
 			@Override
 			public void onPageSelected(int arg0)
 			{
-				//Tools.shortToast(getApplicationContext(), "Page changed : " + arg0);
 				viewPagerThumbnails.setCurrentItem(arg0);
 				updateThumbnailViewPager(arg0);
+
 				bigPosition	= arg0;
 			}
 
@@ -219,7 +184,7 @@ public class BuildingInstructionsActivity extends android.support.v4.app.Fragmen
 			return;
 		}
 
-		thumbnailImageViews[position].setBackgroundResource(R.drawable.button_defaut); //.background_building_instruction_gallery_thumbnail);
+		thumbnailImageViews[position].setBackgroundResource(R.drawable.button_defaut);
 	}
 
 	protected void removeBorderFromThumbnail(int position)
@@ -229,22 +194,21 @@ public class BuildingInstructionsActivity extends android.support.v4.app.Fragmen
 			return;
 		}
 
-		thumbnailImageViews[position].setBackgroundColor(Color.TRANSPARENT);
+		thumbnailImageViews[position].setBackgroundResource(R.drawable.border_unselected_thumbnail);
 	}
 
 	protected void updateThumbnailViewPager(int position)
 	{
-		removeBorderFromThumbnail(bigPosition + 1);
-		addBorderToThumbnail(position + 1);
+		removeBorderFromThumbnail(bigPosition + dummyPages);
+		addBorderToThumbnail(position + dummyPages);
 	}
 
 	class BigBuildingGalleryAdapter extends PagerAdapter
 	{
 		BigBuildingGalleryAdapter(Context context)
 		{
-
-
 		}
+
 		@Override
 		public int getCount()
 		{
@@ -297,37 +261,19 @@ public class BuildingInstructionsActivity extends android.support.v4.app.Fragmen
 		{
 			((ViewPager) container).removeView((View) object);
 		}
-
-		@Override public float getPageWidth(int position)
-		{
-			if(1 == imagesURLlength)
-			{
-				return 1f;
-			}
-
-			if(2 == imagesURLlength)
-			{
-				return 1f;
-
-				// return 0.5f;
-				// Why would you want to see 2 images side by side if there are only two ?! Nonsense...
-			}
-
-			return 1f;
-		}
 	}
 
 	class ThumbnailBuildingGalleryAdapter extends PagerAdapter
 	{
 		ThumbnailBuildingGalleryAdapter(Context context)
 		{
-			thumbnailImageViews	= new ImageView[imagesURLlength + 1];
+			thumbnailImageViews	= new ImageView[imagesURLlength + dummyPages];
 		}
 
 		@Override
 		public int getCount()
 		{
-			return imagesURLlength + 1;
+			return imagesURLlength + dummyPages;
 		}
 
 		@Override
@@ -353,18 +299,18 @@ public class BuildingInstructionsActivity extends android.support.v4.app.Fragmen
 				@Override
 				public void onClick(View v)
 				{
-					viewPagerBig.setCurrentItem(finalPosition - 1);
+					viewPagerBig.setCurrentItem(finalPosition - dummyPages);
 				}
 			});
 
-			if(0 == position)
+			if(dummyPages > position)
 			{
 				imgDisp.setImageResource(R.drawable.image_empty);
 
 				return page;
 			}
 
-			imageLoader.displayImage(imagesURL[position - 1], imgDisp, options, new SimpleImageLoadingListener()
+			imageLoader.displayImage(imagesURL[position - dummyPages], imgDisp, options, new SimpleImageLoadingListener()
 			{
 				@Override
 				public void onLoadingStarted(String imageUri, View view)
@@ -400,17 +346,9 @@ public class BuildingInstructionsActivity extends android.support.v4.app.Fragmen
 
 		@Override public float getPageWidth(int position)
 		{
-			if(1 == imagesURLlength)
-			{
-				return 1f;
-			}
-
-			if(2 == imagesURLlength)
-			{
-				return 0.5f;
-			}
-
-			return 0.333333333333f;
+			// If orientation is portrait => each page has 1/3
+			// If orientation is landscape => each page has 1/7
+			return (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) ?  (float) 1/7 : (float) 1/3;
 		}
 	}
 

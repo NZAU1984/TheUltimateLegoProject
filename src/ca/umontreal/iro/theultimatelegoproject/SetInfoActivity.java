@@ -2,7 +2,7 @@ package ca.umontreal.iro.theultimatelegoproject;
 // TEST
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.Menu;
@@ -41,41 +41,14 @@ public class SetInfoActivity extends Activity
 
 		Intent intent	= getIntent();
 		dbHelper		= new dbHelper(getApplicationContext());
-		Cursor cursor	= dbHelper.getLegoSet(intent.getStringExtra("set_id"), true);
-
-		if(null == cursor)
-		{
-			// TODO stringification
-			Tools.longToast(getApplicationContext(), "The specified set does not exist.");
-
-			return;
-		}
-
-		cursor.moveToFirst();
-
-		// Context context, String argId, String argImageURL, String argDescription, int argYear, double argPrice, int argNbPieces
-		setInfo	= new SetInfo(
-			getApplicationContext(),
-			intent.getStringExtra("set_id"),
-			cursor.getString(cursor.getColumnIndex(dbHelper.LEGOSETS_BUILDING_INSTRUCTIONS_ID)),
-			cursor.getString(cursor.getColumnIndex(dbHelper.LEGOSETS_IMAGE_URL_COLUMN)),
-			cursor.getString(cursor.getColumnIndex(dbHelper.LEGOSETS_DESCRIPTION_COLUMN)),
-			cursor.getString(cursor.getColumnIndex(dbHelper.LEGOSETS_RELEASED_COLUMN)),
-			cursor.getString(cursor.getColumnIndex(dbHelper.LEGOSETS_PRICE_COLUMN)),
-			cursor.getString(cursor.getColumnIndex(dbHelper.LEGOSETS_PIECES_COLUMN)),
-			cursor.getString(cursor.getColumnIndex(dbHelper.LEGOSETS_FAVORITE_COLUMN))
-		);
-
-		cursor.close();
-
-//		setInfo	= tulpApplication.getSetInfo(intent.getStringExtra("set_id"));
+		setInfo			= dbHelper.getLegoSet(intent.getStringExtra("set_id"), true);
 
 		if(null == setInfo)
 		{
+			Tools.longToast(getApplicationContext(), getResources().getString(R.string.setinfo_no_such_set));
+
 			return;
 		}
-
-		//Tools.shortToast(getApplicationContext(), "id is " + intent.getStringExtra("set_id"));
 
 		initElements();
 	}
@@ -187,21 +160,18 @@ public class SetInfoActivity extends Activity
 
 	private void resizeBuildingInstructionsAndFavorite()
 	{
-		int width	= ((RelativeLayout) imageviewBuildingInstructions.getParent()).getWidth() / 5;
+		int width	= ((RelativeLayout) imageviewBuildingInstructions.getParent()).getWidth() / ((getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) ? 8 : 5);
 
 		RelativeLayout.LayoutParams	buildingInstructionsLayout	= new RelativeLayout.LayoutParams(width, width);
 		RelativeLayout.LayoutParams	FavoriteLayout				= new RelativeLayout.LayoutParams(width, width);
 
-		buildingInstructionsLayout.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		buildingInstructionsLayout.addRule((getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) ? RelativeLayout.CENTER_VERTICAL : RelativeLayout.ALIGN_PARENT_BOTTOM);//RelativeLayout.ALIGN_PARENT_BOTTOM);
 		buildingInstructionsLayout.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		FavoriteLayout.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-		FavoriteLayout.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+
+		FavoriteLayout.addRule((getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) ? RelativeLayout.CENTER_VERTICAL : RelativeLayout.ALIGN_PARENT_TOP);
+		FavoriteLayout.addRule((getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) ? RelativeLayout.ALIGN_PARENT_LEFT : RelativeLayout.ALIGN_PARENT_RIGHT);
 
 		imageviewBuildingInstructions.setLayoutParams(buildingInstructionsLayout);
-
-		//buildingInstructionsLayout.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-		//buildingInstructionsLayout.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-
 		imageviewFavorite.setLayoutParams(FavoriteLayout);
 	}
 

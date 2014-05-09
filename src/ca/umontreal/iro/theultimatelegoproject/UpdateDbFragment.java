@@ -8,7 +8,6 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -109,36 +108,12 @@ public class UpdateDbFragment extends Fragment implements SubTaskCallbacks
 			callingActivity.onProgressUpdate(0);
 		}
 
-		Cursor cursor	= dbHelper.getAllSetsToBeImported();
+		String[] sets	= dbHelper.getAllSetsToBeImported();
 
-		if(null == cursor)
+		for(int i = 0, setsLength = sets.length; i < setsLength; i = i + 2)
 		{
-			nbTotalSets	= 1;
-			nbErrorSets	= 1;
-
-			onSubTaskError();
-
-			return;
+			new LegoSetsApiCaller1(null, dbHelper, this).execute(sets[i], sets[i+1]);
 		}
-
-		int keyIndex					= cursor.getColumnIndex(dbHelper.KEY_ID);
-		int buildingInstructionsIdIndex	= cursor.getColumnIndex(dbHelper.IMPORT_BUILDING_INSTRUCTIONS_ID);
-
-		cursor.moveToFirst();
-
-		while(!cursor.isAfterLast())
-		{
-			String setId					= cursor.getString(keyIndex);
-			String buildingInstructionId	= cursor.getString(buildingInstructionsIdIndex);
-
-			new LegoSetsApiCaller1(null, dbHelper, this).execute(setId, buildingInstructionId);
-
-			cursor.moveToNext();
-		}
-
-		cursor.close();
-
-//		return true;
 
 	}
 
@@ -245,8 +220,6 @@ public class UpdateDbFragment extends Fragment implements SubTaskCallbacks
 		{
 			Boolean success	= false;
 
-			dbh.openWritableDatabase();
-
 			try
 			{
 				HttpEntity buildingInstructionsPage		= getHttp(GET_ALL_BUILDINGS_INSTRUCTIONS_URL);
@@ -262,7 +235,6 @@ public class UpdateDbFragment extends Fragment implements SubTaskCallbacks
 
 					if (TextUtils.isDigitsOnly(buildingInstructionName))
 					{
-						Log.d("private task", "insert : " + buildingInstructionName + ", " + buildingInstructionId);
 						dbh.insertImportSet(buildingInstructionName, buildingInstructionId);
 					}
 				}
@@ -275,113 +247,8 @@ public class UpdateDbFragment extends Fragment implements SubTaskCallbacks
 
 				e.printStackTrace();
 			}
-			finally
-			{
-				dbh.closeWritableDatabase();
-			}
 
 			return success;
 		}
 	}
-
-	/*private class ImportSetsFromDbAsyncTask extends TulpAPICaller implements SubTaskCallbacks
-	{
-		private Object lock			= new Object();
-		private int nbTotalSets		= 0;
-		private int nbCurrentSets	= 0;
-		private int nbErrorSets		= 0;
-
-		public ImportSetsFromDbAsyncTask(Context context, dbHelper dbh)
-		{
-			super(context, dbh);
-		}
-
-		@Override
-		protected void onPreExecute()
-		{
-			if (null != callingActivity)
-			{
-				nbTotalSets	= dbh.getNumberOfSetsToBeImported();
-
-				callingActivity.onPreExecute("from_import_table");
-				callingActivity.onProgressUpdate(0);
-			}
-		}
-
-
-		@Override
-		protected void onProgressUpdate(Float... fraction)
-		{
-			if (null != callingActivity)
-			{
-				callingActivity.onProgressUpdate(fraction[0]);
-			}
-		}
-
-		@Override
-		protected void onCancelled()
-		{
-			if (null != callingActivity)
-			{
-				callingActivity.onCancelled();
-			}
-		}
-
-		@Override
-		protected void onPostExecute(Boolean result)
-		{
-			if (null != callingActivity)
-			{
-				callingActivity.onPostExecute("from_import_table", result);
-			}
-		}
-
-		@Override
-		protected Boolean doInBackground(String... arg0)
-		{
-			Cursor cursor	= dbh.getAllSetsToBeImported();
-
-			int keyIndex					= cursor.getColumnIndex(dbh.KEY_ID);
-			int buildingInstructionsIdIndex	= cursor.getColumnIndex(dbh.IMPORT_BUILDING_INSTRUCTIONS_ID);
-
-			cursor.moveToFirst();
-
-			while(!cursor.isAfterLast())
-			{
-				String setId					= cursor.getString(keyIndex);
-				String buildingInstructionId	= cursor.getString(buildingInstructionsIdIndex);
-
-				new LegoSetsApiCaller1(null, dbh, this).execute(setId, buildingInstructionId);
-
-				cursor.moveToNext();
-			}
-
-			cursor.close();
-
-			return true;
-		}
-
-		@Override
-		public void onSubTaskError()
-		{
-			synchronized(lock)
-			{
-				++nbErrorSets;
-			}
-		}
-
-		@Override
-		public void onSubTaskSuccess()
-		{
-			synchronized(lock)
-			{
-				++nbCurrentSets;
-
-				if(0 != nbTotalSets)
-				{
-					publishProgress(((float) nbCurrentSets) / nbTotalSets);
-				}
-			}
-		}
-	}*/
 }

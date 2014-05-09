@@ -3,7 +3,6 @@ package ca.umontreal.iro.theultimatelegoproject;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -145,7 +144,9 @@ public class SearchActivity extends Activity
 				}
 
 				dbHelper dbHelper	= new dbHelper(getApplicationContext());
-				Cursor cursor		= dbHelper.searchLegoSets(keyword, priceFrom, priceTo, yearFrom, yearTo, nbPiecesFrom, nbPiecesTo, false, true);
+				int count			= dbHelper.getSearchLegoSetsCount(keyword, priceFrom, priceTo, yearFrom, yearTo, nbPiecesFrom, nbPiecesTo);
+
+				/*Cursor cursor		= dbHelper.searchLegoSets(keyword, priceFrom, priceTo, yearFrom, yearTo, nbPiecesFrom, nbPiecesTo, false, true);
 				int count			= 0;
 
 				if(null != cursor)
@@ -158,7 +159,7 @@ public class SearchActivity extends Activity
 					}
 
 					cursor.close();
-				}
+				}*/
 
 				if(0 == count)
 				{

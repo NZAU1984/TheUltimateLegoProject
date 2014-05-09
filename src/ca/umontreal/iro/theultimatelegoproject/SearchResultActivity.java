@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.Menu;
@@ -48,25 +47,6 @@ public class SearchResultActivity extends Activity
 
 		tulpApplication = (TulpApplication) getApplication();
 		imageLoader = tulpApplication.getImageLoader();
-		imagesURL = new String[1000];
-
-		imagesURL[0] = "http://www.cubiculus.com/images/507";
-
-		for (int i = 1; i < 1000; ++i)
-		{
-			String j = String.valueOf(i);
-
-			if (i < 100)
-			{
-				j = "0" + j;
-			}
-			if (i < 10)
-			{
-				j = "0" + j;
-			}
-
-			imagesURL[i] = "http://www.cubiculus.com/images/54" + j;
-		}
 
 		options = tulpApplication.getImageLoaderOptions();
 		listView = (GridView) findViewById(R.id.gridview_lego_sets);
@@ -88,69 +68,35 @@ public class SearchResultActivity extends Activity
 
 		isFav = intent.getBooleanExtra("favorites", false);
 
-		Cursor searchResults = null;
-
 		if (isFav)
 		{
-			searchResults = dbHelper.searchLegoSets(null, null, null, null, null, null, null, true, false);
+			searchResultsArrayList	= dbHelper.getFavoritesLegoSetsArrayList();
 		}
 		else
 		{
-			searchResults = dbHelper.searchLegoSets(
-					intent.getStringExtra("keyword"),
-					intent.getStringExtra("price_from"),
-					intent.getStringExtra("price_to"),
-					intent.getStringExtra("year_from"),
-					intent.getStringExtra("year_to"),
-					intent.getStringExtra("pieces_from"),
-					intent.getStringExtra("pieces_to"),
-					false,
-					false
-					);
+			searchResultsArrayList	= dbHelper.getSearchLegoSetsArrayList(
+				intent.getStringExtra("keyword"),
+				intent.getStringExtra("price_from"),
+				intent.getStringExtra("price_to"),
+				intent.getStringExtra("year_from"),
+				intent.getStringExtra("year_to"),
+				intent.getStringExtra("pieces_from"),
+				intent.getStringExtra("pieces_to")
+			);
 		}
 
-		nbResults = searchResults.getCount();
-
-		if ((null == searchResults) || (0 == nbResults))
+		if ((null == searchResultsArrayList) || (0 == (nbResults = searchResultsArrayList.size())))
 		{
 			if (isFav)
 			{
-				Tools.longToast(getApplicationContext(), "No favorites yet. Please add some sets to favorites first.");
+				Tools.longToast(getApplicationContext(), getResources().getString(R.string.search_results_no_favorites));
 			} else
 			{
-				Tools.longToast(getApplicationContext(), "No results. Please go back to search.");
-			}
-
-			if(null != searchResults)
-			{
-				searchResults.close();
+				Tools.longToast(getApplicationContext(), getResources().getString(R.string.search_results_no_results));
 			}
 
 			return;
 		}
-
-		int keyIdIndex 		= searchResults.getColumnIndex(dbHelper.KEY_ID);
-		int imageUrlIndex	= searchResults.getColumnIndex(dbHelper.LEGOSETS_IMAGE_URL_COLUMN);
-		int seenIndex 		= searchResults.getColumnIndex(dbHelper.LEGOSETS_SEEN_COLUMN);
-		int favoriteIndex	= searchResults.getColumnIndex(dbHelper.LEGOSETS_FAVORITE_COLUMN);
-
-		searchResults.moveToFirst();
-
-		searchResultsArrayList	= new ArrayList<SearchResultSet>();
-
-		while (!searchResults.isAfterLast())
-		{
-			searchResultsArrayList.add(new SearchResultSet(
-					searchResults.getString(keyIdIndex),
-					searchResults.getString(imageUrlIndex),
-					searchResults.getString(seenIndex),
-					searchResults.getString(favoriteIndex)
-					));
-
-			searchResults.moveToNext();
-		}
-
-		searchResults.close();
 	}
 
 	@Override
@@ -196,16 +142,6 @@ public class SearchResultActivity extends Activity
 		launchSetInfoActivity.putExtra("set_id", setId);
 
 		startActivity(launchSetInfoActivity);
-	}
-
-	private void startImagePagerActivity(int position)
-	{
-		/*
-		 * Intent intent = new Intent(this, ImagePagerActivity.class);
-		 * intent.putExtra(Extra.IMAGES, imageUrls);
-		 * intent.putExtra(Extra.IMAGE_POSITION, position);
-		 * startActivity(intent);
-		 */
 	}
 
 	public class ImageAdapter extends BaseAdapter

@@ -1,5 +1,7 @@
 package com.skulg.tulp;
 
+import java.util.ArrayList;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -7,6 +9,8 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import ca.umontreal.iro.theultimatelegoproject.SearchResultSet;
+import ca.umontreal.iro.theultimatelegoproject.SetInfo;
 
 public class dbHelper extends SQLiteOpenHelper
 {
@@ -30,21 +34,21 @@ public class dbHelper extends SQLiteOpenHelper
 	static final String IMPORT_TABLE_NAME	= "ImportTable";
 
 	// Shared Columns
-	public static final String KEY_ID = "_id";
+	static final String KEY_ID = "_id";
 	static final String KEY_CREATED_AT = "created_at";
 
 	// LEGOSETS COLUMNS NAMES
-	public static final String LEGOSETS_DESCRIPTION_COLUMN = "description";
+	static final String LEGOSETS_DESCRIPTION_COLUMN = "description";
 	static final String LEGOSETS_BOX_NUMBER_COLUMN = "boxNo";
-	public static final String LEGOSETS_IMAGE_URL_COLUMN = "imageUrl";
+	static final String LEGOSETS_IMAGE_URL_COLUMN = "imageUrl";
 	static final String LEGOSETS_NAME_COLUMN = "name";
 	static final String LEGOSETS_LEGO_MODEL_NAME_COLUMN = "legoModelName";
-	public static final String LEGOSETS_PIECES_COLUMN = "pieces";
-	public static final String LEGOSETS_PRICE_COLUMN = "price";
-	public static final String LEGOSETS_RELEASED_COLUMN = "released";
-	public static final String LEGOSETS_FAVORITE_COLUMN = "favorite";
-	public static final String LEGOSETS_SEEN_COLUMN = "seen";
-	public static final String LEGOSETS_BUILDING_INSTRUCTIONS_ID	= "buildingInstructionsId";
+	static final String LEGOSETS_PIECES_COLUMN = "pieces";
+	static final String LEGOSETS_PRICE_COLUMN = "price";
+	static final String LEGOSETS_RELEASED_COLUMN = "released";
+	static final String LEGOSETS_FAVORITE_COLUMN = "favorite";
+	static final String LEGOSETS_SEEN_COLUMN = "seen";
+	static final String LEGOSETS_BUILDING_INSTRUCTIONS_ID	= "buildingInstructionsId";
 
 	// BUILDING INSTRUCTIONS COLUMN NAME
 
@@ -67,12 +71,11 @@ public class dbHelper extends SQLiteOpenHelper
 	static final String STEP_GROUP_IMAGES_IMAGE_ID_COLUMN = "imageId";
 
 	// IMAGES COLUMN NAME
-	public static final String IMAGE_URL_COLUMN = "url";
+	static final String IMAGE_URL_COLUMN = "url";
 	static final String IMAGE_INSTRUCTIONSID_COLUMN = "instructionsId";
 
 	// IMPORT COLUMN NAME
-	public static final String IMPORT_BUILDING_INSTRUCTIONS_ID	= "buildingInstructionsId";
-
+	static final String IMPORT_BUILDING_INSTRUCTIONS_ID	= "buildingInstructionsId";
 
 	Context context;
 
@@ -147,11 +150,11 @@ public class dbHelper extends SQLiteOpenHelper
 		deleteDbFile();
 	}
 
-	// protected void insertLegoSets(String description, int boxNumber,
 	protected void insertLegoSets(String description, int boxNumber, String imageUrl, String name, String modelName,
 			int nbPieces, double price, int released, String buildingInstructionsId)
 	{
-		//SQLiteDatabase db = getWritableDatabase();
+		SQLiteDatabase myWritableDb	= getWritableDatabase();
+
 		ContentValues val = new ContentValues();
 		val.clear();
 		val.put(KEY_ID, boxNumber);
@@ -169,18 +172,20 @@ public class dbHelper extends SQLiteOpenHelper
 
 		try
 		{
-			writableDb.insertWithOnConflict(LEGOSETS_TABLE_NAME, null, val, SQLiteDatabase.CONFLICT_REPLACE);
+			myWritableDb.insertWithOnConflict(LEGOSETS_TABLE_NAME, null, val, SQLiteDatabase.CONFLICT_REPLACE);
 		}
 		catch (SQLException e)
 		{
 			Log.d("DBHelper", "Erreur BDD: " + e.getMessage());
 		}
-		//db.close();
+
+		myWritableDb.close();
 	}
 
+	/*
+	 * UNUSED
 	public void insertBuildingInstructions(int idInstruction, String description, String imageUrl, String name)
 	{
-		//SQLiteDatabase db = getWritableDatabase();
 		ContentValues val = new ContentValues();
 		val.clear();
 		val.put(KEY_ID, idInstruction);
@@ -196,7 +201,10 @@ public class dbHelper extends SQLiteOpenHelper
 		}
 		//db.close();
 	}
+	*/
 
+	/*
+	 * UNUSED
 	protected long insertStepGroup(String name)
 	{
 		long resultId = -1;
@@ -214,7 +222,10 @@ public class dbHelper extends SQLiteOpenHelper
 		db.close();
 		return resultId;
 	}
+	*/
 
+	/*
+	 * UNUSED
 	protected void insertStepGroupImageLink(int imageId, int stepGroupId)
 	{
 		SQLiteDatabase db = getWritableDatabase();
@@ -231,7 +242,10 @@ public class dbHelper extends SQLiteOpenHelper
 		}
 		db.close();
 	}
+	*/
 
+	/*
+	 * UNUSED
 	protected void insertStepGroupInstructionsLink(int instructionId, int stepGroupId)
 	{
 		SQLiteDatabase db = getWritableDatabase();
@@ -248,51 +262,82 @@ public class dbHelper extends SQLiteOpenHelper
 		}
 		db.close();
 	}
+	*/
 
 	public long insertImages(String url, int instructionId)
 	{
 		long resultId = -1;
-		SQLiteDatabase db = getWritableDatabase();
+		SQLiteDatabase myWritableDb = getWritableDatabase();
+
 		ContentValues val = new ContentValues();
+
 		val.clear();
 		val.put(IMAGE_URL_COLUMN, url);
 		val.put(IMAGE_INSTRUCTIONSID_COLUMN, instructionId);
+
 		try
 		{
-			resultId = db.insertOrThrow(IMAGES_TABLE_NAME, null, val);
-		} catch (SQLException e)
+			resultId = myWritableDb.insertOrThrow(IMAGES_TABLE_NAME, null, val);
+		}
+		catch (SQLException e)
 		{
 			Log.d("DBHelper", "Erreur BDD: " + e.getMessage());
 		}
-		db.close();
+
+		myWritableDb.close();
+
 		return resultId;
 	}
 
+	/*
+	 * UNUSED
 	public Cursor getAllLegoSets()
 	{
 		SQLiteDatabase db = getReadableDatabase();
 		Cursor cursor = db.query(LEGOSETS_TABLE_NAME, null, null, null, null, null, null);
 		return cursor;
 	}
+	*/
 
-	public Cursor getLegoSet(String setId, Boolean updateSeen)
+	public SetInfo getLegoSet(String setId, Boolean updateSeen)
 	{
 		String selectColumns[]	= {LEGOSETS_BUILDING_INSTRUCTIONS_ID, LEGOSETS_IMAGE_URL_COLUMN, LEGOSETS_DESCRIPTION_COLUMN, LEGOSETS_RELEASED_COLUMN, LEGOSETS_PRICE_COLUMN, LEGOSETS_PIECES_COLUMN, LEGOSETS_FAVORITE_COLUMN};
-		openWritableDatabase();
+
+		SQLiteDatabase myWritableDb	= getWritableDatabase();
+
 		Cursor cursor	= null;
+
+		SetInfo setInfo	= null;
+
 		try
 		{
-			cursor = writableDb.query(LEGOSETS_TABLE_NAME, selectColumns, KEY_ID + "=?", new String[] {setId}, null, null, null);
+			cursor = myWritableDb.query(LEGOSETS_TABLE_NAME, selectColumns, KEY_ID + "=?", new String[] {setId}, null, null, null);
 		}
 		catch (Exception e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+
+			cursor	= null;
 		}
 
-		if(0 == cursor.getCount())
+		if((null != cursor) && (0 != cursor.getCount()))
 		{
-			cursor	= null;
+			cursor.moveToFirst();
+
+			setInfo	= new SetInfo(
+				context,
+				setId,
+				cursor.getString(cursor.getColumnIndex(LEGOSETS_BUILDING_INSTRUCTIONS_ID)),
+				cursor.getString(cursor.getColumnIndex(LEGOSETS_IMAGE_URL_COLUMN)),
+				cursor.getString(cursor.getColumnIndex(LEGOSETS_DESCRIPTION_COLUMN)),
+				cursor.getString(cursor.getColumnIndex(LEGOSETS_RELEASED_COLUMN)),
+				cursor.getString(cursor.getColumnIndex(LEGOSETS_PRICE_COLUMN)),
+				cursor.getString(cursor.getColumnIndex(LEGOSETS_PIECES_COLUMN)),
+				cursor.getString(cursor.getColumnIndex(LEGOSETS_FAVORITE_COLUMN))
+			);
+
+			cursor.close();
 		}
 
 		if((null != cursor) && updateSeen)
@@ -303,7 +348,7 @@ public class dbHelper extends SQLiteOpenHelper
 
 			try
 			{
-				writableDb.update(LEGOSETS_TABLE_NAME, val, KEY_ID + "=?", new String[] {setId});
+				myWritableDb.update(LEGOSETS_TABLE_NAME, val, KEY_ID + "=?", new String[] {setId});
 			}
 			catch (Exception e)
 			{
@@ -312,14 +357,14 @@ public class dbHelper extends SQLiteOpenHelper
 			}
 		}
 
-		closeWritableDatabase();
+		myWritableDb.close();
 
-		return cursor;
+		return setInfo;
 	}
 
 	public void setLegoSetFavorite(String setId, Boolean isFavorite)
 	{
-		openWritableDatabase();
+		SQLiteDatabase myWritableDb	= getWritableDatabase();
 
 		ContentValues val = new ContentValues();
 		val.clear();
@@ -327,7 +372,7 @@ public class dbHelper extends SQLiteOpenHelper
 
 		try
 		{
-			writableDb.update(LEGOSETS_TABLE_NAME, val, KEY_ID + "=?", new String[] {setId});
+			myWritableDb.update(LEGOSETS_TABLE_NAME, val, KEY_ID + "=?", new String[] {setId});
 		}
 		catch (Exception e)
 		{
@@ -335,16 +380,21 @@ public class dbHelper extends SQLiteOpenHelper
 			e.printStackTrace();
 		}
 
-		closeWritableDatabase();
+		myWritableDb.close();
 	}
 
+	/*
+	 * UNUSED
 	public Cursor getAllBuildingInstructions()
 	{
 		SQLiteDatabase db = getReadableDatabase();
 		Cursor cursor = db.query(BUILDING_INSTRUCTIONS_TABLE_NAME, null, null, null, null, null, null);
 		return cursor;
 	}
+	*/
 
+	/*
+	 * UNUSED
 	public Cursor getBuildingInstructionsInfo(String setId)
 	{
 		SQLiteDatabase db = getReadableDatabase();
@@ -352,44 +402,56 @@ public class dbHelper extends SQLiteOpenHelper
 				+ setId, null, null, null, null);
 		return cursor;
 	}
+	*/
 
-	// NOT TESTED YET
-	public Cursor getBuildingInstructionsImages(String buildingInstructionsId)
+	public String[] getBuildingInstructionsImages(String buildingInstructionsId)
 	{
-		openWritableDatabase();
+		SQLiteDatabase readableDb	= getReadableDatabase();
+
+		String[] buildingInstructionsImages	= new String[] {};
 
 		Cursor cursor	= null;
 
 		try
 		{
-			cursor	= writableDb.query(IMAGES_TABLE_NAME, new String[] {IMAGE_URL_COLUMN}, IMAGE_INSTRUCTIONSID_COLUMN + "=?", new String[] {buildingInstructionsId}, null, null, KEY_ID + " ASC");
+			cursor	= readableDb.query(IMAGES_TABLE_NAME, new String[] {IMAGE_URL_COLUMN}, IMAGE_INSTRUCTIONSID_COLUMN + "=?", new String[] {buildingInstructionsId}, null, null, KEY_ID + " ASC");
 		}
 		catch (Exception e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+
+			cursor	= null;
 		}
-		finally
+
+		if((null != cursor) && (0 != cursor.getCount()))
 		{
-			closeWritableDatabase();
+			int urlIndex					= cursor.getColumnIndex(IMAGE_URL_COLUMN);
+			ArrayList<String> tempArrayList	= new ArrayList<String>();
+
+			cursor.moveToFirst();
+
+			while(!cursor.isAfterLast())
+			{
+				tempArrayList.add(cursor.getString(urlIndex));
+
+				cursor.moveToNext();
+			}
+
+			buildingInstructionsImages	= tempArrayList.toArray(new String[tempArrayList.size()]);
+
+			cursor.close();
 		}
 
-		return cursor;
+		readableDb.close();
 
-		/*SQLiteDatabase db = getReadableDatabase();
-		String sql = "Select " + IMAGE_URL_COLUMN + " from " + IMAGES_TABLE_NAME + " , "
-				+ BUILDING_INSTRUCTIONS_TABLE_NAME + " where " + setId + " = " + BUILDING_INSTRUCTIONS_NAME_COLUMN
-				+ " AND " + BUILDING_INSTRUCTIONS_TABLE_NAME + "." + KEY_ID + " = " + IMAGE_INSTRUCTIONSID_COLUMN;
-		Log.d("TULP", "Content of sql :" + sql);
-		Cursor cursor = db.rawQuery(sql, null);
-		return cursor;*/
+		return buildingInstructionsImages;
 	}
 
-	public Cursor searchLegoSets(String keywords, String minPrice, String maxPrice, String minYear, String maxYear,
+	private Cursor searchLegoSets(String keywords, String minPrice, String maxPrice, String minYear, String maxYear,
 			String minPieces, String maxPieces, Boolean favorite, Boolean returnCount)
 	{
-		//SQLiteDatabase db = getReadableDatabase();
-		openWritableDatabase();
+		// PRE-CONDITION : openWritableDatabase() must have been called by calling method.
 
 		String selectColumns[] 	= {KEY_ID, LEGOSETS_IMAGE_URL_COLUMN, LEGOSETS_SEEN_COLUMN, LEGOSETS_FAVORITE_COLUMN};
 		String keywordsSqlPart 	= "";
@@ -500,126 +562,258 @@ public class dbHelper extends SQLiteOpenHelper
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		finally
-		{
-			closeWritableDatabase();
-		}
 
 		return cursor;
 	}
 
-	public Boolean deleteDbFile()
+	public int getSearchLegoSetsCount(String keywords, String minPrice, String maxPrice, String minYear, String maxYear,
+			String minPieces, String maxPieces)
+	{
+		openWritableDatabase();
+
+		Cursor cursor	= searchLegoSets(keywords, minPrice, maxPrice, minYear, maxYear, minPieces, maxPieces, false, true);
+
+		int count	= 0;
+
+		if(null != cursor)
+		{
+			if(0 < cursor.getCount())
+			{
+				cursor.moveToFirst();
+
+				count	= cursor.getInt(0);
+			}
+
+			cursor.close();
+		}
+
+		closeWritableDatabase();
+
+		return count;
+	}
+
+	private ArrayList<SearchResultSet> getSearchLegoSetsArrayList(String keywords, String minPrice, String maxPrice, String minYear, String maxYear,
+			String minPieces, String maxPieces, Boolean favorite)
+	{
+		openWritableDatabase();
+
+		Cursor cursor	= searchLegoSets(keywords, minPrice, maxPrice, minYear, maxYear, minPieces, maxPieces, favorite, false);
+
+		ArrayList<SearchResultSet> searchResults	= new ArrayList<SearchResultSet>();
+
+		if(null != cursor)
+		{
+			int keyIdIndex 		= cursor.getColumnIndex(KEY_ID);
+			int imageUrlIndex	= cursor.getColumnIndex(LEGOSETS_IMAGE_URL_COLUMN);
+			int seenIndex 		= cursor.getColumnIndex(LEGOSETS_SEEN_COLUMN);
+			int favoriteIndex	= cursor.getColumnIndex(LEGOSETS_FAVORITE_COLUMN);
+
+			cursor.moveToFirst();
+
+			while (!cursor.isAfterLast())
+			{
+				searchResults.add(new SearchResultSet(
+					cursor.getString(keyIdIndex),
+					cursor.getString(imageUrlIndex),
+					cursor.getString(seenIndex),
+					cursor.getString(favoriteIndex)
+				));
+
+				cursor.moveToNext();
+			}
+
+			cursor.close();
+		}
+
+		closeWritableDatabase();
+
+		return searchResults;
+	}
+
+	public ArrayList<SearchResultSet> getSearchLegoSetsArrayList(String keywords, String minPrice, String maxPrice, String minYear, String maxYear,
+			String minPieces, String maxPieces)
+	{
+		return getSearchLegoSetsArrayList(keywords, minPrice, maxPrice, minYear, maxYear, minPieces, maxPieces, false);
+	}
+
+	public ArrayList<SearchResultSet> getFavoritesLegoSetsArrayList()
+	{
+		return getSearchLegoSetsArrayList(null, null, null, null, null, null, null, true);
+	}
+
+	private Boolean deleteDbFile()
 	{
 		return context.deleteDatabase(DATABASE_FILENAME);
 	}
 
 	public Boolean insertImportSet(String setId, String buildingInstructionsId)
 	{
-		openWritableDatabase();
+		SQLiteDatabase myWritableDb	= getWritableDatabase();
+
+		Boolean success	= false;
 
 		ContentValues val = new ContentValues();
+
 		val.clear();
 		val.put(KEY_ID, setId);
 		val.put(IMPORT_BUILDING_INSTRUCTIONS_ID, buildingInstructionsId);
 
 		try
 		{
-			writableDb.insertWithOnConflict(IMPORT_TABLE_NAME, null, val, SQLiteDatabase.CONFLICT_IGNORE);
+			myWritableDb.insertWithOnConflict(IMPORT_TABLE_NAME, null, val, SQLiteDatabase.CONFLICT_IGNORE);
+
+			success	= true;
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
-			Log.d("DBHelper", "Erreur BDD: " + e.getMessage());
-
-			return false;
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
-		return true;
+		myWritableDb.close();
+
+		return success;
 	}
 
-	public Cursor getAllSetsToBeImported()
+	public String[] getAllSetsToBeImported()
 	{
-		openWritableDatabase();
+		SQLiteDatabase readableDb	= getReadableDatabase();
+
+		String[] sets	= new String[] {};
 
 		Cursor cursor = null;
 
 		try
 		{
-			cursor	= writableDb.query(IMPORT_TABLE_NAME, null, null, null, null, null, null);
+			cursor	= readableDb.query(IMPORT_TABLE_NAME, null, null, null, null, null, null);
 		}
 		catch(Exception e)
 		{
 			cursor	= null;
 		}
 
-		return cursor;
+		if(null != cursor)
+		{
+			int keyIndex					= cursor.getColumnIndex(KEY_ID);
+			int buildingInstructionsIdIndex	= cursor.getColumnIndex(IMPORT_BUILDING_INSTRUCTIONS_ID);
+
+			ArrayList<String> tempArrayList	= new ArrayList<String>();
+
+			cursor.moveToFirst();
+
+			while(!cursor.isAfterLast())
+			{
+				tempArrayList.add(cursor.getString(keyIndex));
+				tempArrayList.add(cursor.getString(buildingInstructionsIdIndex));
+
+				cursor.moveToNext();
+			}
+
+			sets	= tempArrayList.toArray(new String[tempArrayList.size()]);
+
+			cursor.close();
+		}
+
+		readableDb.close();
+
+		return sets;
 	}
 
 	public void removeSetFromImportTable(int setId)
 	{
-		openWritableDatabase();
+		SQLiteDatabase myWritableDb	= getWritableDatabase();
 
-		writableDb.delete(IMPORT_TABLE_NAME, KEY_ID + "=?", new String[] { String.valueOf(setId) });
+		try
+		{
+			myWritableDb.delete(IMPORT_TABLE_NAME, KEY_ID + "=?", new String[] { String.valueOf(setId) });
+		}
+		catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		myWritableDb.close();
 	}
 
 	public int getNumberOfSetsToBeImported()
 	{
-		openWritableDatabase();
-
 		int count	= 0;
 
-		Cursor cursor	= writableDb.rawQuery("SELECT COUNT(*) FROM " + IMPORT_TABLE_NAME, null);
+		SQLiteDatabase readableDb	= getReadableDatabase();
 
-		if(null == cursor)
+		Cursor cursor	= null;
+
+		try
 		{
-			return 0;
+			cursor = readableDb.rawQuery("SELECT COUNT(*) FROM " + IMPORT_TABLE_NAME, null);
+		}
+		catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+			cursor	= null;
 		}
 
-		if(0 < cursor.getCount())
+		if(null != cursor)
 		{
-			cursor.moveToFirst();
+			if(0 < cursor.getCount())
+			{
+				cursor.moveToFirst();
 
-			count	= cursor.getInt(0);
+				count	= cursor.getInt(0);
+			}
+
+			cursor.close();
 		}
+
+		readableDb.close();
 
 		return count;
 	}
 
 	public Boolean buildingInstructionsExist(String buildingInstructionsId)
 	{
-		openWritableDatabase();
+		SQLiteDatabase readableDb	= getReadableDatabase();
 
 		Cursor cursor	= null;
 
+		Boolean success	= false;
+
 		try
 		{
-			cursor = writableDb.query(IMAGES_TABLE_NAME, new String[] {"COUNT(*)"}, IMAGE_INSTRUCTIONSID_COLUMN + "=?", new String[] {buildingInstructionsId}, null, null, null);
+			cursor = readableDb.query(IMAGES_TABLE_NAME, new String[] {"COUNT(*)"}, IMAGE_INSTRUCTIONSID_COLUMN + "=?", new String[] {buildingInstructionsId}, null, null, null);
 		}
 		catch (Exception e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return false;
+
+			cursor	= null;
+
+			success	= false;
 		}
-		finally
+
+		if(null != cursor)
 		{
-			closeWritableDatabase();
+			int count	= 0;
+
+			cursor.moveToFirst();
+
+			count	= cursor.getInt(0);
+
+			success	= (0 == count) ? false : true;
+
+			cursor.close();
 		}
 
-		if(null == cursor)
-		{
-			return false;
-		}
+		readableDb.close();
 
-		int count	= 0;
-
-		cursor.moveToFirst();
-
-		count	= cursor.getInt(0);
-
-		return (0 == count) ? false : true;
+		return success;
 	}
 
-	public void openWritableDatabase()
+	private void openWritableDatabase()
 	{
 		if(null == writableDb)
 		{
@@ -627,11 +821,11 @@ public class dbHelper extends SQLiteOpenHelper
 		}
 	}
 
-	public void closeWritableDatabase()
+	private void closeWritableDatabase()
 	{
 		if(null != writableDb)
 		{
-			//writableDb.close();
+			writableDb.close();
 		}
 	}
 

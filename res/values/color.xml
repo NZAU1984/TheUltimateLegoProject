@@ -7,4 +7,5 @@
     <color name="selected">#94B5D1</color>
     <color name="hint_text_color">#66676E</color>
     <color name="transparent">#000000</color>
+    <color name="unselected_thumbnail">#505050</color>
 </resources>

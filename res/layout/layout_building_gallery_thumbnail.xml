@@ -2,16 +2,24 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true"
-    android:padding="6dp">
+    android:clickable="true">
   
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="6dp"
+        >
+
     <ImageView
         android:id="@+id/imageview_image"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:scaleType="fitCenter" 
+        android:adjustViewBounds="true"
+        android:background="@drawable/border_unselected_thumbnail"
         android:clickable="true"
-        android:padding="6dp" />
+        android:padding="6dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/image_empty" />
 
     <ProgressBar
         android:id="@+id/progressbar_spinner"
@@ -20,5 +28,6 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true" />
+    </RelativeLayout>
   
 </RelativeLayout>

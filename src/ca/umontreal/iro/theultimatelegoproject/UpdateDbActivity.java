@@ -9,7 +9,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.skulg.tulp.ImportLegoSets;
 import com.skulg.tulp.dbHelper;
 
 public class UpdateDbActivity extends android.support.v4.app.FragmentActivity implements TaskCallbacks
@@ -43,7 +42,7 @@ public class UpdateDbActivity extends android.support.v4.app.FragmentActivity im
 
 		// Initializing status variables.
 		nbCurrentSets	= 0;
-		setNbErrorSets(0);
+		nbErrorSets		= 0;
 		nbTotalSets		= 0;
 
 		canPressBack	= false;
@@ -53,28 +52,6 @@ public class UpdateDbActivity extends android.support.v4.app.FragmentActivity im
 		strategy	= getIntent().getStringExtra("strategy");
 
 		manageFragment(false);
-
-		/*dbHelper	= new dbHelper(getApplicationContext());
-
-		dbHelper.openWritableDatabase();
-
-		if(strategy.equals("from_building_instructions"))
-		{
-			// We must fetch all building instructions to get set id's.
-			canPressBack	= false;
-			progressBarProgressBar.setIndeterminate(true);
-
-			// Let's tell the user that we are initializing update.
-			textviewPercentageDone.setText(R.string.update_db_initializing);
-
-			// Fetching all building instructions.
-			(new AllBuildingInstructionsAPICaller(getApplicationContext(), dbHelper, this)).execute("");
-		}
-		else if(strategy.equals("from_import_table"))
-		{
-			importSetsFromDb();
-		}
-		*/
 	}
 
 	@Override
@@ -132,13 +109,11 @@ public class UpdateDbActivity extends android.support.v4.app.FragmentActivity im
 
 	private void manageFragment(Boolean forceCreate)
 	{
-		Tools.shortToast(getApplicationContext(), "manageFragment");
 		FragmentManager fragmentManager	= getSupportFragmentManager();
 		updateDbFragment				= (UpdateDbFragment) fragmentManager.findFragmentByTag(TAG_TASK_FRAGMENT);
 
 	    if(forceCreate || (null == updateDbFragment))
 	    {
-	    	Tools.shortToast(getApplicationContext(), "manageFragment :: updateDbFragment = NULL");
 	    	updateDbFragment	= new UpdateDbFragment();
 
 	    	Bundle arguments	= new Bundle();
@@ -146,7 +121,7 @@ public class UpdateDbActivity extends android.support.v4.app.FragmentActivity im
 	    	arguments.putString("strategy", strategy);
 
 	    	updateDbFragment.setArguments(arguments);
-	    	Tools.shortToast(getApplicationContext(), "manageFragment :: arg = " + strategy);
+
 	    	fragmentManager.beginTransaction().add(updateDbFragment, TAG_TASK_FRAGMENT).commit();
 	    }
 	}
@@ -165,45 +140,6 @@ public class UpdateDbActivity extends android.support.v4.app.FragmentActivity im
 	}
 
 	/**
-	 * Import set info by using sets stored in the import table.
-	 */
-	private void importSetsFromDb()
-	{
-		canPressBack	= false;
-		dbHelper.openWritableDatabase();
-		synchronized (lock)
-		{
-			nbTotalSets	= dbHelper.getNumberOfSetsToBeImported();
-		}
-		setCurrentPercentage(0);
-
-		// Reinitializing status variables.
-		nbCurrentSets	= 0;
-		setNbErrorSets(0);
-
-		(new ImportLegoSets(getApplicationContext(), dbHelper, this)).execute("");
-	}
-
-	/**
-	 * Increments the number of sets loaded (or associated with a (network) error).
-	 */
-	public void incrementNumberOfSets()
-	{
-		synchronized (lock)
-		{
-			++nbCurrentSets;
-			if(0 != nbTotalSets)
-			{
-				setCurrentPercentage((double) nbCurrentSets / nbTotalSets);
-			}
-			if(nbCurrentSets == nbTotalSets)
-			{
-				allSetsLoaded();
-			}
-		}
-	}
-
-	/**
 	 * Shows the current loading percentage in progressbar and textview.
 	 * @param fraction the percentage of loading (between 0 and 1)
 	 */
@@ -212,57 +148,6 @@ public class UpdateDbActivity extends android.support.v4.app.FragmentActivity im
 		double percentage	= Math.floor(fraction * progressBarProgressBar.getMax());
 		textviewPercentageDone.setText(String.format(getString(R.string.update_db_percentage_done), percentage) + " " + nbCurrentSets + "/" + nbTotalSets);
 		progressBarProgressBar.setProgress((int) percentage);
-	}
-
-	/**
-	 * Handles the 'all sets loaded' event. Everything might have gone without errors or not.
-	 */
-	private void allSetsLoaded()
-	{
-		canPressBack	= true;
-
-		dbHelper.closeWritableDatabase();
-
-		if(0 != getNbErrorSets())
-		{
-			// If there were (network) errors, let's change the visible layout to show there were errors and let's update the 'error status'
-			// according to if all sets failed or only some of them.
-			relativeLayoutProgress.setVisibility(View.GONE);
-			relativeLayoutError.setVisibility(View.VISIBLE);
-
-			textviewErrorStatus.setText((getNbErrorSets() == nbTotalSets) ? R.string.update_db_total_errors_status : R.string.update_db_partial_errors_status);
-		}
-		else
-		{
-			onBackPressed();
-		}
-	}
-
-	/**
-	 * Called then the asynctask AllBuildingInstructionsAPICaller fetched all building instructions and stored numeric
-	 * set id's in the import table.
-	 */
-	public void AllBuildingInstructionsAPICallerHasFinished()
-	{
-		// We will now load a precise number of sets so the progressbar will not be indeterminate.
-		progressBarProgressBar.setIndeterminate(false);
-		importSetsFromDb();
-	}
-
-	/**
-	 * Called then the asynctask AllBuildingInstructionsAPICaller failed to fetch or parse building instructions.
-	 */
-	public void AllBuildingInstructionsAPICallerHasFailed()
-	{
-		// TODO !!
-	}
-
-	public int getNbErrorSets() {
-		return nbErrorSets;
-	}
-
-	public void setNbErrorSets(int nbErrorSets) {
-		this.nbErrorSets = nbErrorSets;
 	}
 
 	public void showLoadingLayout()
@@ -315,31 +200,21 @@ public class UpdateDbActivity extends android.support.v4.app.FragmentActivity im
 
 			if(!success)
 			{
-				Tools.shortToast(getApplicationContext(), "allBuild.. failed !");
-
 				strategy	= "from_building_instructions";
 
 				showErrorLayout();
-			}
-			else
-			{
-				Tools.shortToast(getApplicationContext(), "allBuild.. success !");
 			}
 		}
 		else if(fromWho.equals("from_import_table"))
 		{
 			if(!success)
 			{
-				Tools.shortToast(getApplicationContext(), "import sets failed !");
-
 				strategy	= "from_import_table";
 
 				showErrorLayout();
 			}
 			else
 			{
-				Tools.shortToast(getApplicationContext(), "import sets success !");
-
 				canPressBack	= true;
 
 				onBackPressed();

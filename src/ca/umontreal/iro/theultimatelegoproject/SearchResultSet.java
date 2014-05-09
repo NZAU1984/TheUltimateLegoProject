@@ -7,7 +7,7 @@ public class SearchResultSet
 	public Boolean	seen;
 	public Boolean	favorite;
 
-	SearchResultSet(String argId, String argImageUrl, String argSeen, String argFavorite)
+	public SearchResultSet(String argId, String argImageUrl, String argSeen, String argFavorite)
 	{
 		id			= argId;
 		imageUrl	= argImageUrl;
