@@ -1,0 +1,103 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
+    android:background="@drawable/red_background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".SetInfoActivity" >
+    
+    <RelativeLayout
+        	android:id="@+id/relativelayout_imagewrapper"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="2">
+
+			<ImageView
+			    android:id="@+id/imageview_image"
+			    android:layout_width="fill_parent"
+			    android:layout_height="fill_parent"
+			    android:scaleType="fitCenter" />
+
+			<ProgressBar
+		        android:id="@+id/progressbar_spinner"
+		        style="?android:attr/progressBarStyleLarge"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_centerHorizontal="true"
+		        android:layout_centerVertical="true" />
+
+			<ImageView
+			    android:gravity="left"
+			    android:id="@+id/imageview_favorite"
+			    android:layout_width="50dp"
+			    android:layout_height="50dp"
+			    android:layout_alignParentLeft="true"
+			    android:layout_alignParentTop="true"
+			    android:clickable="true"
+			    android:src="@drawable/image_star" />
+
+			<ImageView
+			    android:id="@+id/imageview_building_instructions"
+			    android:layout_width="50dp"
+			    android:layout_height="50dp"
+			    android:layout_alignParentRight="true"
+			    android:layout_alignParentTop="true"
+			    android:clickable="true"
+			    android:src="@drawable/image_spanner" />
+        
+    </RelativeLayout>
+    <ScrollView
+            android:id="@+id/scrollView1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3">
+
+            <TextView
+                android:id="@+id/textview_description"
+                android:textColor="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+   </ScrollView>
+   
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="@color/black"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/textview_year"
+            android:textColor="@color/white"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="left" />
+
+        <TextView
+            android:id="@+id/textview_price"
+            android:textColor="@color/white"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/textview_nbpieces"
+            android:textColor="@color/white"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="right" />
+
+    </LinearLayout>
+
+</LinearLayout>
