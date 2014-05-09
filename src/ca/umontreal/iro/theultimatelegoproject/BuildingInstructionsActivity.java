@@ -219,7 +219,7 @@ public class BuildingInstructionsActivity extends android.support.v4.app.Fragmen
 			return;
 		}
 
-		thumbnailImageViews[position].setBackgroundResource(R.drawable.background_building_instruction_gallery_thumbnail);
+		thumbnailImageViews[position].setBackgroundResource(R.drawable.button_defaut); //.background_building_instruction_gallery_thumbnail);
 	}
 
 	protected void removeBorderFromThumbnail(int position)

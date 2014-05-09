@@ -136,6 +136,8 @@ public class SpecificBuildingInstructionsFragment extends Fragment
 		@Override
 		protected Boolean doInBackground(String... arg0)
 		{
+			dbh.openWritableDatabase();
+
 			HttpEntity buildingInstructionsPage;
 			try
 			{
@@ -193,6 +195,10 @@ public class SpecificBuildingInstructionsFragment extends Fragment
 			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			}
+			finally
+			{
+				dbh.closeWritableDatabase();
 			}
 
 			return null;

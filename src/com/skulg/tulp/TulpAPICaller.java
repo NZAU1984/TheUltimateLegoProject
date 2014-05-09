@@ -21,7 +21,7 @@ public abstract class TulpAPICaller extends AsyncTask<String, Float, Boolean>
 {
 	protected static final String GET_LEGO_SET_URL = "http://www.cubiculus.com/api-rest/lego-set/";
 	//protected static final String API_KEY = "75mbg89mmad8as06fvc3kq9fl91t1b6j67ihou4cmq9l4830222gco2qnaffjqtf";
-	protected static final String API_KEY = "75mbg89mmad8as06fvc3kq9fl91t1b6j67ihou4cmq9l4830222gco2qnaffjqtf";
+	protected static final String API_KEY = "78enmv2b1i45gju6lff46ig4kdhqvrp4m35ucg3cttked6akl6sgjoagdop048e6";
 	protected static final String GET_ALL_BUILDINGS_INSTRUCTIONS_URL = "http://www.cubiculus.com/api-rest/building-instruction/"
 			+ API_KEY;
 	protected static final String GET_ALL_LEGO_SETS_URL	= "http://www.cubiculus.com/api-rest/lego-sets/"
