@@ -165,8 +165,7 @@
 			    android:layout_height="wrap_content"
 			    android:background="@drawable/button_custom"
 			    android:clickable="true"
-			    android:text="@string/search_button_search"
-				android:drawableStart="@drawable/search_button_icon"/> 
+			    android:text="@string/search_button_search"/> 
 		</LinearLayout>
 				
         
